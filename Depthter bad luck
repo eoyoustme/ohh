@@ -1,0 +1,79 @@
+-- Check current room
+local entityModel = true
+local latestRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
+
+game.Lighting.MainColorCorrection.TintColor = Color3.fromRGB(255, 255, 255)
+game.Lighting.MainColorCorrection.Contrast = 0.01
+local tween = game:GetService("TweenService")
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(2.5), {Contrast = 0}):Play()
+local TweenService = game:GetService("TweenService")
+local TW = TweenService:Create(game.Lighting.MainColorCorrection, TweenInfo.new(25),{TintColor = Color3.fromRGB(0, 0, 255)})
+TW:Play()
+
+-- If in Seek, Figure, or Room 90+
+if game.Workspace:FindFirstChild("SeekMovingNewClone") or 
+   latestRoom == 50 or latestRoom == 100 or  
+   (latestRoom >= 90 and latestRoom <= 100) then
+    entityModel = false
+end
+
+local Kill = true
+local depthsTer = game:GetObjects("rbxassetid://97132943749737")[1] -- Load DepthsTer from the ID
+depthsTer.Parent = game.Workspace
+
+local part = depthsTer:FindFirstChildWhichIsA("BasePart") or depthsTer:FindFirstChildWhichIsA("Part")
+
+-- Set the position of DepthsTer in the room
+part.CFrame = game.Workspace.CurrentRooms:GetChildren()[#game.Workspace.CurrentRooms:GetChildren() - 1].Parts.Floor.CFrame + Vector3.new(0, 6, 0)
+
+wait(3)
+
+task.spawn(function()
+    while Kill == true do
+        task.wait(0.02)  -- Reduce the wait time to increase damage speed
+        local _, camera = game.Workspace.CurrentCamera:WorldToViewportPoint(part.Position)
+        
+        -- If the player is not looking at DepthTer, they take damage
+        if not camera then
+
+game.Players.LocalPlayer.Character.Humanoid:TakeDamage(5)
+                  end
+        
+        -- If the player dies, update the death cause and show the death hint
+        if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 then
+            -- Show death hint
+            firesignal(game.ReplicatedStorage.RemotesFolder.DeathHint.OnClientEvent, {"You died to who you call Hole...","He spawns in center of room and he will damage you if you dont look at him","He doesnt like to be ignoring"},"Blue")
+            wait(0.01)
+            -- Update the death cause in the game stats
+            game:GetService("ReplicatedStorage").GameStats["Player_".. game.Players.LocalPlayer.Name].Total.DeathCause.Value = "Hole"
+        end
+    end
+end)
+
+-- Wait for the room to change
+game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+Kill = false
+
+-- Destroy DepthTer when no longer needed
+depthsTer:Destroy()
+
+wait(0.4)
+
+game.Lighting.MainColorCorrection.TintColor = Color3.fromRGB(0, 0, 255)
+game.Lighting.MainColorCorrection.Contrast = 0.01
+local tween = game:GetService("TweenService")
+tween:Create(game.Lighting.MainColorCorrection, TweenInfo.new(2.5), {Contrast = 0}):Play()
+local TweenService = game:GetService("TweenService")
+local TW = TweenService:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5),{TintColor = Color3.fromRGB(255, 255, 255)})
+TW:Play()
+
+---====== Load achievement giver ======---
+local achievementGiver = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Custom%20Achievements/Source.lua"))()
+
+---====== Display achievement ======---
+achievementGiver({
+    Title = "more loke",
+    Desc = "Last chance to not look at me",
+    Reason = "Encounter Hole",
+    Image = "rbxassetid://"
+})
