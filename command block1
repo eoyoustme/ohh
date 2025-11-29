@@ -47,7 +47,7 @@ local function spawnDreadClock(room)
     local prompt = Instance.new("ProximityPrompt")
     prompt.ObjectText = "Strange Device"
     prompt.ActionText = "Collect"
-    prompt.HoldDuration = 4
+    prompt.HoldDuration = 0
     prompt.Style = Enum.ProximityPromptStyle.Custom
     prompt.RequiresLineOfSight = false
     prompt.MaxActivationDistance = 20
