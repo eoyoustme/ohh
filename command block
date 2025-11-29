@@ -1,0 +1,100 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+--=========================================
+--      HÀM SPAWN DREADCLOCK 100% (TEST)
+--=========================================
+local function spawnDreadClock(room)
+    --== TẠO MODEL DREADCLOCK ==--
+    local omg = Instance.new("Model")
+    omg.Name = "DreadClock"
+    omg.Parent = room
+
+    --== LẤY MODEL EYES ==--
+    local eyes = game:GetObjects("rbxassetid://114894440433899")[1]
+    eyes.Parent = omg
+
+    --== ĐẢM BẢO PRIMARYPART ==--
+    if not eyes.PrimaryPart then
+        for _, v in ipairs(eyes:GetChildren()) do
+            if v:IsA("BasePart") then
+                eyes.PrimaryPart = v
+                break
+            end
+        end
+    end
+    local mainPart = eyes.PrimaryPart
+
+    --=====================================
+    --        TÌM GIỮA PHÒNG
+    --=====================================
+    local centerCFrame
+    local nodes = room:FindFirstChild("PathfindNodes")
+
+    if nodes then
+        local children = nodes:GetChildren()
+        table.sort(children, function(a,b) return tonumber(a.Name) < tonumber(b.Name) end)
+        centerCFrame = children[math.floor(#children/2)].CFrame
+    else
+        centerCFrame = room:FindFirstChild(room.Name).CFrame
+    end
+
+    eyes:PivotTo(centerCFrame + Vector3.new(0, 5, 0))
+
+    ------------------------------------------------
+    --          PROXIMITY PROMPT DOORS
+    ------------------------------------------------
+    local prompt = Instance.new("ProximityPrompt")
+    prompt.ObjectText = "Strange Device"
+    prompt.ActionText = "Collect"
+    prompt.HoldDuration = 4
+    prompt.Style = Enum.ProximityPromptStyle.Custom
+    prompt.RequiresLineOfSight = false
+    prompt.MaxActivationDistance = 20
+
+    prompt.KeyboardKeyCode = Enum.KeyCode.E
+    prompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+    prompt.Parent = mainPart
+
+    --== SỰ KIỆN KHI NHẶT ==--
+    prompt.Triggered:Connect(function(plr)
+
+        local pick = math.random(1, 5)
+
+        if pick == 1 then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/Crucifix"))()
+            require(plr.PlayerGui.MainUI.Initiator.Main_Game)
+                .caption("Command block has granted you a Crucifix!", true)
+
+        elseif pick == 2 then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/Flashlight"))()
+            require(plr.PlayerGui.MainUI.Initiator.Main_Game)
+                .caption("Command block has granted you a Flashlight!", true)
+
+        elseif pick == 3 then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/Smile%20bad%20luck"))()
+            require(plr.PlayerGui.MainUI.Initiator.Main_Game)
+                .caption("Oh no! You have bad luck, an entity has spawned", true)
+
+        elseif pick == 4 then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/Angel"))()
+            require(plr.PlayerGui.MainUI.Initiator.Main_Game)
+                .caption("Oh no! You have bad luck, an entity has spawned", true)
+
+        elseif pick == 5 then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Depthter%20bad%20luck"))()
+            require(plr.PlayerGui.MainUI.Initiator.Main_Game)
+                .caption("Oh no! You have bad luck, an entity has spawned", true)
+        end
+
+        omg:Destroy()
+    end)
+end
+
+--=========================================
+--  GỌI NGAY KHI CHẠY SCRIPT (không lặp lại)
+--=========================================
+local currentRoom = workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]
+if currentRoom then
+    spawnDreadClock(currentRoom)
+end
