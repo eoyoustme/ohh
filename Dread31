@@ -10,14 +10,14 @@ if not CC then
     CC.Parent = Lighting
 end
 
-CC.TintColor = Color3.fromRGB(0, 0, 255)
+CC.TintColor = Color3.fromRGB(0, 0, 163)
 CC.Contrast = 0.3
-CC.Saturation = -0.7
+CC.Saturation = -1
 
 -- Tạo Tween để reset
-TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(5), {Saturation = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(5), {TintColor = Color3.fromRGB(20, 0, 163)}):Play()
+TweenService:Create(CC, TweenInfo.new(8), {Contrast = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(8), {Saturation = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(8), {TintColor = Color3.fromRGB(0, 0, 163)}):Play()
 
 -- ====== Tạo DreadClock ======
 local currentRoom = workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]
@@ -74,7 +74,7 @@ end
 -- ====== Lighting reset ======
 CC.TintColor = Color3.fromRGB(0, 0, 163)
 CC.Contrast = 0.3
-CC.Saturation = -0.7
+CC.Saturation = -1
 
 TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0}):Play()
 TweenService:Create(CC, TweenInfo.new(5), {Saturation = 0}):Play()
