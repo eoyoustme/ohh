@@ -65,7 +65,7 @@ if eyes.PrimaryPart then
     eyes.PrimaryPart.Anchored = true
 end
 
--- ====== Hàm âm thanh ======
+-- ====== Hàm tải âm thanh ======
 local function GitAud(soundlink, filename)
     if not isfile(filename..".mp3") then
         writefile(filename..".mp3", game:HttpGet(soundlink))
@@ -73,20 +73,39 @@ local function GitAud(soundlink, filename)
     return (getcustomasset or getsynasset)(filename..".mp3")
 end
 
-local function CustomGitSound(soundlink, vol, filename, duration)
+-- ====== Hàm âm thanh giảm tốc độ ======
+local function CustomGitSoundWithSlow(soundlink, vol, filename, totalDuration, slowInterval, slowStep)
     local DreadSound = Instance.new("Sound")
     DreadSound.SoundId = GitAud(soundlink, filename)
     DreadSound.Volume = vol
     DreadSound.Looped = true
+    DreadSound.PlaybackSpeed = 1  -- tốc độ ban đầu
     DreadSound.Parent = workspace
     DreadSound:Play()
 
-    wait(duration)
+    local elapsed = 0
+    while elapsed < totalDuration and DreadSound.Parent do
+        wait(slowInterval)
+        elapsed = elapsed + slowInterval
+        if DreadSound.PlaybackSpeed - slowStep > 0 then
+            DreadSound.PlaybackSpeed = DreadSound.PlaybackSpeed - slowStep
+        else
+            DreadSound.PlaybackSpeed = 0.1 -- tốc độ tối thiểu
+        end
+    end
+
+    -- Khi xóa DreadClock, trả về tốc độ bình thường
+    DreadSound:Stop()
+    DreadSound.PlaybackSpeed = 1
     DreadSound:Destroy()
 end
 
--- Chạy âm thanh
-CustomGitSound("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", 1, "DreadClock", 15)
+-- ====== Chạy âm thanh ======
+-- totalDuration = 15 giây, mỗi 2.5 giây giảm 0.5 tốc độ
+CustomGitSoundWithSlow(
+    "https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3",
+    1, "DreadClock", 15, 2.5, 0.5
+)
 
 -- ====== Xóa DreadClock và hiệu ứng sau 1 giây ======
 wait(1)
