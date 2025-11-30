@@ -85,7 +85,7 @@ if humanoid then
     local originalSpeed = humanoid.WalkSpeed -- tốc độ hiện tại khi DreadClock xuất hiện
     local targetSpeed = 7 -- tốc độ tối thiểu muốn giảm xuống
     local totalDuration = 35
-    local slowInterval = 0.5
+    local slowInterval = 0.05
     local step = (originalSpeed - targetSpeed) * (slowInterval / 0.2) -- giảm mượt mỗi 0.1s
 
     local elapsed = 0
@@ -117,4 +117,4 @@ TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintCol
 DreadSound:Stop()
 DreadSound:Destroy()
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/Script/refs/heads/main/Dread422"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/Script/refs/heads/main/Dread4221"))()
