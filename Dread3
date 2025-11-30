@@ -1,0 +1,81 @@
+-- ====== Lighting Effect ======
+local Lighting = game.Lighting
+local TweenService = game:GetService("TweenService")
+
+-- Thiết lập ban đầu
+local CC = Lighting:FindFirstChild("MainColorCorrection")
+if not CC then
+    CC = Instance.new("ColorCorrectionEffect")
+    CC.Name = "MainColorCorrection"
+    CC.Parent = Lighting
+end
+
+CC.TintColor = Color3.fromRGB(0, 0, 255)
+CC.Contrast = 0.3
+CC.Saturation = -0.7
+
+-- Tạo Tween để reset
+TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(5), {Saturation = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(5), {TintColor = Color3.fromRGB(20, 0, 163)}):Play()
+
+-- ====== Tạo DreadClock ======
+local currentRoom = workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]
+
+local DreadClock = Instance.new("Model")
+DreadClock.Name = "DreadClock"
+DreadClock.Parent = currentRoom
+
+local eyes = game:GetObjects("rbxassetid://15033250482")[1]
+
+-- Xác định vị trí spawn
+local num = 0
+if currentRoom:FindFirstChild("PathfindNodes") then
+    num = math.floor(#currentRoom.PathfindNodes:GetChildren() / 2)
+end
+
+local targetCFrame = (num == 0 and currentRoom[currentRoom.Name] or currentRoom.PathfindNodes[num]).CFrame + Vector3.new(0, 5, 0)
+eyes:PivotTo(targetCFrame)
+
+eyes.Parent = DreadClock
+if eyes.PrimaryPart then
+    eyes.PrimaryPart.Anchored = true
+end
+
+-- ====== Hàm âm thanh ======
+local function GitAud(soundlink, filename)
+    if not isfile(filename..".mp3") then
+        writefile(filename..".mp3", game:HttpGet(soundlink))
+    end
+    return (getcustomasset or getsynasset)(filename..".mp3")
+end
+
+local function CustomGitSound(soundlink, vol, filename, duration)
+    local DreadSound = Instance.new("Sound")
+    DreadSound.SoundId = GitAud(soundlink, filename)
+    DreadSound.Volume = vol
+    DreadSound.Looped = true
+    DreadSound.Parent = workspace
+    DreadSound:Play()
+
+    wait(duration)
+    DreadSound:Destroy()
+end
+
+-- Chạy âm thanh
+CustomGitSound("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", 1, "DreadClock", 35)
+
+-- ====== Xóa DreadClock sau 1 giây ======
+wait(1)
+if DreadClock then
+    DreadClock:Destroy()
+end
+
+-- ====== Lighting reset ======
+CC.TintColor = Color3.fromRGB(0, 0, 163)
+CC.Contrast = 0.3
+CC.Saturation = -0.7
+
+TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(5), {Saturation = 0}):Play()
+TweenService:Create(CC, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
