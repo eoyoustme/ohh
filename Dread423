@@ -20,7 +20,6 @@ CC.TintColor = Color3.fromRGB(255, 255, 255)
 CC.Contrast = 0.8
 CC.Saturation = -0.9
 
--- Tween đồng bộ mượt
 TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(60, 119, 179)}):Play()
 
 -- ====== Gradient hai bên xanh ======
@@ -35,9 +34,9 @@ frame.Parent = gui
 
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,163)),  -- trái
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)), -- giữa
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,163))   -- phải
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,163)),  
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)), 
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,163))   
 }
 gradient.Rotation = 0
 gradient.Parent = frame
@@ -51,7 +50,6 @@ DreadClock.Parent = currentRoom
 
 local eyes = game:GetObjects("rbxassetid://15033250482")[1]
 
--- Xác định vị trí spawn
 local num = 0
 if currentRoom:FindFirstChild("PathfindNodes") then
     num = math.floor(#currentRoom.PathfindNodes:GetChildren()/2)
@@ -73,47 +71,44 @@ local function GitAud(soundlink, filename)
     return (getcustomasset or getsynasset)(filename..".mp3")
 end
 
--- ====== Hàm âm thanh giảm tốc độ ======
-local function CustomGitSoundWithSlow(soundlink, vol, filename, totalDuration, slowInterval, slowStep)
-    local DreadSound = Instance.new("Sound")
-    DreadSound.SoundId = GitAud(soundlink, filename)
-    DreadSound.Volume = vol
-    DreadSound.Looped = true
-    DreadSound.PlaybackSpeed = 1  -- tốc độ ban đầu
-    DreadSound.Parent = workspace
-    DreadSound:Play()
+-- ====== Chạy âm thanh ======
+local DreadSound = Instance.new("Sound")
+DreadSound.SoundId = GitAud("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", "DreadClock")
+DreadSound.Volume = 1
+DreadSound.Looped = true
+DreadSound.Parent = workspace
+DreadSound:Play()
 
-    local elapsed = 0
-    while elapsed < totalDuration and DreadSound.Parent do
-        wait(slowInterval)
-        elapsed = elapsed + slowInterval
-        if DreadSound.PlaybackSpeed - slowStep > 0 then
-            DreadSound.PlaybackSpeed = DreadSound.PlaybackSpeed - slowStep
-        else
-            DreadSound.PlaybackSpeed = 0.1 -- tốc độ tối thiểu
-        end
+-- ====== Giảm tốc độ người chơi ======
+local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+local originalSpeed = humanoid and humanoid.WalkSpeed or 16
+local reducedSpeed = originalSpeed
+
+local totalDuration = 15
+local slowInterval = 2.5
+local slowStep = 4 -- giảm 4 mỗi lần, bạn có thể chỉnh
+local elapsed = 0
+
+-- Vòng lặp giảm tốc độ
+while elapsed < totalDuration and humanoid and DreadClock.Parent do
+    wait(slowInterval)
+    elapsed = elapsed + slowInterval
+    if humanoid.WalkSpeed - slowStep > 0 then
+        humanoid.WalkSpeed = humanoid.WalkSpeed - slowStep
+    else
+        humanoid.WalkSpeed = 1 -- tốc độ tối thiểu
     end
-
-    -- Khi xóa DreadClock, trả về tốc độ bình thường
-    DreadSound:Stop()
-    DreadSound.PlaybackSpeed = 1
-    DreadSound:Destroy()
 end
 
--- ====== Chạy âm thanh ======
--- totalDuration = 15 giây, mỗi 2.5 giây giảm 0.5 tốc độ
-CustomGitSoundWithSlow(
-    "https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3",
-    1, "DreadClock", 15, 2.5, 0.5
-)
-
--- ====== Xóa DreadClock và hiệu ứng sau 1 giây ======
-wait(1)
+-- ====== Xóa DreadClock, reset tốc độ và GUI ======
 if DreadClock then
     DreadClock:Destroy()
 end
 if gui then
     gui:Destroy()
+end
+if humanoid then
+    humanoid.WalkSpeed = originalSpeed
 end
 
 -- ====== Lighting reset ======
@@ -121,3 +116,7 @@ CC.TintColor = Color3.fromRGB(60, 119, 179)
 CC.Contrast = 0.8
 CC.Saturation = -0.9
 TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(255,255,255)}):Play()
+
+-- Dừng âm thanh
+DreadSound:Stop()
+DreadSound:Destroy()
