@@ -86,7 +86,7 @@ if humanoid then
     local targetSpeed = 7 -- tốc độ tối thiểu muốn giảm xuống
     local totalDuration = 15
     local slowInterval = 0.5
-    local step = (originalSpeed - targetSpeed) * (slowInterval / 2.5) -- giảm mượt mỗi 0.1s
+    local step = (originalSpeed - targetSpeed) * (slowInterval / 0.2) -- giảm mượt mỗi 0.1s
 
     local elapsed = 0
     while elapsed < totalDuration and humanoid and DreadClock.Parent do
