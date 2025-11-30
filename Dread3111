@@ -17,11 +17,11 @@ end
 
 -- Thiết lập ban đầu
 CC.TintColor = Color3.fromRGB(255, 255, 255)
-CC.Contrast = 0.7
-CC.Saturation = -0.7
+CC.Contrast = 0.9
+CC.Saturation = 0.2
 
 -- Tween đồng bộ mượt
-TweenService:Create(CC, TweenInfo.new(14), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(20, 0, 163)}):Play()
+TweenService:Create(CC, TweenInfo.new(14), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(205, 205, 205)}):Play()
 
 -- ====== Gradient hai bên xanh ======
 local gui = Instance.new("ScreenGui")
