@@ -79,36 +79,32 @@ DreadSound.Looped = true
 DreadSound.Parent = workspace
 DreadSound:Play()
 
--- ====== Giảm tốc độ người chơi ======
+-- ====== Giảm tốc độ người chơi mượt dựa trên tốc độ hiện tại ======
 local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-local originalSpeed = humanoid and humanoid.WalkSpeed or 16
-local reducedSpeed = originalSpeed
+if humanoid then
+    local originalSpeed = humanoid.WalkSpeed -- tốc độ hiện tại khi DreadClock xuất hiện
+    local targetSpeed = 0.6 -- tốc độ tối thiểu muốn giảm xuống
+    local totalDuration = 15
+    local slowInterval = 0.1
+    local step = (originalSpeed - targetSpeed) * (slowInterval / 2.5) -- giảm mượt mỗi 0.1s
 
-local totalDuration = 15
-local slowInterval = 2.5
-local slowStep = 4 -- giảm 4 mỗi lần, bạn có thể chỉnh
-local elapsed = 0
-
--- Vòng lặp giảm tốc độ
-while elapsed < totalDuration and humanoid and DreadClock.Parent do
-    wait(slowInterval)
-    elapsed = elapsed + slowInterval
-    if humanoid.WalkSpeed - slowStep > 0 then
-        humanoid.WalkSpeed = humanoid.WalkSpeed - slowStep
-    else
-        humanoid.WalkSpeed = 1 -- tốc độ tối thiểu
+    local elapsed = 0
+    while elapsed < totalDuration and humanoid and DreadClock.Parent do
+        wait(slowInterval)
+        elapsed = elapsed + slowInterval
+        humanoid.WalkSpeed = math.max(targetSpeed, humanoid.WalkSpeed - step)
     end
+
+    -- Khi DreadClock destroy hoặc hết thời gian, trả lại tốc độ ban đầu
+    humanoid.WalkSpeed = originalSpeed
 end
 
--- ====== Xóa DreadClock, reset tốc độ và GUI ======
+-- ====== Xóa DreadClock và GUI ======
 if DreadClock then
     DreadClock:Destroy()
 end
 if gui then
     gui:Destroy()
-end
-if humanoid then
-    humanoid.WalkSpeed = originalSpeed
 end
 
 -- ====== Lighting reset ======
