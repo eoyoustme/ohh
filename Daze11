@@ -17,7 +17,7 @@ local function spawnShocker()
 	shockerModel.Parent = Workspace
 
 	local oogaBoogaaPart = shockerModel:WaitForChild("OOGA BOOGAAAA")
-	local horrorScream = oogaBoogaaPart:WaitForChild("Jumpscare")
+	local horrorScream = oogaBoogaaPart:WaitForChild("jumpscare")
 
 	local lookDuration = 2
 	local lookStart = nil
