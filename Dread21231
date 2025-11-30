@@ -85,7 +85,7 @@ if humanoid then
     local originalSpeed = humanoid.WalkSpeed -- tốc độ hiện tại khi DreadClock xuất hiện
     local targetSpeed = 7 -- tốc độ tối thiểu muốn giảm xuống
     local totalDuration = 35
-    local slowInterval = 0.05
+    local slowInterval = 0.5
     local step = (originalSpeed - targetSpeed) * (slowInterval / 0.2) -- giảm mượt mỗi 0.1s
 
     local elapsed = 0
