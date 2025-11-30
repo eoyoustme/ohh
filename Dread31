@@ -1,8 +1,13 @@
+-- ====== Services ======
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+
 -- ====== Lighting Effect ======
 local Lighting = game.Lighting
-local TweenService = game:GetService("TweenService")
-
--- Thiết lập ban đầu
 local CC = Lighting:FindFirstChild("MainColorCorrection")
 if not CC then
     CC = Instance.new("ColorCorrectionEffect")
@@ -10,17 +15,35 @@ if not CC then
     CC.Parent = Lighting
 end
 
-CC.TintColor = Color3.fromRGB(0, 0, 163)
-CC.Contrast = 0.3
-CC.Saturation = -1
+-- Thiết lập ban đầu
+CC.TintColor = Color3.fromRGB(255, 255, 255)
+CC.Contrast = 0.7
+CC.Saturation = -0.7
 
--- Tạo Tween để reset
-TweenService:Create(CC, TweenInfo.new(8), {Contrast = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(8), {Saturation = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(8), {TintColor = Color3.fromRGB(0, 0, 163)}):Play()
+-- Tween đồng bộ mượt
+TweenService:Create(CC, TweenInfo.new(14), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(20, 0, 163)}):Play()
+
+-- ====== Gradient hai bên xanh ======
+local gui = Instance.new("ScreenGui")
+gui.Name = "DreadClockEffect"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.BackgroundTransparency = 1
+frame.Parent = gui
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,163)),  -- trái
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)), -- giữa
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,163))   -- phải
+}
+gradient.Rotation = 0
+gradient.Parent = frame
 
 -- ====== Tạo DreadClock ======
-local currentRoom = workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]
+local currentRoom = workspace.CurrentRooms[ReplicatedStorage.GameData.LatestRoom.Value]
 
 local DreadClock = Instance.new("Model")
 DreadClock.Name = "DreadClock"
@@ -31,7 +54,7 @@ local eyes = game:GetObjects("rbxassetid://15033250482")[1]
 -- Xác định vị trí spawn
 local num = 0
 if currentRoom:FindFirstChild("PathfindNodes") then
-    num = math.floor(#currentRoom.PathfindNodes:GetChildren() / 2)
+    num = math.floor(#currentRoom.PathfindNodes:GetChildren()/2)
 end
 
 local targetCFrame = (num == 0 and currentRoom[currentRoom.Name] or currentRoom.PathfindNodes[num]).CFrame + Vector3.new(0, 5, 0)
@@ -63,19 +86,19 @@ local function CustomGitSound(soundlink, vol, filename, duration)
 end
 
 -- Chạy âm thanh
-CustomGitSound("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", 1, "DreadClock", 35)
+CustomGitSound("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", 1, "DreadClock", 15)
 
--- ====== Xóa DreadClock sau 1 giây ======
+-- ====== Xóa DreadClock và hiệu ứng sau 1 giây ======
 wait(1)
 if DreadClock then
     DreadClock:Destroy()
 end
+if gui then
+    gui:Destroy()
+end
 
 -- ====== Lighting reset ======
 CC.TintColor = Color3.fromRGB(0, 0, 163)
-CC.Contrast = 0.3
-CC.Saturation = -1
-
-TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(5), {Saturation = 0}):Play()
-TweenService:Create(CC, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+CC.Contrast = 0.7
+CC.Saturation = -0.7
+TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(255,255,255)}):Play()
