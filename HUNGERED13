@@ -1,54 +1,3 @@
-local lighting = game.Lighting
-local cc = lighting:WaitForChild("MainColorCorrection")
-local tweenService = game:GetService("TweenService")
-
--- HIỆU ỨNG LIGHTING LÚC BẮT ĐẦU
-cc.TintColor = Color3.fromRGB(25, 0, 0)
-cc.Contrast = 0.2
-cc.Saturation = -0.7
-
-tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
-tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
-
--- ÂM THANH
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9125712561"
-sound.Volume = 1
-sound.Looped = false
-sound.Parent = workspace
-sound.PlaybackSpeed = 0.25
-sound:Play()
-
--- 🔥 Đổi màu + thay đổi speed theo thời gian KHÔNG ẢNH HƯỞNG thời điểm phát
-task.spawn(function()
-
-    -- 0.25 speed (đã chạy sẵn)
-    cc.TintColor = Color3.fromRGB(25, 0, 0)
-    task.wait(0.75)
-
-    -- 0.5 speed
-    sound.PlaybackSpeed = 0.5
-    cc.TintColor = Color3.fromRGB(150, 0, 0)
-    task.wait(0.75)
-
-    -- 0.75 speed
-    sound.PlaybackSpeed = 0.75
-    cc.TintColor = Color3.fromRGB(205, 0, 0)
-    task.wait(0.75)
-
-    -- 1.0 speed
-    sound.PlaybackSpeed = 1
-    cc.TintColor = Color3.fromRGB(255, 0, 0)
-
-    -- Hiệu ứng fade về trắng trong 8 giây
-    tweenService:Create(cc, TweenInfo.new(8), {
-        TintColor = Color3.fromRGB(255, 255, 255)
-    }):Play()
-
-end)
-
-wait(13)
-
 ---====== Load spawner ======---
 
 local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
@@ -79,7 +28,7 @@ local entity = spawner.Create({
 	},
 	Movement = {
 		Speed = 300,
-		Delay = 0,
+		Delay = 13,
 		Reversed = false
 	},
 	Rebounding = {
@@ -111,6 +60,52 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
+-- CHỜ GAME LOAD XONG TRƯỚC KHI PHÁT ÂM THANH
+task.defer(function()
+    local lighting = game.Lighting
+    local cc = lighting:WaitForChild("MainColorCorrection")
+    local tweenService = game:GetService("TweenService")
+
+    -- HIỆU ỨNG LIGHTING LÚC BẮT ĐẦU
+    cc.TintColor = Color3.fromRGB(25, 0, 0)
+    cc.Contrast = 0.2
+    cc.Saturation = -0.7
+
+    tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+    tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
+
+    -- ÂM THANH (SẼ PHÁT NGAY)
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://9125712561"
+    sound.Volume = 1
+    sound.Looped = false
+    sound.Parent = workspace
+
+    sound.PlaybackSpeed = 0.25
+    sound:Play() -- 🔥 BẢO ĐẢM PHÁT NGAY
+
+    -- Hiệu ứng tăng dần speed
+    task.spawn(function()
+        cc.TintColor = Color3.fromRGB(25, 0, 0)
+        task.wait(0.75)
+
+        sound.PlaybackSpeed = 0.5
+        cc.TintColor = Color3.fromRGB(150, 0, 0)
+        task.wait(0.75)
+
+        sound.PlaybackSpeed = 0.75
+        cc.TintColor = Color3.fromRGB(205, 0, 0)
+        task.wait(0.75)
+
+        sound.PlaybackSpeed = 1
+        cc.TintColor = Color3.fromRGB(255, 0, 0)
+
+        tweenService:Create(cc, TweenInfo.new(8), {
+            TintColor = Color3.fromRGB(255, 255, 255)
+        }):Play()
+    end)
+end)
+
 end)
 
 entity:SetCallback("OnStartMoving", function()
