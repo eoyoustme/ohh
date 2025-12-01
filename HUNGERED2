@@ -8,18 +8,18 @@ local entity = spawner.Create({
 	Entity = {
 		Name = "HUNGERED",
 		Asset = "rbxassetid://96360347693213",
-		HeightOffset = 0
+		HeightOffset = 1
 	},
 	Lights = {
 		Flicker = {
-			Enabled = true,
+			Enabled = false,
 			Duration = 1
 		},
 		Shatter = true,
 		Repair = false
 	},
 	Earthquake = {
-		Enabled = true
+		Enabled = false
 	},
 	CameraShake = {
 		Enabled = true,
@@ -65,15 +65,14 @@ entity:SetCallback("OnSpawned", function()
 local cc = lighting:WaitForChild("MainColorCorrection")
 local tweenService = game:GetService("TweenService")
 
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9125712561"
-sound.Volume = 1
-sound.Looped = false
-sound.Parent = workspace
-sound.Loaded:Wait()
-sound.PlaybackSpeed = 0.25
-sound:Play()
-wait(1)
+local cue = Instance.new("Sound")
+	cue.Parent = game.Workspace.Hungered
+	cue.Name = "Spawn"
+	cue.SoundId = "rbxassetid://9125712561"
+	cue.Volume = 10
+	cue.PlaybackSpeed = 0.25
+	cue:Play()
+
 cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
 cc.Saturation = -0.7
@@ -86,15 +85,15 @@ tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 task.spawn(function()
 
     task.wait(0.75)
-    sound.PlaybackSpeed = 0.5
+    cue.PlaybackSpeed = 0.5
     cc.TintColor = Color3.fromRGB(150, 0, 0)
 
     task.wait(0.75)
-    sound.PlaybackSpeed = 0.75
+    cue.PlaybackSpeed = 0.75
     cc.TintColor = Color3.fromRGB(205, 0, 0)
 
     task.wait(0.75)
-    sound.PlaybackSpeed = 1
+    cue.PlaybackSpeed = 1
     cc.TintColor = Color3.fromRGB(255, 0, 0)
 
     tweenService:Create(cc, TweenInfo.new(8), {
