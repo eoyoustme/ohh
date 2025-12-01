@@ -56,13 +56,13 @@ gui.Parent = player:WaitForChild("PlayerGui")
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bg.BackgroundTransparency = 0
+bg.BackgroundTransparency = 0.5
 bg.Parent = gui
 
 -- White glow in the center
 local glow = Instance.new("ImageLabel")
 glow.Size = UDim2.new(1, 0, 1, 0)
-glow.BackgroundTransparency = 0.5
+glow.BackgroundTransparency = 1
 glow.Image = "rbxassetid://15836255172" -- radial glow trắng
 glow.ImageTransparency = 0.35 -- chỉnh độ mờ
 glow.ScaleType = Enum.ScaleType.Stretch
