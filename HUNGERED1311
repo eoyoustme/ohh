@@ -81,11 +81,9 @@ entity:SetCallback("OnSpawned", function()
     sound.Parent = workspace
     sound.PlaybackSpeed = 0.25
 
-    -- PHÁT NGAY LÚC ENTITY VỪA XUẤT HIỆN
-    sound:Play()
-
     -- Tăng tốc + đổi màu
     task.spawn(function()
+       sound:Play()
         task.wait(0.75)
         sound.PlaybackSpeed = 0.5
         cc.TintColor = Color3.fromRGB(150, 0, 0)
