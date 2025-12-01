@@ -4,6 +4,7 @@ local cue = Instance.new("Sound")
 	cue.SoundId = "rbxassetid://9125712561"
 	cue.Volume = 10
 	cue.PlaybackSpeed = 0.25
+    cue.TimePosition = 1
 	cue:Play()
 
 ---====== Load spawner ======---
