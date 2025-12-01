@@ -61,7 +61,7 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 
-   local TweenService = game:GetService("TweenService")
+local TweenService = game:GetService("TweenService")
 local Lighting = game.Lighting
 local cc = Lighting:WaitForChild("MainColorCorrection")
 local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
@@ -79,7 +79,14 @@ cue.Parent = workspace
 cue.SoundId = "rbxassetid://9125712561"
 cue.Volume = 10
 cue.PlaybackSpeed = 0.25
+
+-- 🔥 Load âm thanh trước
+cue.Loaded:Wait()
+
+-- ✅ Đặt TimePosition sau khi load xong
 cue.TimePosition = 1
+
+-- Phát cùng lúc lighting
 cue:Play()
 
 -- Lighting bắt đầu ngay
@@ -92,31 +99,29 @@ TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 -- Tăng dần PlaybackSpeed + đổi màu + camera shake
 task.spawn(function()
 	-- 0.25
-cc.TintColor = Color3.fromRGB(25, 0, 0)
-camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
-task.wait(0.75)
+	cc.TintColor = Color3.fromRGB(25, 0, 0)
+	camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
+	task.wait(0.75)
 
 	-- 0.5
-cue.PlaybackSpeed = 0.5
-cc.TintColor = Color3.fromRGB(150, 0, 0)
-camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
-task.wait(0.75)
+	cue.PlaybackSpeed = 0.5
+	cc.TintColor = Color3.fromRGB(150, 0, 0)
+	camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
+	task.wait(0.75)
 
 	-- 0.75
-cue.PlaybackSpeed = 0.75
-cc.TintColor = Color3.fromRGB(205, 0, 0)
-camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
-task.wait(0.75)
+	cue.PlaybackSpeed = 0.75
+	cc.TintColor = Color3.fromRGB(205, 0, 0)
+	camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
+	task.wait(0.75)
 
 	-- 1.0
-cue.PlaybackSpeed = 1
-cc.TintColor = Color3.fromRGB(255, 0, 0)
-camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
+	cue.PlaybackSpeed = 1
+	cc.TintColor = Color3.fromRGB(255, 0, 0)
+	camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
 
 	-- Tween fade trắng 8 giây
-TweenService:Create(cc, TweenInfo.new(8), {
-		TintColor = Color3.fromRGB(255, 255, 255)
-	}):Play()
+	TweenService:Create(cc, TweenInfo.new(8), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
 end)
 
 end)
