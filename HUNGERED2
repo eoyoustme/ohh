@@ -32,7 +32,7 @@ local entity = spawner.Create({
 		Reversed = false
 	},
 	Rebounding = {
-		Enabled = false,
+		Enabled = true,
 		Type = "Ambush", -- "Blitz"
 		Min = 5,
 		Max = 5,
@@ -121,7 +121,7 @@ task.spawn(function()
 	camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
 
 	-- Tween fade trắng 8 giây
-	TweenService:Create(cc, TweenInfo.new(8), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+	TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
 end)
 
 end)
