@@ -25,11 +25,14 @@ TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintCol
 -- ====== Gradient hai bên xanh ======
 local gui = Instance.new("ScreenGui")
 gui.Name = "DreadClockEffect"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundTransparency = 1
+frame.BackgroundTransparency = 0 -- sửa tại đây!
+frame.BackgroundColor3 = Color3.fromRGB(255,255,255)
 frame.Parent = gui
 
 local gradient = Instance.new("UIGradient")
@@ -48,7 +51,7 @@ local DreadClock = Instance.new("Model")
 DreadClock.Name = "DreadClock"
 DreadClock.Parent = currentRoom
 
-local eyes = game:GetObjects("rbxassetid://15033250482")[1]
+local eyes = game:GetObjects("rbxassetid://73481800813918")[1]
 
 local num = 0
 if currentRoom:FindFirstChild("PathfindNodes") then
@@ -62,6 +65,8 @@ eyes.Parent = DreadClock
 if eyes.PrimaryPart then
     eyes.PrimaryPart.Anchored = true
 end
+
+wait(3.882)
 
 -- ====== Hàm tải âm thanh ======
 local function GitAud(soundlink, filename)
