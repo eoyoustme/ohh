@@ -2,52 +2,54 @@ local lighting = game.Lighting
 local cc = lighting:WaitForChild("MainColorCorrection")
 local tweenService = game:GetService("TweenService")
 
+-- HIỆU ỨNG LIGHTING LÚC BẮT ĐẦU
 cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
 cc.Saturation = -0.7
 
--- Tween trả Contrast và Saturation về 0 trong 10 giây
 tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
 tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 
--- Âm thanh
+-- ÂM THANH
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://9125712561"
 sound.Volume = 1
 sound.Looped = false
 sound.Parent = workspace
 
--- Chạy âm thanh với playback tăng dần
+-- 🔥 PHÁT ÂM THANH NGAY LẬP TỨC
+sound.PlaybackSpeed = 0.25
+sound:Play()
+
+-- 🔥 Đổi màu + thay đổi speed theo thời gian KHÔNG ẢNH HƯỞNG thời điểm phát
 task.spawn(function()
 
-    -- 0.25
-    sound.PlaybackSpeed = 0.25
+    -- 0.25 speed (đã chạy sẵn)
     cc.TintColor = Color3.fromRGB(25, 0, 0)
-    sound:Play()
     task.wait(0.75)
 
-    -- 0.5
+    -- 0.5 speed
     sound.PlaybackSpeed = 0.5
     cc.TintColor = Color3.fromRGB(150, 0, 0)
     task.wait(0.75)
 
-    -- 0.75
+    -- 0.75 speed
     sound.PlaybackSpeed = 0.75
     cc.TintColor = Color3.fromRGB(205, 0, 0)
     task.wait(0.75)
 
-    -- 1.0 (cuối)
+    -- 1.0 speed
     sound.PlaybackSpeed = 1
     cc.TintColor = Color3.fromRGB(255, 0, 0)
 
-    -- Sau khi đổi sang xanh đậm → tween 5 giây chuyển sang trắng
+    -- Hiệu ứng fade về trắng trong 8 giây
     tweenService:Create(cc, TweenInfo.new(8), {
         TintColor = Color3.fromRGB(255, 255, 255)
     }):Play()
 
 end)
 
-wait(15)
+wait(13)
 
 ---====== Load spawner ======---
 
