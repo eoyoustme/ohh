@@ -75,7 +75,7 @@ camShake:Start()
 
 -- Âm thanh
 local cue = Instance.new("Sound")
-cue.Parent = workspace.Hungered
+cue.Parent = workspace
 cue.SoundId = "rbxassetid://9125712561"
 cue.Volume = 10
 cue.PlaybackSpeed = 0.25
