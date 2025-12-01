@@ -16,8 +16,6 @@ sound.SoundId = "rbxassetid://9125712561"
 sound.Volume = 1
 sound.Looped = false
 sound.Parent = workspace
-
--- 🔥 PHÁT ÂM THANH NGAY LẬP TỨC
 sound.PlaybackSpeed = 0.25
 sound:Play()
 
