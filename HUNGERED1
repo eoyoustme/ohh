@@ -2,7 +2,7 @@ local lighting = game.Lighting
 local cc = lighting:WaitForChild("MainColorCorrection")
 local tweenService = game:GetService("TweenService")
 
-cc.TintColor = Color3.fromRGB(0, 0, 25)
+cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
 cc.Saturation = -0.7
 
@@ -22,26 +22,26 @@ task.spawn(function()
 
     -- 0.25
     sound.PlaybackSpeed = 0.25
-    cc.TintColor = Color3.fromRGB(0, 0, 25)
+    cc.TintColor = Color3.fromRGB(25, 0, 0)
     sound:Play()
-    task.wait(0.25)
+    task.wait(0.75)
 
     -- 0.5
     sound.PlaybackSpeed = 0.5
-    cc.TintColor = Color3.fromRGB(0, 0, 125)
-    task.wait(0.25)
+    cc.TintColor = Color3.fromRGB(150, 0, 0)
+    task.wait(0.75)
 
     -- 0.75
     sound.PlaybackSpeed = 0.75
-    cc.TintColor = Color3.fromRGB(0, 0, 205)
-    task.wait(0.25)
+    cc.TintColor = Color3.fromRGB(205, 0, 0)
+    task.wait(0.75)
 
     -- 1.0 (cuối)
     sound.PlaybackSpeed = 1
-    cc.TintColor = Color3.fromRGB(0, 0, 255)
+    cc.TintColor = Color3.fromRGB(255, 0, 0)
 
     -- Sau khi đổi sang xanh đậm → tween 5 giây chuyển sang trắng
-    tweenService:Create(cc, TweenInfo.new(5), {
+    tweenService:Create(cc, TweenInfo.new(8), {
         TintColor = Color3.fromRGB(255, 255, 255)
     }):Play()
 
