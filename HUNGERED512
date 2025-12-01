@@ -1,12 +1,3 @@
-local cue = Instance.new("Sound")
-	cue.Parent = workspace
-	cue.Name = "Spawn"
-	cue.SoundId = "rbxassetid://9125712561"
-	cue.Volume = 10
-	cue.PlaybackSpeed = 0.25
-    cue.TimePosition = 1
-	cue:Play()
-
 ---====== Load spawner ======---
 
 local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
@@ -28,7 +19,7 @@ local entity = spawner.Create({
 		Repair = false
 	},
 	Earthquake = {
-		Enabled = false
+		Enabled = true*
 	},
 	CameraShake = {
 		Enabled = true,
@@ -70,37 +61,62 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 
-   local lighting = game.Lighting
-local cc = lighting:WaitForChild("MainColorCorrection")
-local tweenService = game:GetService("TweenService")
+   local TweenService = game:GetService("TweenService")
+local Lighting = game.Lighting
+local cc = Lighting:WaitForChild("MainColorCorrection")
+local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
+local cam = workspace.CurrentCamera
 
+-- Tạo CameraShaker
+local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
+	cam.CFrame = cam.CFrame * cf
+end)
+camShake:Start()
+
+-- Âm thanh
+local cue = Instance.new("Sound")
+cue.Parent = workspace.Hungered
+cue.SoundId = "rbxassetid://9125712561"
+cue.Volume = 10
+cue.PlaybackSpeed = 0.25
+cue.TimePosition = 1
+cue:Play()
+
+-- Lighting bắt đầu ngay
 cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
 cc.Saturation = -0.7
+TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 
--- Tween trả Contr/Sat về 0
-tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
-tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
-
--- 🔥 TẤT CẢ ĐƯỢC CHẠY CÙNG LÚC KHÔNG DELAY
+-- Tăng dần PlaybackSpeed + đổi màu + camera shake
 task.spawn(function()
+	-- 0.25
+cc.TintColor = Color3.fromRGB(25, 0, 0)
+camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
+task.wait(0.75)
 
-    task.wait(0.75)
-    cue.PlaybackSpeed = 0.5
-    cc.TintColor = Color3.fromRGB(150, 0, 0)
+	-- 0.5
+cue.PlaybackSpeed = 0.5
+cc.TintColor = Color3.fromRGB(150, 0, 0)
+camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
+task.wait(0.75)
 
-    task.wait(0.75)
-    cue.PlaybackSpeed = 0.75
-    cc.TintColor = Color3.fromRGB(205, 0, 0)
+	-- 0.75
+cue.PlaybackSpeed = 0.75
+cc.TintColor = Color3.fromRGB(205, 0, 0)
+camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
+task.wait(0.75)
 
-    task.wait(0.75)
-    cue.PlaybackSpeed = 1
-    cc.TintColor = Color3.fromRGB(255, 0, 0)
+	-- 1.0
+cue.PlaybackSpeed = 1
+cc.TintColor = Color3.fromRGB(255, 0, 0)
+camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
 
-    tweenService:Create(cc, TweenInfo.new(8), {
-        TintColor = Color3.fromRGB(255, 255, 255)
-    }):Play()
-
+	-- Tween fade trắng 8 giây
+TweenService:Create(cc, TweenInfo.new(8), {
+		TintColor = Color3.fromRGB(255, 255, 255)
+	}):Play()
 end)
 
 end)
