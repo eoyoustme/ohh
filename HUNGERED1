@@ -32,7 +32,7 @@ local entity = spawner.Create({
 		Reversed = false
 	},
 	Rebounding = {
-		Enabled = true,
+		Enabled = false,
 		Type = "Ambush", -- "Blitz"
 		Min = 5,
 		Max = 5,
@@ -179,7 +179,7 @@ sound:Play()
 -- Chờ 2.5 giây trước khi bắt đầu fade
 task.delay(2.5, function()
     -- Tween giảm volume từ 10 xuống 0 trong 2 giây
-    local tween = TweenService:Create(sound, TweenInfo.new(2), {Volume = 0})
+    local tween = TweenService:Create(sound, TweenInfo.new(5), {Volume = 0})
     tween:Play()
 
     -- Khi tween kết thúc → destroy âm thanh
