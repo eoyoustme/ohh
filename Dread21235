@@ -84,6 +84,10 @@ DreadSound.Looped = true
 DreadSound.Parent = workspace
 DreadSound:Play()
 
+local distort2 = Instance.new("DistortionSoundEffect")
+distort2.Parent = DreadSound
+distort2.Level = 0.75
+
 -- ====== Giảm tốc độ người chơi mượt dựa trên tốc độ hiện tại ======
 local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 if humanoid then
