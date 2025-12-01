@@ -66,7 +66,7 @@ local cc = lighting:WaitForChild("MainColorCorrection")
 local tweenService = game:GetService("TweenService")
 
 local cue = Instance.new("Sound")
-	cue.Parent = game.Workspace.Hungered
+	cue.Parent = workspace
 	cue.Name = "Spawn"
 	cue.SoundId = "rbxassetid://9125712561"
 	cue.Volume = 10
