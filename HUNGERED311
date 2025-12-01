@@ -61,6 +61,10 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 
+   local lighting = game.Lighting
+local cc = lighting:WaitForChild("MainColorCorrection")
+local tweenService = game:GetService("TweenService")
+
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://9125712561"
 sound.Volume = 1
@@ -69,11 +73,7 @@ sound.Parent = workspace
 sound.Loaded:Wait()
 sound.PlaybackSpeed = 0.25
 sound:Play()
-
-   local lighting = game.Lighting
-local cc = lighting:WaitForChild("MainColorCorrection")
-local tweenService = game:GetService("TweenService")
-
+wait(1)
 cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
 cc.Saturation = -0.7
