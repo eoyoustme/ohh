@@ -6,22 +6,6 @@ local workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 
--- ====== Lighting Effect ======
-local Lighting = game.Lighting
-local CC = Lighting:FindFirstChild("MainColorCorrection")
-if not CC then
-    CC = Instance.new("ColorCorrectionEffect")
-    CC.Name = "MainColorCorrection"
-    CC.Parent = Lighting
-end
-
--- Thiết lập ban đầu
-CC.TintColor = Color3.fromRGB(255, 255, 255)
-CC.Contrast = 0.8
-CC.Saturation = -0.9
-
-TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(60, 119, 179)}):Play()
-
 
 -- ====== Tạo DreadClock ======
 local currentRoom = workspace.CurrentRooms[ReplicatedStorage.GameData.LatestRoom.Value]
@@ -47,6 +31,21 @@ end
 
 wait(3.882)
 
+local Lighting = game.Lighting
+local CC = Lighting:FindFirstChild("MainColorCorrection")
+if not CC then
+    CC = Instance.new("ColorCorrectionEffect")
+    CC.Name = "MainColorCorrection"
+    CC.Parent = Lighting
+end
+
+-- Thiết lập ban đầu
+CC.TintColor = Color3.fromRGB(255, 255, 255)
+CC.Contrast = 0.8
+CC.Saturation = -0.9
+
+TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(60, 119, 179)}):Play()
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "DreadClockEffect"
 gui.IgnoreGuiInset = true
@@ -55,7 +54,7 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundTransparency = 1 -- sửa tại đây!
+frame.BackgroundTransparency = 0.5 -- sửa tại đây!
 frame.BackgroundColor3 = Color3.fromRGB(255,255,255)
 frame.Parent = gui
 
