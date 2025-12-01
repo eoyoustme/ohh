@@ -22,27 +22,6 @@ CC.Saturation = -0.9
 
 TweenService:Create(CC, TweenInfo.new(5), {Contrast = 0, Saturation = 0, TintColor = Color3.fromRGB(60, 119, 179)}):Play()
 
--- ====== Gradient hai bên xanh ======
-local gui = Instance.new("ScreenGui")
-gui.Name = "DreadClockEffect"
-gui.IgnoreGuiInset = true
-gui.ResetOnSpawn = false
-gui.Parent = player:WaitForChild("PlayerGui")
-
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundTransparency = 0 -- sửa tại đây!
-frame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-frame.Parent = gui
-
-local gradient = Instance.new("UIGradient")
-gradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,163)),  
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)), 
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,163))   
-}
-gradient.Rotation = 0
-gradient.Parent = frame
 
 -- ====== Tạo DreadClock ======
 local currentRoom = workspace.CurrentRooms[ReplicatedStorage.GameData.LatestRoom.Value]
@@ -67,6 +46,27 @@ if eyes.PrimaryPart then
 end
 
 wait(3.882)
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "DreadClockEffect"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.BackgroundTransparency = 1 -- sửa tại đây!
+frame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+frame.Parent = gui
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),  
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)), 
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))   
+}
+gradient.Rotation = 0
+gradient.Parent = frame
 
 -- ====== Hàm tải âm thanh ======
 local function GitAud(soundlink, filename)
