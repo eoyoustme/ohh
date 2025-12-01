@@ -61,23 +61,18 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 
-   local lighting = game.Lighting
-local cc = lighting:WaitForChild("MainColorCorrection")
-local tweenService = game:GetService("TweenService")
-
--- Âm thanh
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://9125712561"
 sound.Volume = 1
 sound.Looped = false
 sound.Parent = workspace
-
--- 🔥 BẮT BUỘC LOAD TRƯỚC (để phát ngay lập tức)
 sound.Loaded:Wait()
-
--- 🚀 BẮT ĐẦU ÂM THANH + HIỆU ỨNG NGAY LẬP TỨC (CÙNG LÚC)
 sound.PlaybackSpeed = 0.25
 sound:Play()
+
+   local lighting = game.Lighting
+local cc = lighting:WaitForChild("MainColorCorrection")
+local tweenService = game:GetService("TweenService")
 
 cc.TintColor = Color3.fromRGB(25, 0, 0)
 cc.Contrast = 0.2
