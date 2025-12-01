@@ -160,6 +160,34 @@ end)
 
 entity:SetCallback("OnDespawned", function()
     print("Entity has despawned")
+local TweenService = game:GetService("TweenService")
+
+-- Tạo âm thanh
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://9125712561"
+sound.Volume = 10
+sound.PlaybackSpeed = 0.4
+sound.Looped = false
+sound.Parent = workspace
+
+-- Load âm thanh trước
+sound.Loaded:Wait()
+
+-- Phát âm thanh ngay
+sound:Play()
+
+-- Chờ 2.5 giây trước khi bắt đầu fade
+task.delay(2.5, function()
+    -- Tween giảm volume từ 10 xuống 0 trong 2 giây
+    local tween = TweenService:Create(sound, TweenInfo.new(2), {Volume = 0})
+    tween:Play()
+
+    -- Khi tween kết thúc → destroy âm thanh
+    tween.Completed:Connect(function()
+        sound:Destroy()
+    end)
+end)
+
 end)
 
 entity:SetCallback("OnDamagePlayer", function(newHealth)
