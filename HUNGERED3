@@ -61,46 +61,53 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 
-    -- Áp dụng hiệu ứng lighting + âm thanh NGAY LẬP TỨC
-    local lighting = game.Lighting
-    local cc = lighting:WaitForChild("MainColorCorrection")
-    local tweenService = game:GetService("TweenService")
+   local lighting = game.Lighting
+local cc = lighting:WaitForChild("MainColorCorrection")
+local tweenService = game:GetService("TweenService")
 
-    cc.TintColor = Color3.fromRGB(25, 0, 0)
-    cc.Contrast = 0.2
-    cc.Saturation = -0.7
+-- Âm thanh
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://9125712561"
+sound.Volume = 1
+sound.Looped = false
+sound.Parent = workspace
 
-    tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
-    tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
+-- 🔥 BẮT BUỘC LOAD TRƯỚC (để phát ngay lập tức)
+sound.Loaded:Wait()
 
-    -- Tạo âm thanh
-    local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://9125712561"
-    sound.Volume = 10
-    sound.Looped = false
-    sound.Parent = workspace
-    sound.PlaybackSpeed = 0.25
+-- 🚀 BẮT ĐẦU ÂM THANH + HIỆU ỨNG NGAY LẬP TỨC (CÙNG LÚC)
+sound.PlaybackSpeed = 0.25
+sound:Play()
 
-    -- Tăng tốc + đổi màu
-    task.spawn(function()
-       sound:Play()
-        task.wait(0.75)
-        sound.PlaybackSpeed = 0.5
-        cc.TintColor = Color3.fromRGB(150, 0, 0)
+cc.TintColor = Color3.fromRGB(25, 0, 0)
+cc.Contrast = 0.2
+cc.Saturation = -0.7
 
-        task.wait(0.75)
-        sound.PlaybackSpeed = 0.75
-        cc.TintColor = Color3.fromRGB(205, 0, 0)
+-- Tween trả Contr/Sat về 0
+tweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 
-        task.wait(0.75)
-        sound.PlaybackSpeed = 1
-        cc.TintColor = Color3.fromRGB(255, 0, 0)
+-- 🔥 TẤT CẢ ĐƯỢC CHẠY CÙNG LÚC KHÔNG DELAY
+task.spawn(function()
 
-        -- Fade trắng 8 giây
-        tweenService:Create(cc, TweenInfo.new(8), {
-            TintColor = Color3.fromRGB(255, 255, 255)
-        }):Play()
-    end)
+    task.wait(0.75)
+    sound.PlaybackSpeed = 0.5
+    cc.TintColor = Color3.fromRGB(150, 0, 0)
+
+    task.wait(0.75)
+    sound.PlaybackSpeed = 0.75
+    cc.TintColor = Color3.fromRGB(205, 0, 0)
+
+    task.wait(0.75)
+    sound.PlaybackSpeed = 1
+    cc.TintColor = Color3.fromRGB(255, 0, 0)
+
+    tweenService:Create(cc, TweenInfo.new(8), {
+        TintColor = Color3.fromRGB(255, 255, 255)
+    }):Play()
+
+end)
+
 end)
 
 entity:SetCallback("OnStartMoving", function()
