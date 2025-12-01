@@ -1,3 +1,11 @@
+local cue = Instance.new("Sound")
+	cue.Parent = workspace
+	cue.Name = "Spawn"
+	cue.SoundId = "rbxassetid://9125712561"
+	cue.Volume = 10
+	cue.PlaybackSpeed = 0.25
+	cue:Play()
+
 ---====== Load spawner ======---
 
 local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
@@ -75,14 +83,6 @@ tweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 
 -- 🔥 TẤT CẢ ĐƯỢC CHẠY CÙNG LÚC KHÔNG DELAY
 task.spawn(function()
-
-local cue = Instance.new("Sound")
-	cue.Parent = workspace
-	cue.Name = "Spawn"
-	cue.SoundId = "rbxassetid://9125712561"
-	cue.Volume = 10
-	cue.PlaybackSpeed = 0.25
-	cue:Play()
 
     task.wait(0.75)
     cue.PlaybackSpeed = 0.5
