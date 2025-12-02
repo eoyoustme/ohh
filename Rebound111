@@ -3,6 +3,8 @@ local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
+game.workspace
+
 --========== COLOR CORRECTION ==========
 local ReboundColor = Instance.new("ColorCorrectionEffect", game.Lighting)
 ReboundColor.Name = "Warn"
@@ -56,32 +58,40 @@ local entity = spawner.Create({
 
 --========== CALLBACKS ==========
 entity:SetCallback("OnSpawned", function()
-	print("Entity has spawned")
-	if Workspace:FindFirstChild("Rebound") then
-		local bruh = Workspace.Rebound:FindFirstChild("RushNew")
-		if bruh then
-			local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
-			move.Parent = bruh
-			move.Name = "ReboundMoving"
-			move.Volume = 0
-			move.Looped = true
-			local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
-			local distort = Instance.new("DistortionSoundEffect", move)
-			distort.Level = 0.75
-			local tremolo = Instance.new("TremoloSoundEffect", move)
-			tremolo.Depth = 1
-			tremolo.Duty = 1
-			tremolo.Frequency = 5
-			local eq = Instance.new("EqualizerSoundEffect", move)
-			eq.HighGain = -60
-			eq.MidGain = 10
-			eq.LowGain = 10
-			move.RollOffMaxDistance = 200
-			move.RollOffMinDistance = 100
-			vroom:Play()
-			move:Play()
-		end
-	end
+    print("Entity has spawned")
+
+    local reboundModel = Workspace:FindFirstChild("Rebound")
+    if reboundModel then
+        -- Chọn part mà bạn muốn entity parent vào
+        local targetPart = reboundModel:FindFirstChild("RushNew") -- thay bằng tên part bạn muốn
+        if targetPart then
+            -- Di chuyển entity vào part
+            entity.Model.Parent = targetPart
+        end
+
+        -- Xóa tất cả sound trừ "Idle" và "Footsteps"
+        for _, sound in pairs(entity.Model:GetDescendants()) do
+            if sound:IsA("Sound") then
+                if sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
+                    sound:Destroy()
+                end
+            end
+        end
+    end
+
+    -- Tạo sound di chuyển lại nếu cần
+    local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true", "Reboun")
+    move.Parent = entity.Model:FindFirstChild("RushNew")
+    move.Name = "ReboundMoving"
+    move.Volume = 0
+    move.Looped = true
+    local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
+    local distort = Instance.new("DistortionSoundEffect", move)
+    distort.Level = 0.75
+    move.RollOffMaxDistance = 200
+    move.RollOffMinDistance = 100
+    vroom:Play()
+    move:Play()
 end)
 
 entity:SetCallback("OnStartMoving", function()
