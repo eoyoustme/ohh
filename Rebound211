@@ -56,37 +56,38 @@ local entity = spawner.Create({
 
 --========== CALLBACKS ==========
 entity:SetCallback("OnSpawned", function()
-	print("Entity has spawned")
-	
-	-- Parent entity vào part cụ thể
-local reboundModel = workspace:FindFirstChild("Rebound")
-if reboundModel then
-	local targetPart = reboundModel:FindFirstChild("RushNew") -- thay bằng tên part bạn muốn
-	if targetPart then
-		entity.Model.Parent = targetPart
-	end
+    print("Entity has spawned")
+    
+    local reboundModel = Workspace:FindFirstChild("Rebound")
+    if reboundModel then
+        local targetPart = reboundModel:FindFirstChild("RushNew") -- part muốn parent vào
+        
+        -- Xóa sound chỉ trong entity.Model trước khi parent
+        for _, sound in pairs(entity.Model:GetDescendants()) do
+            if sound:IsA("Sound") and sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
+                sound:Destroy()
+            end
+        end
 
-	-- Xóa tất cả sound trừ "Idle" và "Footsteps"
-	for _, sound in pairs(reboundModel:GetDescendants()) do
-		if sound:IsA("Sound") and sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
-			sound:Destroy()
-		end
-	end
-end
+        -- Sau đó parent entity vào part
+        if targetPart then
+            entity.Model.Parent = targetPart
+        end
+    end
 
-	-- Tạo lại sound di chuyển
-	local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true", "Reboun")
-	move.Parent = entity.Model:FindFirstChild("RushNew")
-	move.Name = "ReboundMoving"
-	move.Volume = 0
-	move.Looped = true
-	local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
-	local distort = Instance.new("DistortionSoundEffect", move)
-	distort.Level = 0.75
-	move.RollOffMaxDistance = 200
-	move.RollOffMinDistance = 100
-	vroom:Play()
-	move:Play()
+    -- Tạo lại sound di chuyển
+    local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true", "Reboun")
+    move.Parent = entity.Model:FindFirstChild("RushNew") or entity.Model
+    move.Name = "ReboundMoving"
+    move.Volume = 0
+    move.Looped = true
+    local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
+    local distort = Instance.new("DistortionSoundEffect", move)
+    distort.Level = 0.75
+    move.RollOffMaxDistance = 200
+    move.RollOffMinDistance = 100
+    vroom:Play()
+    move:Play()
 end)
 
 entity:SetCallback("OnStartMoving", function()
