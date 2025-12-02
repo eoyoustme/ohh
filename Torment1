@@ -60,6 +60,29 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("RUN NOW DON'T HIDE", true)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+-- Tạo event giả lập check liên tục
+local HitboxConnection
+HitboxConnection = game:GetService("RunService").RenderStepped:Connect(function()
+	if humanoid and character:GetAttribute("Hiding") then
+		humanoid:TakeDamage(1000)
+		local stats = ReplicatedStorage.GameStats:FindFirstChild("Player_" .. player.Name)
+		if stats and stats.Total:FindFirstChild("DeathCause") then
+			stats.Total.DeathCause.Value = "Torment"
+		end
+		end
+end)
+
+
 end)
 
 entity:SetCallback("OnStartMoving", function()
@@ -92,6 +115,7 @@ end)
 
 entity:SetCallback("OnDespawning", function()
     print("Entity is despawning")
+        HitboxConnection:Disconnect()
 end)
 
 entity:SetCallback("OnDespawned", function()
