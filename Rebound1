@@ -130,7 +130,7 @@ entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 workspace.Rebound.Ambiance_Rebound:Destroy()
 workspace.Rebound.Feel the Thundah:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -260,7 +260,7 @@ entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 workspace.Rebound.Ambiance_Rebound:Destroy()
 workspace.Rebound.Feel the Thundah:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -490,7 +490,7 @@ entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 workspace.Rebound.Ambiance_Rebound:Destroy()
 workspace.Rebound.Feel the Thundah:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
