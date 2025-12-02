@@ -3,15 +3,13 @@ local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
-game.workspace
-
 --========== COLOR CORRECTION ==========
 local ReboundColor = Instance.new("ColorCorrectionEffect", game.Lighting)
 ReboundColor.Name = "Warn"
 ReboundColor.TintColor = Color3.fromRGB(65, 138, 255)
 ReboundColor.Saturation = -0.7
 ReboundColor.Contrast = 0.2
-game.TweenService:Create(ReboundColor, TweenInfo.new(15), {
+TweenService:Create(ReboundColor, TweenInfo.new(15), {
     TintColor = Color3.fromRGB(255, 255, 255),
     Saturation = 0,
     Contrast = 0
@@ -58,47 +56,44 @@ local entity = spawner.Create({
 
 --========== CALLBACKS ==========
 entity:SetCallback("OnSpawned", function()
-    print("Entity has spawned")
+	print("Entity has spawned")
+	
+	-- Parent entity vào part cụ thể
+	local reboundModel = Workspace:FindFirstChild("Rebound")
+	if reboundModel then
+		local targetPart = reboundModel:FindFirstChild("RushNew") -- thay bằng tên part bạn muốn
+		if targetPart then
+			entity.Model.Parent = targetPart
+		end
 
-    local reboundModel = Workspace:FindFirstChild("Rebound")
-    if reboundModel then
-        -- Chọn part mà bạn muốn entity parent vào
-        local targetPart = reboundModel:FindFirstChild("RushNew") -- thay bằng tên part bạn muốn
-        if targetPart then
-            -- Di chuyển entity vào part
-            entity.Model.Parent = targetPart
-        end
+		-- Xóa tất cả sound trừ "Idle" và "Footsteps"
+		for _, sound in pairs(entity.Model:GetDescendants()) do
+			if sound:IsA("Sound") and sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
+				sound:Destroy()
+			end
+		end
+	end
 
-        -- Xóa tất cả sound trừ "Idle" và "Footsteps"
-        for _, sound in pairs(entity.Model:GetDescendants()) do
-            if sound:IsA("Sound") then
-                if sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
-                    sound:Destroy()
-                end
-            end
-        end
-    end
-
-    -- Tạo sound di chuyển lại nếu cần
-    local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true", "Reboun")
-    move.Parent = entity.Model:FindFirstChild("RushNew")
-    move.Name = "ReboundMoving"
-    move.Volume = 0
-    move.Looped = true
-    local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
-    local distort = Instance.new("DistortionSoundEffect", move)
-    distort.Level = 0.75
-    move.RollOffMaxDistance = 200
-    move.RollOffMinDistance = 100
-    vroom:Play()
-    move:Play()
+	-- Tạo lại sound di chuyển
+	local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true", "Reboun")
+	move.Parent = entity.Model:FindFirstChild("RushNew")
+	move.Name = "ReboundMoving"
+	move.Volume = 0
+	move.Looped = true
+	local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
+	local distort = Instance.new("DistortionSoundEffect", move)
+	distort.Level = 0.75
+	move.RollOffMaxDistance = 200
+	move.RollOffMinDistance = 100
+	vroom:Play()
+	move:Play()
 end)
 
 entity:SetCallback("OnStartMoving", function()
 	print("Entity has started moving")
 	ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
 	wait(1)
-	-- Optional loadstring: chỉ load khi chắc chắn
+	-- Optional: load external script nếu cần
 	-- loadstring(game:HttpGet('https://pastefy.app/zx5iuzhE/raw'))()
 end)
 
@@ -108,6 +103,9 @@ end)
 
 entity:SetCallback("OnEnterRoom", function(room, firstTime)
 	print("Entity has entered room:", room.Name, firstTime and "(first time)" or "(again)")
+	local Speed = 0
+	wait(2)
+	Speed = 170
 end)
 
 entity:SetCallback("OnLookAt", function(lineOfSight)
