@@ -256,10 +256,10 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local New = workspace.Rebound1.RushNew
+local bruh = workspace.Rebound1.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
-spawn.Parent = New
+spawn.Parent = bruh
 spawn.Name = "ReboundSpawn"
 spawn.SoundId = "rbxassetid://9114221327"
 spawn.Volume = 5
@@ -267,7 +267,7 @@ spawn.RollOffMaxDistance = 10000
 spawn.RollOffMinDistance = 450
 spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
-    move.Parent = New
+    move.Parent = bruh
     move.Name = "ReboundMoving"
     move.Volume = 0
     move.Looped = true
@@ -484,10 +484,10 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local 2 = workspace.Rebound2.RushNew
+local bruh = workspace.Rebound2.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
-spawn.Parent = 2
+spawn.Parent = bruh
 spawn.Name = "ReboundSpawn"
 spawn.SoundId = "rbxassetid://9114221327"
 spawn.Volume = 5
@@ -495,7 +495,7 @@ spawn.RollOffMaxDistance = 10000
 spawn.RollOffMinDistance = 450
 spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
-    move.Parent = 2
+    move.Parent = bruh
     move.Name = "ReboundMoving"
     move.Volume = 0
     move.Looped = true
