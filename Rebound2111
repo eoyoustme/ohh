@@ -61,13 +61,9 @@ entity:SetCallback("OnSpawned", function()
     local reboundModel = Workspace:FindFirstChild("Rebound")
     if reboundModel then
         local targetPart = reboundModel:FindFirstChild("RushNew") -- part muốn parent vào
-        
-        -- Xóa sound chỉ trong entity.Model trước khi parent
-        for _, sound in pairs(entity.Model:GetDescendants()) do
-            if sound:IsA("Sound") and sound.Name ~= "Idle" and sound.Name ~= "Footsteps" then
-                sound:Destroy()
-            end
-        end
+       
+workspace.Rebound.targetPart.Idle:Destroy()
+workspace.Rebound.targetPart.Footsteps:Destroy()
 
         -- Sau đó parent entity vào part
         if targetPart then
