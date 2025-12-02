@@ -1,0 +1,72 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.IgnoreGuiInset = true
+gui.Parent = player.PlayerGui
+
+----------------------------------------------------
+-- NÚT INFO
+----------------------------------------------------
+local infoButton = Instance.new("TextButton")
+infoButton.Size = UDim2.new(0.15, 0, 0.06, 0)
+infoButton.Position = UDim2.new(0.923, 0, 0.466, 0)
+infoButton.Text = "Info"
+infoButton.TextColor3 = Color3.fromRGB(255,255,255)
+infoButton.BackgroundColor3 = Color3.fromRGB(100,100,100)
+infoButton.Parent = gui
+
+----------------------------------------------------
+-- TEXT LỚN KHI BẤM INFO
+----------------------------------------------------
+local bigInfo = Instance.new("TextLabel")
+bigInfo.Size = UDim2.new(0, 1111, 0, 712)
+bigInfo.Position = UDim2.new(0.087, 0, 0.086, 0)
+bigInfo.BackgroundColor3 = Color3.fromRGB(0,0,0)
+bigInfo.TextColor3 = Color3.fromRGB(255,255,255)
+bigInfo.TextScaled = true
+bigInfo.Visible = false
+bigInfo.Text = [[
+info for OG HUnger
+the most important because he is a modeler and scripter for this game
+
+nhankg is dev 2
+he is make entity too and remake image and content to entity
+]]
+bigInfo.Parent = gui
+
+----------------------------------------------------
+-- NÚT BACK
+----------------------------------------------------
+local backButton = Instance.new("TextButton")
+backButton.Size = UDim2.new(0.15, 0, 0.06, 0)
+backButton.Position = UDim2.new(0.862, 0, 0.086, 0)
+backButton.Text = "Back"
+backButton.TextColor3 = Color3.fromRGB(255,255,255)
+backButton.BackgroundColor3 = Color3.fromRGB(120,120,120)
+backButton.Visible = false
+backButton.Parent = gui
+
+----------------------------------------------------
+-- CHỨC NĂNG NÚT INFO
+----------------------------------------------------
+infoButton.MouseButton1Click:Connect(function()
+    infoButton.Visible = false       -- ẩn Info
+    bigInfo.Visible = true           -- hiện text lớn
+    backButton.Visible = true        -- hiện Back
+end)
+
+----------------------------------------------------
+-- CHỨC NĂNG NÚT BACK
+----------------------------------------------------
+backButton.MouseButton1Click:Connect(function()
+    infoButton.Visible = true        -- hiện Info lại
+    bigInfo.Visible = false          -- ẩn text lớn
+    backButton.Visible = false       -- ẩn Back
+end)
+
+----------------------------------------------------
+-- AUTO REMOVE GUI SAU KHI ROOM ĐỔI
+----------------------------------------------------
+task.spawn(function()
+    game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+    gui:Destroy()
+end)
