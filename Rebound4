@@ -107,7 +107,7 @@ local entity = spawner.Create({
   Delay = 2
  },
  Damage = {
-  Enabled = false,
+  Enabled = true,
   Range = 40,
   Amount = 125
  },
@@ -235,7 +235,7 @@ local entity = spawner.Create({
   Delay = 2
  },
  Damage = {
-  Enabled = false,
+  Enabled = true,
   Range = 40,
   Amount = 125
  },
@@ -370,6 +370,7 @@ end)
 entity:SetCallback("OnDamagePlayer", function(newHealth)
  if newHealth == 0 then
   print("Entity has killed the player")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Rebound%20jumpscare"))()
  else
   print("Entity has damaged the player")
  end
@@ -463,7 +464,7 @@ local entity = spawner.Create({
   Delay = 2
  },
  Damage = {
-  Enabled = false,
+  Enabled = true,
   Range = 40,
   Amount = 125
  },
@@ -553,7 +554,7 @@ distort.Level = 1
 local TweenService = game:GetService("TweenService")
 local spookee = TweenService:Create(scare, TweenInfo.new(0.3),{Volume = 0})
 
-loadstring(game:HttpGet('https://raw.githubusercontent.com/eoyoustme/Script/refs/heads/main/Rebound%20is%20boring'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/eoyoustme/Script/refs/heads/main/Rebound%20is%20boring1'))()
 end)
 
 entity:SetCallback("OnReachNode", function(node)
@@ -598,6 +599,7 @@ end)
 entity:SetCallback("OnDamagePlayer", function(newHealth)
  if newHealth == 0 then
   print("Entity has killed the player")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Rebound%20jumpscare"))()
  else
   print("Entity has damaged the player")
  end
@@ -665,6 +667,7 @@ end)
 entity:SetCallback("OnDamagePlayer", function(newHealth)
  if newHealth == 0 then
   print("Entity has killed the player")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Rebound%20jumpscare"))()
  else
   print("Entity has damaged the player")
  end
