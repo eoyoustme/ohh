@@ -205,7 +205,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 
 local entity = spawner.Create({
  Entity = {
-  Name = "Rebound",
+  Name = "Rebound1",
   Asset = "rbxassetid://137516211032764",
   HeightOffset = 0
  },
@@ -256,10 +256,10 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local bruh = workspace.Rebound.RushNew
+local New = workspace.Rebound1.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
-spawn.Parent = bruh
+spawn.Parent = New
 spawn.Name = "ReboundSpawn"
 spawn.SoundId = "rbxassetid://9114221327"
 spawn.Volume = 5
@@ -267,7 +267,7 @@ spawn.RollOffMaxDistance = 10000
 spawn.RollOffMinDistance = 450
 spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
-    move.Parent = bruh
+    move.Parent = New
     move.Name = "ReboundMoving"
     move.Volume = 0
     move.Looped = true
@@ -433,7 +433,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 
 local entity = spawner.Create({
  Entity = {
-  Name = "Rebound",
+  Name = "Rebound2",
   Asset = "rbxassetid://137516211032764",
   HeightOffset = 0
  },
@@ -484,10 +484,10 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local bruh = workspace.Rebound.RushNew
+local 2 = workspace.Rebound2.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
-spawn.Parent = bruh
+spawn.Parent = 2
 spawn.Name = "ReboundSpawn"
 spawn.SoundId = "rbxassetid://9114221327"
 spawn.Volume = 5
@@ -495,7 +495,7 @@ spawn.RollOffMaxDistance = 10000
 spawn.RollOffMinDistance = 450
 spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
-    move.Parent = bruh
+    move.Parent = 2
     move.Name = "ReboundMoving"
     move.Volume = 0
     move.Looped = true
