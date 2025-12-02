@@ -1,0 +1,129 @@
+--========== SERVICES ==========
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+--========== COLOR CORRECTION ==========
+local ReboundColor = Instance.new("ColorCorrectionEffect", game.Lighting)
+ReboundColor.Name = "Warn"
+ReboundColor.TintColor = Color3.fromRGB(65, 138, 255)
+ReboundColor.Saturation = -0.7
+ReboundColor.Contrast = 0.2
+game.TweenService:Create(ReboundColor, TweenInfo.new(15), {
+    TintColor = Color3.fromRGB(255, 255, 255),
+    Saturation = 0,
+    Contrast = 0
+}):Play()
+game.Debris:AddItem(ReboundColor, 24)
+
+--========== HELPER FUNCTION ==========
+function GetGitSound(GithubSnd, SoundName)
+	if not isfile(SoundName..".mp3") then
+		writefile(SoundName..".mp3", game:HttpGet(GithubSnd))
+	end
+	local sound = Instance.new("Sound")
+	sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
+	return sound
+end
+
+--========== SPAWNER ==========
+local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
+
+--========== CREATE REBOUND ENTITY ==========
+local entity = spawner.Create({
+	Entity = {
+		Name = "Rebound",
+		Asset = "rbxassetid://88351921402699",
+		HeightOffset = 0
+	},
+	Lights = { Flicker = { Enabled = false, Duration = 1 }, Shatter = false, Repair = false },
+	CameraShake = { Enabled = false, Range = 100, Values = {1.5, 20, 0.1, 1} },
+	Movement = { Speed = 210, Delay = 2, Reversed = true },
+	Rebounding = { Enabled = false, Type = "Ambush", Min = 1, Max = 1, Delay = 2 },
+	Damage = { Enabled = false, Range = 40, Amount = 125 },
+	Crucifixion = { Enabled = true, Range = 40, Resist = true, Break = true },
+	Death = {
+		Type = "Guiding",
+		Hints = {
+			"You died to Rebound...",
+			"It appears at the next door and has a chance to stay there or run back to the latest door.",
+			"He will come back many times after his initial spawn",
+			"so hide every next door until it is safe.."
+		},
+		Cause = ""
+	}
+})
+
+--========== CALLBACKS ==========
+entity:SetCallback("OnSpawned", function()
+	print("Entity has spawned")
+	if Workspace:FindFirstChild("Rebound") then
+		local bruh = Workspace.Rebound:FindFirstChild("RushNew")
+		if bruh then
+			local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
+			move.Parent = bruh
+			move.Name = "ReboundMoving"
+			move.Volume = 0
+			move.Looped = true
+			local vroom = TweenService:Create(move, TweenInfo.new(2), {Volume = 0.2})
+			local distort = Instance.new("DistortionSoundEffect", move)
+			distort.Level = 0.75
+			local tremolo = Instance.new("TremoloSoundEffect", move)
+			tremolo.Depth = 1
+			tremolo.Duty = 1
+			tremolo.Frequency = 5
+			local eq = Instance.new("EqualizerSoundEffect", move)
+			eq.HighGain = -60
+			eq.MidGain = 10
+			eq.LowGain = 10
+			move.RollOffMaxDistance = 200
+			move.RollOffMinDistance = 100
+			vroom:Play()
+			move:Play()
+		end
+	end
+end)
+
+entity:SetCallback("OnStartMoving", function()
+	print("Entity has started moving")
+	ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+	wait(1)
+	-- Optional loadstring: chỉ load khi chắc chắn
+	-- loadstring(game:HttpGet('https://pastefy.app/zx5iuzhE/raw'))()
+end)
+
+entity:SetCallback("OnReachNode", function(node)
+	print("Entity has reached node:", node)
+end)
+
+entity:SetCallback("OnEnterRoom", function(room, firstTime)
+	print("Entity has entered room:", room.Name, firstTime and "(first time)" or "(again)")
+end)
+
+entity:SetCallback("OnLookAt", function(lineOfSight)
+	print(lineOfSight and "Player is looking at entity" or "Player view is obstructed")
+end)
+
+entity:SetCallback("OnRebounding", function(startOfRebound)
+	print(startOfRebound and "Entity has started rebounding" or "Entity has finished rebounding")
+end)
+
+entity:SetCallback("OnDespawning", function()
+	print("Entity is despawning")
+end)
+
+entity:SetCallback("OnDespawned", function()
+	print("Entity has despawned")
+end)
+
+entity:SetCallback("OnDamagePlayer", function(newHealth)
+	print(newHealth == 0 and "Entity has killed the player" or "Entity has damaged the player")
+end)
+
+-- Optional: Custom crucifixion callback
+entity:SetCallback("CrucifixionOverwrite", function()
+	print("Custom crucifixion callback")
+end)
+
+--========== RUN ENTITY ==========
+entity:Run()
