@@ -62,7 +62,7 @@ end
 --------------------------------------------------------
 
 local sprintButton = Instance.new("TextButton")
-sprintButton.Size = UDim2.new(0.15, 0, 0.08, 0)
+sprintButton.Size = UDim2.new(0.083, 0,0.115, 0)
 sprintButton.Position = UDim2.new(0.923, 0, 0.879, 0) -- theo yêu cầu
 sprintButton.Text = "Sprint"
 sprintButton.BackgroundColor3 = Color3.fromRGB(120, 120, 120) -- màu xám
