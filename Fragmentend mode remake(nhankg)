@@ -1,0 +1,43 @@
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Mode make by thanhphok (Og Hunger(new) and Nhankg", true)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Info"))()
+
+game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+
+local cue2 = Instance.new("Sound")
+cue2.Parent = game.Workspace
+cue2.Name = "Spawn"
+cue2.SoundId = "rbxassetid://6420027936"
+cue2.Volume = 5
+cue2.PlaybackSpeed = 0.25
+cue2:Play()
+
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Fragment mode remake has actives", true)
+wait(2)
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Credits flashlight toThe_LOSTW3R,and nhankg & remake image entity GuestlyTheLastGuest & OG Hunger(new) ", true)
+
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/stamina"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Intro"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Guiding"))()
+end)
+
+local entityList = {
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Dread21231", delay = 85},
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/HUNGERED2", delay = 150},
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Rebound", delay = 210},
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Torment12", delay = 380},
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Daze11", delay = 35},
+    {url = "https://raw.githubusercontent.com/talales/Nhakg/refs/heads/main/struggle", delay = 400},
+}
+
+for _, entity in ipairs(entityList) do
+    coroutine.wrap(function()
+        while true do
+            wait(entity.delay)
+            pcall(function()
+                loadstring(game:HttpGet(entity.url))()
+            end)
+        end
+    end)()
+end
