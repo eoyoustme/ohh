@@ -1,0 +1,120 @@
+-- Create the ScreenGui and Sprint Bar
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = player.PlayerGui
+
+-- Background
+local sprintBarBackground = Instance.new("Frame")
+sprintBarBackground.Size = UDim2.new(0.35, 0, 0.025, 0) -- nhỏ hơn
+sprintBarBackground.Position = UDim2.new(0.325, 0, 0.02, 0)
+sprintBarBackground.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+sprintBarBackground.Parent = screenGui
+
+-- Bar
+local sprintBar = Instance.new("Frame")
+sprintBar.Size = UDim2.new(1, 0, 1, 0)
+sprintBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sprintBar.Parent = sprintBarBackground
+
+--------------------------------------------------------
+-- DARK SCREEN EFFECT WHEN LOW STAMINA
+--------------------------------------------------------
+
+local darkScreen = Instance.new("Frame")
+darkScreen.Size = UDim2.new(1,0,1,0)
+darkScreen.BackgroundColor3 = Color3.fromRGB(0,0,0)
+darkScreen.BackgroundTransparency = 1
+darkScreen.Parent = screenGui
+
+--------------------------------------------------------
+-- STAMINA SYSTEM
+--------------------------------------------------------
+
+local sprinting = false
+local maxStamina = 100
+local currentStamina = maxStamina
+local staminaRegenRate = 20
+local staminaDrainRate = 18
+local canSprint = true
+
+local sprintSpeed = 20
+local walkSpeed = 15
+
+local humanoid = player.Character:WaitForChild("Humanoid")
+
+local function updateSprintBar()
+    sprintBar.Size = UDim2.new(currentStamina / maxStamina, 0, 1, 0)
+end
+
+local function updateDarkScreen()
+    if currentStamina < 70 then
+        -- Tối dần khi stamina thấp
+        local percent = math.clamp(1 - (currentStamina / 70), 0, 1)
+        darkScreen.BackgroundTransparency = 1 - (percent * 0.4)
+    else
+        darkScreen.BackgroundTransparency = 1
+    end
+end
+
+--------------------------------------------------------
+-- MOBILE SPRINT BUTTON
+--------------------------------------------------------
+
+local sprintButton = Instance.new("TextButton")
+sprintButton.Size = UDim2.new(0.15, 0, 0.08, 0)
+sprintButton.Position = UDim2.new(0.923, 0, 0.879, 0) -- theo yêu cầu
+sprintButton.Text = "Sprint"
+sprintButton.BackgroundColor3 = Color3.fromRGB(120, 120, 120) -- màu xám
+sprintButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+sprintButton.Parent = screenGui
+
+--------------------------------------------------------
+-- BUTTON TOGGLE
+--------------------------------------------------------
+
+sprintButton.MouseButton1Click:Connect(function()
+    if canSprint and currentStamina > 0 then
+        sprinting = not sprinting
+
+        if sprinting then
+            humanoid.WalkSpeed = sprintSpeed
+        else
+            humanoid.WalkSpeed = walkSpeed
+        end
+    end
+end)
+
+--------------------------------------------------------
+-- HEARTBEAT LOOP (ĐÚNG CHUẨN)
+--------------------------------------------------------
+
+local runService = game:GetService("RunService")
+
+runService.Heartbeat:Connect(function(dt)
+    if sprinting then
+        if currentStamina > 0 then
+            currentStamina -= staminaDrainRate * dt
+        else
+            sprinting = false
+            canSprint = false  -- không cho sprint nữa
+            humanoid.WalkSpeed = walkSpeed
+
+            require(player.PlayerGui.MainUI.Initiator.Main_Game).caption("You're exhausted", true)
+        end
+    else
+        if currentStamina < maxStamina then
+            currentStamina += staminaRegenRate * dt
+        end
+    end
+
+    -- Khi hồi full → được sprint lại
+    if currentStamina >= maxStamina then
+        canSprint = true
+    end
+
+    currentStamina = math.clamp(currentStamina, 0, maxStamina)
+
+    updateSprintBar()
+    updateDarkScreen()
+end)
