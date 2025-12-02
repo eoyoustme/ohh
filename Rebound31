@@ -128,9 +128,7 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-workspace.Rebound.Torso.Idle:Destroy()
-workspace.Rebound.Torso.Footsteps:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -258,9 +256,7 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-workspace.Rebound.Torso.Idle:Destroy()
-workspace.Rebound.Torso.Footsteps:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -488,9 +484,7 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-workspace.Rebound.Torso.Idle:Destroy()
-workspace.Rebound.Torso.Footsteps:Destroy()
-local bruh = workspace.Rebound.Torso
+local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
