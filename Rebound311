@@ -553,7 +553,7 @@ distort.Level = 1
 local TweenService = game:GetService("TweenService")
 local spookee = TweenService:Create(scare, TweenInfo.new(0.3),{Volume = 0})
 
-loadstring(game:HttpGet('https://pastefy.app/zx5iuzhE/raw'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/eoyoustme/Script/refs/heads/main/Rebound%20is%20boring'))()
 end)
 
 entity:SetCallback("OnReachNode", function(node)
