@@ -79,6 +79,7 @@ HitboxConnection = game:GetService("RunService").RenderStepped:Connect(function(
 		if stats and stats.Total:FindFirstChild("DeathCause") then
 			stats.Total.DeathCause.Value = "Torment"
 		end
+ HitboxConnection:Disconnect()
 		end
 end)
 
