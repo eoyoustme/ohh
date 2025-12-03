@@ -225,10 +225,10 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 
 		task.spawn(function()
 			while not stopEffects do
-				face.Rotation = 10
+				face.Rotation = 20
 				face.Image = "rbxassetid://101914212937482"
 				task.wait(0)
-				face.Rotation = -10
+				face.Rotation = -20
 				task.wait(0)
 			end
 		end)
