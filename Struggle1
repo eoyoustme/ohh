@@ -59,7 +59,7 @@ local entity = spawner.Create({
         Break = true
     },
     Death = {
-        Type = "Curious",
+        Type = "Guiding",
         Hints = {
             "You die to struggled?",
             "When it appears the room turns red",
@@ -159,13 +159,13 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		-- Camera zoom
 		local startFov = camera.FieldOfView
 		local zoomFov = 60
-		local zoomDuration = 0.89
+		local zoomDuration = 1.1
 
 		camera.CameraType = Enum.CameraType.Scriptable
 		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
 
 		game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
-			Size = UDim2.new(1, 0, 1, 0),
+			Size = UDim2.new(0, 1200, 0, 1200),
 			Position = UDim2.new(0.5, 0, 0.5, 0)
 		}):Play()
 
