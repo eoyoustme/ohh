@@ -110,7 +110,7 @@ local function GetGitSound(GithubSnd, SoundName)
                 sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
                 return sound
 end
-local Jumpscare = GetGitSound("https://github.com/eoyoustme/rebouna/blob/main/Fragmentent_AlertSound.mp3?raw=true","A60")
+local Jumpscare = GetGitSound("https://github.com/eoyoustme/Script/blob/main/Fragmentent_AlertSound%20(mp3cut.net).mp3?raw=true","A60")
 Jumpscare.Parent = workspace
 Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
