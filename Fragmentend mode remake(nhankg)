@@ -51,7 +51,7 @@ end)
 
 local entityList = {
     {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Dread21231", delay = 85},
-    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/HUNGERED2", delay = 430},
+    {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/HUNGERED", delay = 430},
     {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Rebound", delay = 260},
     {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/revoker", delay = 310},
     {url = "https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Torment12", delay = 380},
