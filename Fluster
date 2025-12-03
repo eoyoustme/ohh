@@ -1,0 +1,40 @@
+function GetRoom()
+	local gruh = workspace.CurrentRooms
+	return gruh:FindFirstChild(game.ReplicatedStorage.GameData.LatestRoom.Value)
+end
+
+local s = game:GetObjects("rbxassetid://14315263201")[1]
+s.Parent = workspace
+
+local entity = s:FindFirstChildWhichIsA("BasePart")
+entity.Parent = s
+entity.CFrame = GetRoom():WaitForChild("RoomEntrance").CFrame * CFrame.new(0,0,-15)
+entity.Playsound:Play()
+entity.Playsound.Volume = 2
+
+-- Khi room mới spawn → phá entity
+game.Workspace.CurrentRooms.ChildAdded:Connect(function()
+	s:Destroy()
+end)
+
+task.wait(2)
+task.spawn(function()
+	while true do
+		task.wait(1)
+
+		-- Nếu s hoặc entity đã Destroy → stop vòng lặp
+		if not s or not s.Parent or not entity or not entity.Parent then
+			break
+		end
+
+		local player = game.Players.LocalPlayer
+		local char = player.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
+		if hum and hrp and (hrp.Position - entity.Position).Magnitude <= 25 then
+			hum.Health -= 10
+			game:GetService("ReplicatedStorage").GameStats["Player_".. player.Name].Total.DeathCause.Value = "Fluster"
+		end
+	end
+end)
