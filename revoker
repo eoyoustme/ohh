@@ -70,7 +70,7 @@ cue.PlaybackSpeed = 1
 cue:Play()
 
 local TweenService = game:GetService("TweenService")
-local Tweeninfo = TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+local Tweeninfo = TweenInfo.new(4.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 local color = {Color = Color3.new(0, 0, 255)}
 
 for _, v in pairs(workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:GetDescendants()) do
