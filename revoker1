@@ -53,7 +53,7 @@ local entity = spawner.Create({
 	},
 	Death = {
 		Type = "Guiding", -- "Curious"
-		Hints = {"Death", "Hints", "Go", "Here"},
+		Hints = {"You die to revoker", "He is danger like rebound", "ok but everytime spawn light will change", "Here"},
 		Cause = ""
 	}
 })
@@ -161,7 +161,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		local face = Instance.new("ImageLabel", screenGui)
 		face.AnchorPoint = Vector2.new(0.5, 0.5)
 		face.Position = UDim2.new(0.5, 0, 0.589, 0)
-		face.Size = UDim2.new(0, 100, 0, 100)
+		face.Size = UDim2.new(0, 1, 0, 1)
 		face.Image = "rbxassetid://14101161259"
 		face.BackgroundTransparency = 1
 
@@ -212,9 +212,9 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			while not stopEffects do
 				face.Rotation = 10
 				face.Image = "rbxassetid://14101161259"
-				task.wait(0.0589)
+				task.wait(0)
 				face.Rotation = -10
-				task.wait(0.0589)
+				task.wait(0)
 			end
 		end)
 
@@ -262,7 +262,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			screenGui:Destroy()
 		end)
 
-		task.wait(0.4)
+		task.wait(0.6)
 		camera.CameraType = Enum.CameraType.Custom
 		camera.FieldOfView = startFov
 	else
