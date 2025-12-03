@@ -41,7 +41,7 @@ local entity = spawner.Create({
     },
     Movement = {
         Speed = 150,
-        Delay = 8,
+        Delay = 12,
         Reversed = false
     },
     Rebounding = {
@@ -86,7 +86,7 @@ cue1:Play()
 
 local distort = Instance.new("DistortionSoundEffect")
 distort.Parent = cue1
-distort.Level = 0.65
+distort.Level = 0.01
 end)
 
 -- Despawn
