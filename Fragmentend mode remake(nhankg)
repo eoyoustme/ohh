@@ -1,5 +1,15 @@
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Mode make by thanhphok (Og Hunger(new) and Nhankg", true)
 
+-- Door Changer Floor 2 And Sound
+coroutine.wrap(function()
+    while true do
+        wait(0.0005)
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value].Door.Door.Open.SoundId = "rbxassetid://833871080"
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFirstChild("Door"):FindFirstChild("Door").Material = "Rock"
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFirstChild("Door"):FindFirstChild("Door"):FindFirstChild("Sign").Material = "Rock"
+    end
+end)()
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Info"))()
 
 game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
@@ -15,6 +25,13 @@ cue2:Play()
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Fragment mode remake has actives", true)
 wait(2)
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Credits flashlight toThe_LOSTW3R,and nhankg & remake image entity GuestlyTheLastGuest & OG Hunger(new) ", true)
+
+local Lighting = game:GetService("Lighting")
+Lighting.Ambient = Color3.new(0, 0, 0)
+Lighting.Brightness = 0.1
+Lighting.FogEnd = 60
+Lighting.FogStart = 45
+Lighting.FogColor = Color3.new(0, 0, 0)
 
 local cue2 = Instance.new("Sound")
 cue2.Parent = game.Workspace
