@@ -21,7 +21,7 @@ local entity = spawner.Create({
 		Repair = false
 	},
 	Earthquake = {
-		Enabled = true
+		Enabled = false
 	},
 	CameraShake = {
 		Enabled = true,
@@ -182,13 +182,13 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		-- Camera zoom
 		local startFov = camera.FieldOfView
 		local zoomFov = 60
-		local zoomDuration = 0.7
+		local zoomDuration = 1.1
 
 		camera.CameraType = Enum.CameraType.Scriptable
 		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
 
 		game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
-			Size = UDim2.new(0, 1200, 0, 1200),
+			Size = UDim2.new(1, 0, 1, 0),
 			Position = UDim2.new(0.5, 0, 0.5, 0)
 		}):Play()
 
