@@ -6,17 +6,18 @@ screenGui.Parent = player.PlayerGui
 
 -- Background
 local sprintBarBackground = Instance.new("Frame")
-sprintBarBackground.Size = UDim2.new(0.35, 0, 0.025, 0) -- nhỏ hơn
-sprintBarBackground.Position = UDim2.new(0.325, 0, 0.02, 0)
+sprintBarBackground.Size = UDim2.new(0.365, 0,0.041, 0) -- nhỏ hơn
+sprintBarBackground.Position = UDim2.new(0.285, 0,0.916, 0)
 sprintBarBackground.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+sprintBarBackground.BorderSizePixel = 5
 sprintBarBackground.Parent = screenGui
 
 -- Bar
 local sprintBar = Instance.new("Frame")
 sprintBar.Size = UDim2.new(1, 0, 1, 0)
 sprintBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sprintBar.BorderSizePixel = 5
 sprintBar.Parent = sprintBarBackground
-
 --------------------------------------------------------
 -- DARK SCREEN EFFECT WHEN LOW STAMINA
 --------------------------------------------------------
