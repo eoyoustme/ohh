@@ -235,7 +235,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		local face = Instance.new("ImageLabel", screenGui)
 		face.AnchorPoint = Vector2.new(0.5, 0.5)
 		face.Position = UDim2.new(0.5, 0, 0.589, 0)
-		face.Size = UDim2.new(0, 100, 0, 100)
+		face.Size = UDim2.new(0, 1, 0, 1)
 		face.Image = "rbxassetid://12078778205"
 		face.BackgroundTransparency = 1
 
@@ -251,7 +251,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		-- Camera zoom
 		local startFov = camera.FieldOfView
 		local zoomFov = 60
-		local zoomDuration = 0.7
+		local zoomDuration = 1.1
 
 		camera.CameraType = Enum.CameraType.Scriptable
 		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
