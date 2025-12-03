@@ -159,7 +159,7 @@ local player = game.Players.LocalPlayer
 		-- Camera zoom
 		local startFov = camera.FieldOfView
 		local zoomFov = 60
-		local zoomDuration = 0.7
+		local zoomDuration = 1.1
 
 		camera.CameraType = Enum.CameraType.Scriptable
 		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
@@ -194,9 +194,9 @@ local player = game.Players.LocalPlayer
 			while not stopEffects do
 				face.Rotation = 10
 				face.Image = "rbxassetid://132219569139802"
-				task.wait(0.0589)
+				task.wait(0)
 				face.Rotation = -10
-				task.wait(0.0589)
+				task.wait(0)
 			end
 		end)
 
