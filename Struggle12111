@@ -82,10 +82,6 @@ cue1.SoundId = "rbxassetid://80277453959427"
 cue1.Volume = 10
 cue1.TimePosition = 1
 cue1.PlaybackSpeed = 0.3
-
-local distort = Instance.new("DistortionSoundEffect")
-distort.Parent = cue1
-distort.Level = 0.85
 end)
 
 -- Despawn
