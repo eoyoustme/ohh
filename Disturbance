@@ -1,0 +1,293 @@
+game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
+
+-- Tạo hiệu ứng ánh sáng màu hồng cho 1 căn phòng
+function setPinkLighting()
+	local lighting = game.Lighting:FindFirstChild("MainColorCorrection")
+	if not lighting then
+		lighting = Instance.new("ColorCorrectionEffect")
+		lighting.Name = "MainColorCorrection"
+		lighting.Parent = game.Lighting
+	end
+
+	-- Tránh bị nhá màu đỏ
+	lighting.TintColor = Color3.fromRGB(255, 255, 255)
+	lighting.Contrast = 0
+
+	-- Chuyển sang màu hồng
+	game:GetService("TweenService"):Create(lighting, TweenInfo.new(1), {
+		TintColor = Color3.fromRGB(230, 3, 255)
+	}):Play()
+end
+
+-- Reset ánh sáng về trắng
+function resetLighting()
+	local lighting = game.Lighting:FindFirstChild("MainColorCorrection")
+	if lighting then
+		game:GetService("TweenService"):Create(lighting, TweenInfo.new(1), {
+			TintColor = Color3.fromRGB(255, 255, 255)
+		}):Play()
+	end
+end
+
+-- Theo dõi sự thay đổi phòng
+local latestRoom = game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+local currentRoom = latestRoom.Value
+
+-- Ánh sáng hồng khi vào phòng đầu tiên
+setPinkLighting()
+
+-- Lắng nghe sự thay đổi phòng
+latestRoom:GetPropertyChangedSignal("Value"):Connect(function()
+	local newRoom = latestRoom.Value
+
+	-- Nếu đã qua phòng mới, reset ánh sáng
+	if newRoom ~= currentRoom then
+		resetLighting()
+	end
+end)
+
+-- Tạo thực thể
+local entity = spawner.Create({
+	Entity = {
+		Name = "dizturbance",
+		Asset = "rbxassetid://112905346166455",
+		HeightOffset = 0
+	},
+	Lights = {
+		Flicker = {Enabled = false, Duration = 20},
+		Shatter = true,
+		Repair = false
+	},
+	Earthquake = {
+		Enabled = false
+	},
+	CameraShake = {
+		Enabled = true,
+		Range = 500,
+		Values = {1.5, 20, 0.1, 1}
+	},
+	Movement = {
+		Speed = 150,
+		Delay = 15,
+		Reversed = false
+	},
+	Rebounding = {
+		Enabled = false
+	},
+	Damage = {
+		Enabled = true,
+		Range = 40,
+		Amount = 200
+	},
+	Crucifixion = {
+		Enabled = true,
+		Range = 50,
+		Resist = false,
+		Break = true
+	},
+	Death = {
+		Type = "Guiding",
+		Hints = {
+			"You die to dizturbance?",
+			"When it appears the room turns pink",
+			"Hide now!",
+			"Because it's coming very soon!",
+			"Good luck"
+		},
+		Cause = "dizturbance"
+	}
+})
+
+-- Khi spawn: không có âm thanh, ánh sáng đã xử lý riêng rồi
+entity:SetCallback("OnSpawned", function()
+	function GitAud(soundgit,filename)
+    SoundName=tostring(SoundName)
+    local url=soundgit
+    local FileName = filename
+    writefile(FileName..".mp3", game:HttpGet(url))
+    return (getcustomasset or getsynasset)(FileName..".mp3")
+end
+
+function CustomGitSound(soundlink, vol, filename)
+    local sound = Instance.new("Sound")
+    sound.SoundId = GitAud(soundlink, filename)
+    sound.Parent = workspace
+    sound.Name = "Spawn"
+    sound.Volume = 10
+   sound:Play()
+end
+
+CustomGitSound("https://github.com/eoyoustme/rebouna/blob/main/Fragmentent_AlertSound.mp3?raw=true", 1, "Spawn")
+end)
+
+-- Khi despawn: reset ánh sáng, phát tiếng đập cửa 7 lần, âm lượng giảm dần
+entity:SetCallback("OnDespawned", function()
+	resetLighting()
+
+	for i = 1, 7 do
+		local s = Instance.new("Sound", workspace)
+		s.SoundId = "rbxassetid://1837829565"
+		s.Volume = 6 - (i - 1) * 0.8 -- Giảm dần: 6, 5.2, 4.4, ..., 1.2
+		s.PlaybackSpeed = 0.5
+		s:Play()
+		game:GetService("Debris"):AddItem(s, 5) -- Xoá sau 5 giây
+		task.wait(1)
+	end
+end)
+
+-- Jumpscare khi chết
+entity:SetCallback("OnDamagePlayer", function(newHealth)
+	local player = game.Players.LocalPlayer
+	local playerGui = player:WaitForChild("PlayerGui")
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	local camera = workspace.CurrentCamera
+
+	-- Bắt đầu Jumpscare nếu player chết
+	if newHealth <= 0 then
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Parent = playerGui
+		screenGui.Name = "ScreenGui"
+		screenGui.IgnoreGuiInset = true
+
+		local stopEffects = false
+		local doneFading = false
+
+		-- Âm thanh jumpscare
+		local killSound = Instance.new("Sound")
+		killSound.Parent = workspace
+		killSound.PlaybackSpeed = 1
+		killSound.SoundId = "rbxassetid://18459521002"
+		killSound.Name = "Dear god death sound chat"
+		killSound.Volume = 10
+		killSound.Looped = true
+
+		-- Hiệu ứng âm thanh
+		Instance.new("FlangeSoundEffect", killSound).Rate = 0.2
+		Instance.new("TremoloSoundEffect", killSound).Frequency = 1
+		Instance.new("PitchShiftSoundEffect", killSound).Octave = 1
+		Instance.new("DistortionSoundEffect", killSound).Level = 0.2
+
+		-- UI
+		local background = Instance.new("ImageLabel", screenGui)
+		background.Size = UDim2.new(1, 0, 1, 0)
+		background.Image = "rbxassetid://1712510813"
+		background.ImageTransparency = 0.5
+		background.BackgroundColor3 = Color3.new(0, 0, 0)
+		background.BackgroundTransparency = 0
+
+		local face = Instance.new("ImageLabel", screenGui)
+		face.AnchorPoint = Vector2.new(0.5, 0.5)
+		face.Position = UDim2.new(0.5, 0, 0.589, 0)
+		face.Size = UDim2.new(0, 10, 0, 10)
+		face.Image = "rbxassetid://101914212937482"
+		face.BackgroundTransparency = 1
+
+		local text = Instance.new("ImageLabel", screenGui)
+		text.AnchorPoint = Vector2.new(0.5, 0.5)
+		text.Position = UDim2.new(0.5, 0, 0.5, 0)
+		text.Size = UDim2.new(0, 150, 0, 150)
+		text.Image = "rbxassetid://99132041298170"
+		text.BackgroundTransparency = 1
+
+		killSound:Play()
+
+		-- Camera zoom
+		local startFov = camera.FieldOfView
+		local zoomFov = 60
+		local zoomDuration = 1.1
+
+		camera.CameraType = Enum.CameraType.Scriptable
+		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
+
+		game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
+			Size = UDim2.new(0, 1200, 0, 1200),
+			Position = UDim2.new(0.5, 0, 0.5, 0)
+		}):Play()
+
+		-- Jumpscare Effects
+		task.spawn(function()
+			while not stopEffects do
+				background.ImageTransparency = 0.3
+				background.BackgroundTransparency = 0
+				task.wait(0.1)
+				background.ImageTransparency = 0
+				background.BackgroundTransparency = 0.3
+				task.wait(0.1)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				background.Image = "rbxassetid://131073231978514"
+				task.wait(0.0589)
+				background.Image = "rbxassetid://105841646930424"
+				task.wait(0.0589)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				face.Rotation = 10
+				face.Image = "rbxassetid://101914212937482"
+				task.wait(0)
+				face.Rotation = -10
+				task.wait(0)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.Image = "rbxassetid://88490592395124"
+				task.wait(0.0589)
+				text.Image = "rbxassetid://99132041298170"
+				task.wait(0.0589)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.Position = UDim2.new(math.random(), 0, math.random(), 0)
+				task.wait(0.05)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.ImageTransparency = 0
+				task.wait(0.1)
+				text.ImageTransparency = 1
+				task.wait(0.1)
+			end
+		end)
+
+		-- Đợi và fade out
+		task.wait(zoomDuration)
+		stopEffects = true
+		killSound:Stop()
+
+		task.spawn(function()
+			while not doneFading do
+				face.ImageTransparency = math.min(face.ImageTransparency + 0.1, 1)
+				text.ImageTransparency = math.min(text.ImageTransparency + 0.1, 1)
+				background.ImageTransparency = math.min(background.ImageTransparency + 0.1, 1)
+				background.BackgroundTransparency = math.min(background.BackgroundTransparency + 0.1, 1)
+				if face.ImageTransparency >= 1 then
+					doneFading = true
+				end
+				task.wait(0.05)
+			end
+			screenGui:Destroy()
+		end)
+
+		task.wait(0.4)
+		camera.CameraType = Enum.CameraType.Custom
+		camera.FieldOfView = startFov
+else
+		print("Entity has damaged the player")
+	end
+end)
+
+-- Chạy thực thể
+entity:Run()
