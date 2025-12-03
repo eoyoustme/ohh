@@ -101,24 +101,20 @@ local entity = spawner.Create({
 
 -- Khi spawn: không có âm thanh, ánh sáng đã xử lý riêng rồi
 entity:SetCallback("OnSpawned", function()
-	function GitAud(soundgit,filename)
-    SoundName=tostring(SoundName)
-    local url=soundgit
-    local FileName = filename
-    writefile(FileName..".mp3", game:HttpGet(url))
-    return (getcustomasset or getsynasset)(FileName..".mp3")
+local function GetGitSound(GithubSnd, SoundName)
+                local url = GithubSnd
+                if not isfile(SoundName .. ".mp3") then
+                    writefile(SoundName .. ".mp3", game:HttpGet(url))
+                end
+                local sound = Instance.new("Sound")
+                sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
+                return sound
 end
-
-function CustomGitSound(soundlink, vol, filename)
-    local sound = Instance.new("Sound")
-    sound.SoundId = GitAud(soundlink, filename)
-    sound.Parent = workspace
-    sound.Name = "Spawn"
-    sound.Volume = 10
-   sound:Play()
-end
-
-CustomGitSound("https://github.com/eoyoustme/rebouna/blob/main/Fragmentent_AlertSound.mp3?raw=true", 1, "Spawn")
+local Jumpscare = GetGitSound("https://github.com/eoyoustme/rebouna/blob/main/Fragmentent_AlertSound.mp3?raw=true","A60")
+Jumpscare.Parent = workspace
+Jumpscare.Volume = 3
+Jumpscare.PlaybackSpeed = 1
+Jumpscare:Play()
 end)
 
 -- Khi despawn: reset ánh sáng, phát tiếng đập cửa 7 lần, âm lượng giảm dần
