@@ -3,7 +3,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 function setPinkLighting()
     local lighting = game.Lighting.MainColorCorrection
     lighting.TintColor = Color3.fromRGB(255, 255, 255)
-    lighting.Contrast = 10
+    lighting.Contrast = 0.4
     game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
     -- Đổi sang đỏ
     game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 0, 0)}):Play()
@@ -77,8 +77,15 @@ entity:SetCallback("OnSpawned", function()
     setPinkLighting()
     local s = Instance.new("Sound", workspace)
     s.SoundId = "rbxassetid://80277453959427"
+    s.PlaybackSpeed = 0.3
+    s.TimePoistion = 0.5
     s.Volume = 4.5
     s:Play()
+
+   local skibidi = Instance.new("DistortionSoundEffect",s)
+   skibidi.Level = 0.75
+   skibidi.Enabled = true
+   skibidi.Priority = 3
 end)
 
 -- Despawn
