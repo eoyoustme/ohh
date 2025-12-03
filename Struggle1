@@ -75,17 +75,16 @@ local entity = spawner.Create({
 -- Spawn
 entity:SetCallback("OnSpawned", function()
     setPinkLighting()
-    local s = Instance.new("Sound", workspace)
-    s.SoundId = "rbxassetid://80277453959427"
-    s.PlaybackSpeed = 0.3
-    s.TimePoistion = 0.5
-    s.Volume = 4.5
-    s:Play()
+local cue1 = Instance.new("Sound")
+cue1.Parent = game.Workspace
+cue1.Name = "Scream"
+cue1.SoundId = "rbxassetid://80277453959427"
+cue1.Volume = 10
+cue1.TimePosition
 
-   local skibidi = Instance.new("DistortionSoundEffect",s)
-   skibidi.Level = 0.75
-   skibidi.Enabled = true
-   skibidi.Priority = 3
+local distort = Instance.new("DistortionSoundEffect")
+distort.Parent = cue1
+distort.Level = 0.75
 end)
 
 -- Despawn
