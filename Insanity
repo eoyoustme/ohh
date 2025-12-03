@@ -1,0 +1,56 @@
+local function showInsaltyText()
+    local player = game.Players.LocalPlayer
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "InsaltyGui"
+    gui.ResetOnSpawn = false
+    gui.Parent = player:WaitForChild("PlayerGui")
+
+    local label = Instance.new("TextLabel")
+    label.Parent = gui
+    label.Size = UDim2.new(1, 0, 0, 50)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = "the insalty"
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.TextStrokeTransparency = 0
+    label.Font = Enum.Font.FredokaOne
+    label.TextSize = 48
+
+    -- Tự động biến mất sau 5 giây
+    task.delay(5, function()
+        gui:Destroy()
+    end)
+end
+
+-- Lắng nghe cửa hiện tại
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local currentRoomValue = replicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+
+local hasSpawnedEntities = false
+
+currentRoomValue:GetPropertyChangedSignal("Value"):Connect(function()
+    if currentRoomValue.Value == 30 and not hasSpawnedEntities then
+        hasSpawnedEntities = true
+
+        -- Hiện chữ
+        showInsaltyText()
+
+        -- Chờ 1 giây cho chữ hiện trước
+        task.wait(1)
+
+        -- Spawn Crouch sau 40 giây
+        task.delay(40, function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme2/-i-lost-my-account-is-eoyoustme-/refs/heads/main/CROUCH"))()
+        end)
+
+        -- Spawn Halloween sau 100 giây
+        task.delay(100, function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme2/dm123/refs/heads/main/Hallowen12"))()
+        end)
+
+        -- Spawn Fallacy sau 150 giây
+        task.delay(150, function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme2/dm123/refs/heads/main/Fallacy"))()
+        end)
+    end
+end)
