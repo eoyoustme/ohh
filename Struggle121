@@ -84,7 +84,7 @@ cue1.TimePosition = 1
 
 local distort = Instance.new("DistortionSoundEffect")
 distort.Parent = cue1
-distort.Level = 0.75
+distort.Level = 0.85
 end)
 
 -- Despawn
