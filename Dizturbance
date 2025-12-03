@@ -102,10 +102,9 @@ local entity = spawner.Create({
 -- Khi spawn: không có âm thanh, ánh sáng đã xử lý riêng rồi
 entity:SetCallback("OnSpawned", function()
 
-local entity = game.Workspace.Disturbance
+local entity = game.Workspace.dizturbance
 local part = entity:FindFirstChildWhichIsA("BasePart")
 local face = part.Attachment.ParticleEmitter
-local smoke = part.Attachment.Smoke
 
 face.Texture = "rbxassetid://12583460254"
 face.Speed = NumberRange.new(2, 2)
