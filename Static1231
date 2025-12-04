@@ -13,6 +13,7 @@ local function PlayJumpscare()
 
 	task.wait(2)
 
+	-- GUI
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "JumpscareOverlay"
 	gui.IgnoreGuiInset = true
@@ -20,6 +21,7 @@ local function PlayJumpscare()
 	gui.ResetOnSpawn = false
 	gui.Parent = player:WaitForChild("PlayerGui")
 
+	-- Jump scare image
 	local img = Instance.new("ImageLabel")
 	img.Size = UDim2.new(1, 0, 1, 0)
 	img.BackgroundTransparency = 1
@@ -28,16 +30,35 @@ local function PlayJumpscare()
 	img.ScaleType = Enum.ScaleType.Stretch
 	img.Parent = gui
 
+	-- STATIC layer
+	local static = Instance.new("ImageLabel")
+	static.Size = UDim2.new(1, 0, 1, 0)
+	static.BackgroundTransparency = 1
+	static.BorderSizePixel = 0
+	static.Image = "rbxassetid://11818626677"	-- static noise
+	static.ImageTransparency = 0.7
+	static.ScaleType = Enum.ScaleType.Tile
+	static.TileSize = UDim2.new(3,0,3,0)       -- tile lớn cho hiệu ứng
+	static.Parent = gui
+
 	local jumpscareImage1 = "rbxassetid://94547864377343"
 	local jumpscareImage2 = "rbxassetid://236542974"
 
 	-- fade-in
 	img.Image = jumpscareImage1
-	TweenService:Create(img, TweenInfo.new(0.6), {ImageTransparency = 1}):Play()
+	TweenService:Create(img, TweenInfo.new(1.6), {ImageTransparency = 1}):Play()
 
-	-- flash
+	-- STATIC EFFECT LOOP
+	local flashDuration = 1.6
 	local start = tick()
-	while tick() - start < 1.6 do
+
+	while tick() - start < flashDuration do
+
+		-- Random nhiễu static
+		static.ImageRectOffset = Vector2.new(math.random(0,600), math.random(0,600))
+		static.ImageTransparency = math.random(3,7) / 10
+
+		-- Run jump scare flash
 		img.Image = jumpscareImage1
 		task.wait()
 		img.Image = jumpscareImage2
@@ -45,7 +66,7 @@ local function PlayJumpscare()
 	end
 end
 
--- chỉ khi máu <= 0
+-- Chỉ khi máu <= 0
 humanoid.HealthChanged:Connect(function(hp)
 	if hp <= 0 then
 		PlayJumpscare()
