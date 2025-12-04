@@ -29,7 +29,7 @@ local function PlayJumpscare()
 	img.Parent = gui
 
 	local jumpscareImage1 = "rbxassetid://94547864377343"
-	local jumpscareImage2 = "rbxassetid://132173691110215"
+	local jumpscareImage2 = "rbxassetid://236542974"
 
 	-- fade-in
 	img.Image = jumpscareImage1
