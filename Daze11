@@ -70,9 +70,9 @@ local function spawnShocker()
 				end)
 
 				-- Death message
-				ReplicatedStorage.GameStats["Player_".. player.Name].Total.DeathCause.Value = "Shocker"
+				ReplicatedStorage.GameStats["Player_".. player.Name].Total.DeathCause.Value = "Daze"
 				firesignal(ReplicatedStorage.RemotesFolder.DeathHint.OnClientEvent, {
-					"You died to who you call Shocker...",
+					"You died to who you call Daze...",
 					"Don't look at it or it stuns you!"
 				}, "Blue")
 			end
