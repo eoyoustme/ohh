@@ -1,4 +1,4 @@
-local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/test"))()
+local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/test1"))()
 
 function setPinkLighting()
     local lighting = game.Lighting.MainColorCorrection
