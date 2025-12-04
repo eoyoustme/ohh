@@ -30,10 +30,6 @@ if eyes.PrimaryPart then
     eyes.PrimaryPart.Anchored = true
 end
 
-local entity = game.currentRoom.DreadClock
-
-entity.Sound.Volume = 1
-
 wait(3.882)
 
 local Lighting = game.Lighting
@@ -84,7 +80,7 @@ end
 -- ====== Chạy âm thanh ======
 local DreadSound = Instance.new("Sound")
 DreadSound.SoundId = GitAud("https://github.com/Kotyara19k-Doorsspawner/Random-files/raw/main/ClockSounds.mp3", "DreadClock")
-DreadSound.Volume = 3
+DreadSound.Volume = 7
 DreadSound.Looped = true
 DreadSound.Parent = workspace
 DreadSound:Play()
