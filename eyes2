@@ -108,19 +108,43 @@ eyes.Parent = DreadClock
 -----------------------------
 -- EYES TELEPORT WHEN NOT LOOKED
 -----------------------------
+-----------------------------
+-- EYES TELEPORT WHEN NOT LOOKED + SAFE DISTANCE + HITBOX
+-----------------------------
 task.spawn(function()
     while DreadClock.Parent do
         task.wait(1)
-        
+
+        if not eyes.PrimaryPart then return end
+
         local eyesPos = eyes.PrimaryPart.Position
         local camLook = cam.CFrame.LookVector
         local dir = (eyesPos - cam.CFrame.Position).Unit
         local dot = camLook:Dot(dir)
+        local distance = (eyesPos - hrp.Position).Magnitude
 
-        -- nếu không nhìn
+        ----------------------------
+        --  HITBOX (KILL PLAYER)
+        ----------------------------
+        if distance <= 10 then
+            char:BreakJoints() -- chết ngay lập tức
+            return
+        end
+
+        ----------------------------
+        --  TELEPORT LOGIC
+        ----------------------------
         if dot < 0.4 then
-            -- teleport 15 studs về phía player
-            local newPos = hrp.CFrame.Position + (hrp.CFrame.LookVector * -15)
+            local newPos
+
+            -- Nếu đã ở gần hơn 15 studs → tele ngay tới phía trước player
+            if distance < 15 then
+                newPos = hrp.Position + (hrp.CFrame.LookVector * 2)
+            else
+                -- Tele mặc định: 15 studs phía sau player
+                newPos = hrp.Position + (hrp.CFrame.LookVector * -15)
+            end
+
             eyes:PivotTo(CFrame.new(newPos))
         end
     end
@@ -137,8 +161,16 @@ RS.GameData.LatestRoom.Changed:Wait()
 -----------------------------
 -- DESTROY + GUI LẦN 2
 -----------------------------
+-----------------------------
+-- DESTROY + GUI LẦN 2
+-----------------------------
 if gui then gui:Destroy() end
 if DreadClock then DreadClock:Destroy() end
 
-createGui("so funny i will back..")
-gui:Destroy()
+local gui2 = createGui("so funny i will back..")
+
+task.delay(2, function()
+    if gui2 then
+        gui2:Destroy()
+    end
+end)
