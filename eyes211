@@ -114,6 +114,9 @@ eyes.Parent = DreadClock
 -----------------------------
 -- EYES TELEPORT WHEN NOT LOOKED + HITBOX + DIRECT TELEPORT
 -----------------------------
+-----------------------------
+-- EYES TELEPORT WHEN NOT LOOKED + HITBOX + DIRECT TELEPORT
+-----------------------------
 task.spawn(function()
     while DreadClock.Parent do
         task.wait(1)
@@ -129,26 +132,24 @@ task.spawn(function()
         local dot = camLook:Dot(dir)
         local distance = (eyesPos - hrp.Position).Magnitude
 
-        ----------------------------
-        --  HITBOX: nếu <= 10 stud thì health = 0
-        ----------------------------
+        -- HITBOX: chết nếu <=10 studs
         if distance <= 10 then
             humanoid.Health = 0
             return
         end
 
-        ----------------------------
-        --  TELEPORT LOGIC
-        ----------------------------
+        -- TELEPORT LOGIC
         if dot < 0.4 then
             local newPos
 
-            -- Nếu gần hơn 15 stud → teleport thẳng vào HRP
+            -- Nếu quá gần < 15 studs → tele ngay vào player
             if distance < 15 then
-                newPos = hrp.Position  -- TELE TRỰC TIẾP VÀO NHÂN VẬT
+                newPos = hrp.Position
+
             else
-                -- Tele mặc định: 15 stud phía sau player
-                newPos = hrp.Position + (hrp.CFrame.LookVector * -15)
+                -- Tele swing chuẩn 15 studs phía sau lưng, theo hướng camera
+                local backward = -cam.CFrame.LookVector.Unit
+                newPos = hrp.Position + (backward * 15)
             end
 
             eyes:PivotTo(CFrame.new(newPos))
