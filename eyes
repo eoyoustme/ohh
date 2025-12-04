@@ -1,0 +1,142 @@
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local cam = workspace.CurrentCamera
+local RS = game.ReplicatedStorage
+local CurrentRooms = workspace.CurrentRooms
+
+-----------------------------
+-- FUNCTION: CREATE GUI
+-----------------------------
+local function createGui(message)
+    local gui = Instance.new("ScreenGui")
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.Parent = player:WaitForChild("PlayerGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.fromScale(1,1)
+    frame.BackgroundColor3 = Color3.new(0,0,0)
+    frame.Parent = gui
+
+    -- VHS EFFECT
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.new(0,0,0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20,20,20)),
+        ColorSequenceKeypoint.new(1, Color3.new(0,0,0)),
+    })
+    gradient.Parent = frame
+
+    task.spawn(function()
+        while gui.Parent do
+            gradient.Offset = Vector2.new(0, math.random(-10,10)/50)
+            task.wait(0.1)
+        end
+    end)
+
+    -- IMAGE
+    local img = Instance.new("ImageLabel")
+    img.BackgroundTransparency = 1
+    img.AnchorPoint = Vector2.new(0.5,0.5)
+    img.Position = UDim2.fromScale(0.5,0.5)
+    img.Size = UDim2.fromScale(0.4,0.4)
+    img.Image = "rbxassetid://103219122124420"
+    img.Parent = gui
+
+    -- Text
+    local txt = Instance.new("TextLabel")
+    txt.AnchorPoint = Vector2.new(0.5,1)
+    txt.Position = UDim2.fromScale(0.5,0.95)
+    txt.Size = UDim2.fromScale(1,0.1)
+    txt.BackgroundTransparency = 1
+    txt.Font = Enum.Font.Arcade
+    txt.TextScaled = true
+    txt.TextColor3 = Color3.new(1,1,1)
+    txt.Text = message
+    txt.Parent = gui
+
+    return gui
+end
+
+-----------------------------
+-- GUI LẦN 1
+-----------------------------
+local gui = createGui("oh hello you... i think will fun if have me")
+
+-----------------------------
+-- ÂM THANH
+-----------------------------
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://131322840540076"
+sound.PlaybackSpeed = 0.3
+sound.Volume = 5
+sound.Looped = false
+sound.Parent = workspace
+
+local dist = Instance.new("DistortionSoundEffect")
+dist.Level = 0.75
+dist.Parent = sound
+
+sound:Play()
+
+task.delay(7.1966, function()
+    sound:Destroy()
+end)
+
+-----------------------------
+-- SPAWN MODEL
+-----------------------------
+local currentRoom = CurrentRooms[RS.GameData.LatestRoom.Value]
+
+local DreadClock = Instance.new("Model")
+DreadClock.Name = "DreadClock"
+DreadClock.Parent = currentRoom
+
+local eyes = game:GetObjects("rbxassetid://76861694971008")[1]
+
+local num = 0
+if currentRoom:FindFirstChild("PathfindNodes") then
+    num = math.floor(#currentRoom.PathfindNodes:GetChildren()/2)
+end
+
+local targetCFrame = (num == 0 and currentRoom[currentRoom.Name] or currentRoom.PathfindNodes[num]).CFrame + Vector3.new(0,5,0)
+eyes:PivotTo(targetCFrame)
+eyes.Parent = DreadClock
+
+-----------------------------
+-- EYES TELEPORT WHEN NOT LOOKED
+-----------------------------
+task.spawn(function()
+    while DreadClock.Parent do
+        task.wait(0.2)
+        
+        local eyesPos = eyes.PrimaryPart.Position
+        local camLook = cam.CFrame.LookVector
+        local dir = (eyesPos - cam.CFrame.Position).Unit
+        local dot = camLook:Dot(dir)
+
+        -- nếu không nhìn
+        if dot < 0.4 then
+            -- teleport 15 studs về phía player
+            local newPos = hrp.CFrame.Position + (hrp.CFrame.LookVector * -15)
+            eyes:PivotTo(CFrame.new(newPos))
+        end
+    end
+end)
+
+-----------------------------
+-- CHỜ 4 LẦN NEXT ROOM
+-----------------------------
+RS.GameData.LatestRoom.Changed:Wait()
+RS.GameData.LatestRoom.Changed:Wait()
+RS.GameData.LatestRoom.Changed:Wait()
+RS.GameData.LatestRoom.Changed:Wait()
+
+-----------------------------
+-- DESTROY + GUI LẦN 2
+-----------------------------
+if gui then gui:Destroy() end
+if DreadClock then DreadClock:Destroy() end
+
+createGui("so funny i will back..")
