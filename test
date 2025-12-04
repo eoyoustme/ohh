@@ -1,103 +1,256 @@
----====== Define spawner ======---
+local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/test"))()
 
-local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V1/Source.lua"))()
+function setPinkLighting()
+    local lighting = game.Lighting.MainColorCorrection
+    lighting.TintColor = Color3.fromRGB(255, 255, 255)
+    lighting.Contrast = 0.4
+    game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
+    -- Đổi sang đỏ
+    game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 0, 0)}):Play()
+end
 
----====== Create entity ======---
+function resetLighting()
+    local lighting = game.Lighting.MainColorCorrection
+    lighting.TintColor = Color3.fromRGB(255, 0, 0)
+    lighting.Contrast = 10
+    game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
+    game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+end
 
-local entity = Spawner.createEntity({
-    CustomName = "Template Entity",
-    Model = "rbxassetid://14595895359", -- Your entity's model url here ("rbxassetid://1234567890" or GitHub raw url)
-    Speed = 125,
-    MoveDelay = 5.771,
-    HeightOffset = 0,
-    CanKill = true,
-    KillRange = 50,
-    SpawnInFront = false,
-    ShatterLights = true,
-    FlickerLights = {
-        Enabled = false,
-        Duration = 1
+local entity = spawner.Create({
+    Entity = {
+        Name = "struggled",
+        Asset = "rbxassetid://85796753236725",
+        HeightOffset = 0
     },
-    Cycles = {
-        Min = 1,
-        Max = 1,
-        Delay = 2
+    Lights = {
+        Flicker = {
+            Enabled = false,
+            Duration = 20
+        },
+        Shatter = true,
+        Repair = false
     },
-    CamShake = {
+    Earthquake = {
+        Enabled = false
+    },
+    CameraShake = {
         Enabled = true,
-        Values = {1.5, 20, 0.1, 1},
-        Range = 100
+        Range = 500,
+        Values = {1.5, 20, 0.1, 1}
     },
-    ResistCrucifix = false,
-    BreakCrucifix = true,
-    DeathMessage = {"Custom", "death", "message", "goes", "here."},
-    IsCuriousLight = false
+    Movement = {
+        Speed = 150,
+        Delay = 12,
+        Reversed = false
+    },
+    Rebounding = {
+        Enabled = false
+    },
+    Damage = {
+        Enabled = false,
+        Range = 40,
+        Amount = 200
+    },
+    Crucifixion = {
+        Enabled = true,
+        Range = 50,
+        Resist = false,
+        Break = true
+    },
+    Death = {
+        Type = "Guiding",
+        Hints = {
+            "You die to struggled?",
+            "When it appears the room turns red",
+            "Hide now!",
+            "Because it's coming very soon!",
+            "At that time, if you don't see the cupboard, you will die",
+            "Good luck",
+        },
+        Cause = "Struggled"
+    }
 })
 
----====== Debug ======---
+-- Spawn
+entity:SetCallback("OnSpawned", function()
+    setPinkLighting()
+local cue1 = Instance.new("Sound")
+cue1.Parent = workspace
+cue1.Name = "Scream"
+cue1.SoundId = "rbxassetid://80277453959427"
+cue1.Volume = 10
+cue1.TimePosition = 0
+cue1.PlaybackSpeed = 0.3
+cue1:Play()
 
-entity.Debug.OnEntitySpawned = function()
-    print("Entity has spawned")
-local TweenService = game:GetService("TweenService")
-local Tweeninfo = TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-local color = {Color = Color3.new(255, 0, 0)}
+local distort = Instance.new("DistortionSoundEffect")
+distort.Parent = cue1
+distort.Level = 0.01
+end)
 
-for _, v in pairs(workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:GetDescendants()) do
-    if v:IsA("Light") then
-        TweenService:Create(v, Tweeninfo, color):Play()
-    elseif v.Parent.Name == "LightFixture" then
-        TweenService:Create(v.Parent, Tweeninfo, color):Play()
-    end
-end
+-- Despawn
+entity:SetCallback("OnDespawned", function()
+    resetLighting()
+    local s = Instance.new("Sound", workspace)
+    s.SoundId = "rbxassetid://1837829565"
+    s.Volume = 9999
+    s.PlaybackSpeed = 0.5
+    s:Play()
+end)
 
-local spawn = Instance.new("Sound")
-    spawn.Parent = game.Workspace
-    spawn.Name = "Spawn"
-    spawn.SoundId = "rbxassetid://9125713501"
-    spawn.Volume = 4
-    spawn.PlaybackSpeed = 0.525
-    spawn:Play()
-end
+-- Death / Jumpscare
+entity:SetCallback("OnDamagePlayer", function(newHealth)
+	local player = game.Players.LocalPlayer
+	local playerGui = player:WaitForChild("PlayerGui")
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	local camera = workspace.CurrentCamera
 
-entity.Debug.OnEntityDespawned = function()
-    print("Entity has despawned")
-local spawn = Instance.new("Sound")
-    spawn.Parent = game.Workspace
-    spawn.Name = "Spawn"
-    spawn.SoundId = "rbxassetid://1837829565"
-    spawn.Volume = 4
-    spawn.PlaybackSpeed = 1
-    spawn:Play()
-end
+	-- Bắt đầu Jumpscare nếu player chết
+	if newHealth <= 0 then
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Parent = playerGui
+		screenGui.Name = "ScreenGui"
+		screenGui.IgnoreGuiInset = true
 
-entity.Debug.OnEntityStartMoving = function()
-    print("Entity started moving")
-end
+		local stopEffects = false
+		local doneFading = false
 
-entity.Debug.OnEntityFinishedRebound = function()
-    print("Entity finished rebound")
-end
+		-- Âm thanh jumpscare
+		local killSound = Instance.new("Sound")
+		killSound.Parent = workspace
+		killSound.PlaybackSpeed = 1
+		killSound.SoundId = "rbxassetid://18459521002"
+		killSound.Name = "Dear god death sound chat"
+		killSound.Volume = 10
+		killSound.Looped = true
 
-entity.Debug.OnEntityEnteredRoom = function(room)
-    print("Entity entered room:", room)
-end
+		-- Hiệu ứng âm thanh
+		Instance.new("FlangeSoundEffect", killSound).Rate = 0.2
+		Instance.new("TremoloSoundEffect", killSound).Frequency = 1
+		Instance.new("PitchShiftSoundEffect", killSound).Octave = 1
+		Instance.new("DistortionSoundEffect", killSound).Level = 0.2
 
-entity.Debug.OnLookAtEntity = function()
-    print("Player looking at entity")
-end
+		-- UI
+		local background = Instance.new("ImageLabel", screenGui)
+		background.Size = UDim2.new(1, 0, 1, 0)
+		background.Image = "rbxassetid://1712510813"
+		background.ImageTransparency = 0.5
+		background.BackgroundColor3 = Color3.new(0, 0, 0)
+		background.BackgroundTransparency = 0
 
-entity.Debug.OnDeath = function()
-    print("Player has died")
-end
+		local face = Instance.new("ImageLabel", screenGui)
+		face.AnchorPoint = Vector2.new(0.5, 0.5)
+		face.Position = UDim2.new(0.5, 0, 0.589, 0)
+		face.Size = UDim2.new(0, 10, 0, 10)
+		face.Image = "rbxassetid://101914212937482"
+		face.BackgroundTransparency = 1
 
---[[
-    NOTE: By overwriting 'OnUseCrucifix', the default crucifixion will be ignored and this function will be called instead
+		local text = Instance.new("ImageLabel", screenGui)
+		text.AnchorPoint = Vector2.new(0.5, 0.5)
+		text.Position = UDim2.new(0.5, 0, 0.5, 0)
+		text.Size = UDim2.new(0, 150, 0, 150)
+		text.Image = "rbxassetid://99132041298170"
+		text.BackgroundTransparency = 1
 
-    entity.Debug.OnUseCrucifix = function()
-        print("Custom crucifixion script here")
-    end
-]]--
+		killSound:Play()
 
----====== Run entity ======---
+		-- Camera zoom
+		local startFov = camera.FieldOfView
+		local zoomFov = 60
+		local zoomDuration = 1.1
 
-Spawner.runEntity(entity)
+		camera.CameraType = Enum.CameraType.Scriptable
+		game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
+
+		game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
+			Size = UDim2.new(0, 1200, 0, 1200),
+			Position = UDim2.new(0.5, 0, 0.5, 0)
+		}):Play()
+
+		-- Jumpscare Effects
+		task.spawn(function()
+			while not stopEffects do
+				background.ImageTransparency = 0.3
+				background.BackgroundTransparency = 0
+				task.wait(0.1)
+				background.ImageTransparency = 0
+				background.BackgroundTransparency = 0.3
+				task.wait(0.1)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				background.Image = "rbxassetid://131073231978514"
+				task.wait(0.0589)
+				background.Image = "rbxassetid://105841646930424"
+				task.wait(0.0589)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				face.Rotation = 10
+				face.Image = "rbxassetid://101914212937482"
+				task.wait(0)
+				face.Rotation = -10
+				task.wait(0)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.Image = "rbxassetid://88490592395124"
+				task.wait(0.0589)
+				text.Image = "rbxassetid://99132041298170"
+				task.wait(0.0589)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.Position = UDim2.new(math.random(), 0, math.random(), 0)
+				task.wait(0.05)
+			end
+		end)
+
+		task.spawn(function()
+			while not stopEffects do
+				text.ImageTransparency = 0
+				task.wait(0.1)
+				text.ImageTransparency = 1
+				task.wait(0.1)
+			end
+		end)
+
+		-- Đợi và fade out
+		task.wait(zoomDuration)
+		stopEffects = true
+		killSound:Stop()
+
+		task.spawn(function()
+			while not doneFading do
+				face.ImageTransparency = math.min(face.ImageTransparency + 0.1, 1)
+				text.ImageTransparency = math.min(text.ImageTransparency + 0.1, 1)
+				background.ImageTransparency = math.min(background.ImageTransparency + 0.1, 1)
+				background.BackgroundTransparency = math.min(background.BackgroundTransparency + 0.1, 1)
+				if face.ImageTransparency >= 1 then
+					doneFading = true
+				end
+				task.wait(0.05)
+			end
+			screenGui:Destroy()
+		end)
+
+		task.wait(0.4)
+		camera.CameraType = Enum.CameraType.Custom
+		camera.FieldOfView = startFov
+else
+		print("Entity has damaged the player")
+	end
+end)
+
+-- Run entity
+entity:Run()
