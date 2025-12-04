@@ -110,7 +110,7 @@ eyes.Parent = DreadClock
 -----------------------------
 task.spawn(function()
     while DreadClock.Parent do
-        task.wait(0.2)
+        task.wait(1)
         
         local eyesPos = eyes.PrimaryPart.Position
         local camLook = cam.CFrame.LookVector
@@ -141,3 +141,4 @@ if gui then gui:Destroy() end
 if DreadClock then DreadClock:Destroy() end
 
 createGui("so funny i will back..")
+gui:Destroy()
