@@ -1,7 +1,6 @@
 -- Services
 local TweenService = game:GetService("TweenService")
 
-replicatesignal(game.Players.LocalPlayer.Kill)
 -- Tạo GUI jumpscare
 local JumpscareGui = Instance.new("ScreenGui")
 JumpscareGui.Name = "JumpscareGui"
@@ -37,7 +36,7 @@ Face.BackgroundTransparency = 1
 Face.Position = UDim2.new(0.5, 0, 0.5, 0)
 Face.ResampleMode = Enum.ResamplerMode.Pixelated
 Face.Size = UDim2.new(0, 150, 0, 150)
-Face.Image = "rbxassetid://129570940717379" -- thay ID mặt bạn muốn
+Face.Image = "rbxassetid://136737940723651" -- thay ID mặt bạn muốn
 Face.ZIndex = 1000
 Face.ImageTransparency = 0
 Face.Parent = Background
@@ -51,7 +50,7 @@ scare.Volume = 10
 scare.Parent = JumpscareGui
 
 local shift = Instance.new("PitchShiftSoundEffect")
-shift.Octave = 0.5
+shift.Octave = math.random(5, 10) / 10
 shift.Parent = scare
 
 local distort = Instance.new("DistortionSoundEffect")
@@ -72,16 +71,22 @@ eq.Parent = scare
 task.spawn(function()
 	while JumpscareGui.Parent do
 		Background.BackgroundColor3 = Color3.fromRGB(3, 25, 99)
-		task.wait(math.random(25, 100) / 1000)
+		task.wait(math.random(2.5, 10) / 1000)
 		Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		task.wait(math.random(25, 100) / 1000)
+		task.wait(math.random(2.5, 10) / 1000)
+		Face.ImageColor3 = Color3.fromRGB(0, 0, 255)
+		task.wait(math.random(2.5, 10) / 1000)
+		Face.ImageColor3 = Color3.fromRGB(255, 255, 255)
+		task.wait(math.random(2.5, 10) / 1000)
+		Face.ImageColor3 = Color3.fromRGB(85, 255, 255)
+		task.wait(math.random(2.5, 10) / 1000)
 	end
 end)
 
 -- Hiệu ứng nháy overlay đổi xen kẽ 2 ảnh
 local overlayImages = {
-	"rbxassetid://184251462", -- overlay 1
-	"rbxassetid://236542974"  -- overlay 2
+	"rbxassetid://0", -- overlay 1
+	"rbxassetid://0"  -- overlay 2
 }
 task.spawn(function()
 	local i = 1
@@ -96,8 +101,8 @@ end)
 local keepRotating = true
 task.spawn(function()
 	while keepRotating do
-		Face.Rotation = math.random(-1, 1)
-		task.wait(0.01)
+		Face.Rotation = math.random(-16, 16)
+		task.wait(0.4)
 	end
 end)
 
@@ -110,14 +115,14 @@ end
 
 -- Hàm tạo vị trí random gần trung tâm (nhưng không chính giữa)
 local function getRandomNearCenterPosition()
-	local offsetX = (math.random(-40, 40) / 100)
-	local offsetY = (math.random(-40, 40) / 100)
+	local offsetX = (math.random(-20, 60) / 100)
+	local offsetY = (math.random(-20, 60) / 100)
 
 	if math.abs(offsetX) < 0.01 then
-		offsetX = 0.045 * (math.random(0, 1) == 0 and -1 or 1)
+		offsetX = 0.035 * (math.random(0, 1) == 0 and -1 or 1)
 	end
 	if math.abs(offsetY) < 0.01 then
-		offsetY = 0.035 * (math.random(0, 1) == 0 and -1 or 1)
+		offsetY = 0.055 * (math.random(0, 1) == 0 and -1 or 1)
 	end
 
 	return UDim2.new(0.5 + offsetX, 0, 0.5 + offsetY, 0)
@@ -166,4 +171,5 @@ scare:Play()
 -- Hủy GUI sau 1.2 giây kể từ lúc bắt đầu
 task.delay(1.2, function()
 	JumpscareGui:Destroy()
+	replicatesignal(game.Players.LocalPlayer.Kill)
 end)
