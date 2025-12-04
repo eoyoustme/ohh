@@ -87,7 +87,7 @@ DreadSound:Play()
 
 local distort2 = Instance.new("DistortionSoundEffect")
 distort2.Parent = DreadSound
-distort2.Level = 0.75
+distort2.Level = 0.01
 
 -- ====== Giảm tốc độ người chơi mượt dựa trên tốc độ hiện tại ======
 local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
