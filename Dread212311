@@ -30,7 +30,7 @@ if eyes.PrimaryPart then
     eyes.PrimaryPart.Anchored = true
 end
 
-local entity = game.Workspace.DreadClock
+local entity = game.currentRoom.DreadClock
 
 entity.Sound.Volume = 1
 
