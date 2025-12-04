@@ -1,20 +1,20 @@
-local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
 local character = script.Parent
 local humanoid = character:WaitForChild("Humanoid")
 
-local jumped = false
+local activated = false
 
 
 local function PlayJumpscare()
-	if jumped then return end
-	jumped = true
+	if activated then return end
+	activated = true
 
-	task.wait(2) -- đợi 2 giây sau khi chết
+	task.wait(2) -- Đợi 2 giây sau khi chết
 
-	-- Gui
+	-- GUI
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "JumpscareOverlay"
 	screenGui.IgnoreGuiInset = true
@@ -28,20 +28,24 @@ local function PlayJumpscare()
 	imageLabel.Size = UDim2.new(1, 0, 1, 0)
 	imageLabel.ScaleType = Enum.ScaleType.Stretch
 	imageLabel.ImageTransparency = 0
-	imageLabel.Visible = true
 	imageLabel.Parent = screenGui
 
 	local jumpscareImage1 = "rbxassetid://94547864377343"
 	local jumpscareImage2 = "rbxassetid://236542974"
-	local flashDuration = 1.6
 
-	-- Fade in
+	----------------------------------------------------
+	-- FADE-IN
+	----------------------------------------------------
 	imageLabel.Image = jumpscareImage1
-	local tween = TweenInfo.new(0.6, Enum.EasingStyle.Linear)
-	TweenService:Create(imageLabel, tween, {ImageTransparency = 1}):Play()
+	local tweenIn = TweenInfo.new(0.6, Enum.EasingStyle.Linear)
+	TweenService:Create(imageLabel, tweenIn, {ImageTransparency = 1}):Play()
 
-	-- Flash
+	----------------------------------------------------
+	-- FLASH
+	----------------------------------------------------
+	local flashDuration = 0.6
 	local start = tick()
+
 	while tick() - start < flashDuration do
 		imageLabel.Image = jumpscareImage1
 		task.wait()
@@ -51,14 +55,9 @@ local function PlayJumpscare()
 end
 
 
--- Nếu máu tụt về 0 → chạy jumpscare
+-- 🔥 Kích hoạt khi máu <= 0
 humanoid.HealthChanged:Connect(function(hp)
 	if hp <= 0 then
 		PlayJumpscare()
 	end
-end)
-
--- Nếu DOORS kill instant (như Halt, Screech, Rush) → Died event vẫn bật
-humanoid.Died:Connect(function()
-	PlayJumpscare()
 end)
