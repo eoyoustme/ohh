@@ -82,6 +82,7 @@ sound:Play()
 
 task.delay(7.1966, function()
     sound:Destroy()
+    gui:Destroy()
 end)
 
 -----------------------------
