@@ -1,0 +1,64 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local character = script.Parent
+local humanoid = character:WaitForChild("Humanoid")
+
+local jumped = false
+
+
+local function PlayJumpscare()
+	if jumped then return end
+	jumped = true
+
+	task.wait(2) -- đợi 2 giây sau khi chết
+
+	-- Gui
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "JumpscareOverlay"
+	screenGui.IgnoreGuiInset = true
+	screenGui.DisplayOrder = 999999
+	screenGui.Parent = player:WaitForChild("PlayerGui")
+
+	local imageLabel = Instance.new("ImageLabel")
+	imageLabel.BackgroundTransparency = 1
+	imageLabel.BorderSizePixel = 0
+	imageLabel.Position = UDim2.new(0, 0, 0, 0)
+	imageLabel.Size = UDim2.new(1, 0, 1, 0)
+	imageLabel.ScaleType = Enum.ScaleType.Stretch
+	imageLabel.ImageTransparency = 0
+	imageLabel.Visible = true
+	imageLabel.Parent = screenGui
+
+	local jumpscareImage1 = "rbxassetid://94547864377343"
+	local jumpscareImage2 = "rbxassetid://236542974"
+	local flashDuration = 1.6
+
+	-- Fade in
+	imageLabel.Image = jumpscareImage1
+	local tween = TweenInfo.new(0.6, Enum.EasingStyle.Linear)
+	TweenService:Create(imageLabel, tween, {ImageTransparency = 1}):Play()
+
+	-- Flash
+	local start = tick()
+	while tick() - start < flashDuration do
+		imageLabel.Image = jumpscareImage1
+		task.wait()
+		imageLabel.Image = jumpscareImage2
+		task.wait()
+	end
+end
+
+
+-- Nếu máu tụt về 0 → chạy jumpscare
+humanoid.HealthChanged:Connect(function(hp)
+	if hp <= 0 then
+		PlayJumpscare()
+	end
+end)
+
+-- Nếu DOORS kill instant (như Halt, Screech, Rush) → Died event vẫn bật
+humanoid.Died:Connect(function()
+	PlayJumpscare()
+end)
