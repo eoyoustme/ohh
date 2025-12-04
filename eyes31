@@ -107,7 +107,7 @@ eyes.Parent = DreadClock
 
 task.spawn(function()
     while DreadClock.Parent do
-        task.wait(1)
+        task.wait(0.4)
 
         if not eyes.PrimaryPart then return end
 
@@ -266,6 +266,7 @@ if distance <= 10 then
 		task.wait(0.4)
 		camera.CameraType = Enum.CameraType.Custom
 		camera.FieldOfView = startFov
+     humanoid.Health = 0
 		return
 	end
 
@@ -274,13 +275,13 @@ if distance <= 10 then
             local newPos
 
             -- Nếu quá gần < 15 studs → tele ngay vào player
-            if distance < 15 then
+            if distance < 25 then
                 newPos = hrp.Position
 
             else
                 -- Tele swing chuẩn 15 studs phía sau lưng, theo hướng camera
                 local backward = -cam.CFrame.LookVector.Unit
-                newPos = hrp.Position + (backward * 15)
+                newPos = hrp.Position + (backward * 25)
             end
 
             eyes:PivotTo(CFrame.new(newPos))
