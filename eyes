@@ -1,0 +1,325 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local currentRoomValue = replicatedStorage:WaitForChild("GameData"):WaitForChild("LatestRoom")
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local cam = workspace.CurrentCamera
+local RS = game.ReplicatedStorage
+local CurrentRooms = workspace.CurrentRooms
+
+local hasSpawnedEntities = false
+
+currentRoomValue:GetPropertyChangedSignal("Value"):Connect(function()
+	if currentRoomValue.Value == 50 and not hasSpawnedEntities then
+		hasSpawnedEntities = true
+		
+wait(35)
+-----------------------------
+-- FUNCTION: CREATE GUI
+-----------------------------
+local function createGui(message)
+	local gui = Instance.new("ScreenGui")
+	gui.IgnoreGuiInset = true
+	gui.ResetOnSpawn = false
+	gui.Parent = player:WaitForChild("PlayerGui")
+
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.fromScale(1,1)
+	frame.BackgroundColor3 = Color3.new(0,0,0)
+	frame.Parent = gui
+
+	-- VHS EFFECT
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.new(0,0,0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20,20,20)),
+		ColorSequenceKeypoint.new(1, Color3.new(0,0,0)),
+	})
+	gradient.Parent = frame
+
+	task.spawn(function()
+		while gui.Parent do
+			gradient.Offset = Vector2.new(0, math.random(-10,10)/50)
+			task.wait(0.1)
+		end
+	end)
+
+	-- IMAGE
+	local img = Instance.new("ImageLabel")
+	img.BackgroundTransparency = 1
+	img.AnchorPoint = Vector2.new(0.5,0.5)
+	img.Position = UDim2.fromScale(0.5,0.5)
+	img.Size = UDim2.fromScale(0.4,0.4)
+	img.Image = "rbxassetid://103219122124420"
+	img.Parent = gui
+
+	-- Text
+	local txt = Instance.new("TextLabel")
+	txt.AnchorPoint = Vector2.new(0.5,1)
+	txt.Position = UDim2.fromScale(0.5,0.95)
+	txt.Size = UDim2.fromScale(1,0.1)
+	txt.BackgroundTransparency = 1
+	txt.Font = Enum.Font.Arcade
+	txt.TextScaled = true
+	txt.TextColor3 = Color3.new(1,1,1)
+	txt.Text = message
+	txt.Parent = gui
+
+	return gui
+end
+
+-----------------------------
+-- GUI LẦN 1
+-----------------------------
+local gui = createGui("oh hello you... i think will fun if have me")
+
+-----------------------------
+-- ÂM THANH
+-----------------------------
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://131322840540076"
+sound.PlaybackSpeed = 0.3
+sound.Volume = 5
+sound.Looped = false
+sound.Parent = workspace
+
+local dist = Instance.new("DistortionSoundEffect")
+dist.Level = 0.75
+dist.Parent = sound
+
+sound:Play()
+
+task.delay(7.1966, function()
+	sound:Destroy()
+	gui:Destroy()
+end)
+
+-----------------------------
+-- SPAWN MODEL
+-----------------------------
+local currentRoom = CurrentRooms[RS.GameData.LatestRoom.Value]
+
+local DreadClock = Instance.new("Model")
+DreadClock.Name = "DreadClock"
+DreadClock.Parent = currentRoom
+
+local eyes = game:GetObjects("rbxassetid://76861694971008")[1]
+
+local num = 0
+if currentRoom:FindFirstChild("PathfindNodes") then
+	num = math.floor(#currentRoom.PathfindNodes:GetChildren()/2)
+end
+
+local targetCFrame = (num == 0 and currentRoom[currentRoom.Name] or currentRoom.PathfindNodes[num]).CFrame + Vector3.new(0,5,0)
+eyes:PivotTo(targetCFrame)
+eyes.Parent = DreadClock
+
+task.spawn(function()
+	while DreadClock.Parent do
+		task.wait(0.4)
+
+		if not eyes.PrimaryPart then return end
+
+		local humanoid = char:FindFirstChildOfClass("Humanoid")
+		if not humanoid then return end
+
+		local eyesPos = eyes.PrimaryPart.Position
+		local camLook = cam.CFrame.LookVector
+		local dir = (eyesPos - cam.CFrame.Position).Unit
+		local dot = camLook:Dot(dir)
+		local distance = (eyesPos - hrp.Position).Magnitude
+
+		-- HITBOX: chết nếu <=10 studs
+		if distance <= 10 then
+			local player = game.Players.LocalPlayer
+			local playerGui = player:WaitForChild("PlayerGui")
+			local character = player.Character or player.CharacterAdded:Wait()
+			local humanoid = character:WaitForChild("Humanoid")
+			local camera = workspace.CurrentCamera
+
+			local screenGui = Instance.new("ScreenGui")
+			screenGui.Parent = playerGui
+			screenGui.Name = "ScreenGui"
+			screenGui.IgnoreGuiInset = true
+
+			local stopEffects = false
+			local doneFading = false
+
+			-- Âm thanh jumpscare
+			local killSound = Instance.new("Sound")
+			killSound.Parent = workspace
+			killSound.PlaybackSpeed = 1
+			killSound.SoundId = "rbxassetid://18459521002"
+			killSound.Name = "Dear god death sound chat"
+			killSound.Volume = 10
+			killSound.Looped = true
+
+			-- Hiệu ứng âm thanh
+			Instance.new("FlangeSoundEffect", killSound).Rate = 0.2
+			Instance.new("TremoloSoundEffect", killSound).Frequency = 1
+			Instance.new("PitchShiftSoundEffect", killSound).Octave = 1
+			Instance.new("DistortionSoundEffect", killSound).Level = 0.2
+
+			-- UI
+			local background = Instance.new("ImageLabel", screenGui)
+			background.Size = UDim2.new(1, 0, 1, 0)
+			background.Image = "rbxassetid://1712510813"
+			background.ImageTransparency = 0.5
+			background.BackgroundColor3 = Color3.new(0, 0, 0)
+			background.BackgroundTransparency = 0
+
+			local face = Instance.new("ImageLabel", screenGui)
+			face.AnchorPoint = Vector2.new(0.5, 0.5)
+			face.Position = UDim2.new(0.5, 0, 0.589, 0)
+			face.Size = UDim2.new(0, 1, 0, 1)
+			face.Image = "rbxassetid://103219122124420"
+			face.BackgroundTransparency = 1
+
+			local text = Instance.new("ImageLabel", screenGui)
+			text.AnchorPoint = Vector2.new(0.5, 0.5)
+			text.Position = UDim2.new(0.5, 0, 0.5, 0)
+			text.Size = UDim2.new(0, 150, 0, 150)
+			text.Image = "rbxassetid://99132041298170"
+			text.BackgroundTransparency = 1
+
+			killSound:Play()
+
+			-- Camera zoom
+			local startFov = camera.FieldOfView
+			local zoomFov = 60
+			local zoomDuration = 1.1
+
+			camera.CameraType = Enum.CameraType.Scriptable
+			game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
+
+			game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
+				Size = UDim2.new(0, 1200, 0, 1200),
+				Position = UDim2.new(0.5, 0, 0.5, 0)
+			}):Play()
+
+			-- Jumpscare Effects
+			task.spawn(function()
+				while not stopEffects do
+					background.ImageTransparency = 0.3
+					background.BackgroundTransparency = 0
+					task.wait(0.1)
+					background.ImageTransparency = 0
+					background.BackgroundTransparency = 0.3
+					task.wait(0.1)
+				end
+			end)
+
+			task.spawn(function()
+				while not stopEffects do
+					background.Image = "rbxassetid://131073231978514"
+					task.wait(0.0589)
+					background.Image = "rbxassetid://105841646930424"
+					task.wait(0.0589)
+				end
+			end)
+
+			task.spawn(function()
+				while not stopEffects do
+					face.Rotation = 10
+					face.Image = "rbxassetid://103219122124420"
+					task.wait(0)
+					face.Rotation = -10
+					task.wait(0)
+				end
+			end)
+
+			task.spawn(function()
+				while not stopEffects do
+					text.Image = "rbxassetid://88490592395124"
+					task.wait(0.0589)
+					text.Image = "rbxassetid://99132041298170"
+					task.wait(0.0589)
+				end
+			end)
+
+			task.spawn(function()
+				while not stopEffects do
+					text.Position = UDim2.new(math.random(), 0, math.random(), 0)
+					task.wait(0.05)
+				end
+			end)
+
+			task.spawn(function()
+				while not stopEffects do
+					text.ImageTransparency = 0
+					task.wait(0.1)
+					text.ImageTransparency = 1
+					task.wait(0.1)
+				end
+			end)
+
+			-- Đợi và fade out
+			task.wait(zoomDuration)
+			stopEffects = true
+			killSound:Stop()
+
+			task.spawn(function()
+				while not doneFading do
+					face.ImageTransparency = math.min(face.ImageTransparency + 0.1, 1)
+					text.ImageTransparency = math.min(text.ImageTransparency + 0.1, 1)
+					background.ImageTransparency = math.min(background.ImageTransparency + 0.1, 1)
+					background.BackgroundTransparency = math.min(background.BackgroundTransparency + 0.1, 1)
+					if face.ImageTransparency >= 1 then
+						doneFading = true
+					end
+					task.wait(0.05)
+				end
+				screenGui:Destroy()
+			end)
+
+			task.wait(0.4)
+			camera.CameraType = Enum.CameraType.Custom
+			camera.FieldOfView = startFov
+			humanoid.Health = 0
+			ReplicatedStorage.GameStats["Player_".. player.Name].Total.DeathCause.Value = "eye"
+			firesignal(ReplicatedStorage.RemotesFolder.DeathHint.OnClientEvent, {
+				"You died to who you call eye...",
+				"look at it or it kill you!"
+			}, "Blue")
+			return
+		end
+		-- TELEPORT
+		if dot < 0.4 then
+			local newPos
+
+			-- Nếu quá gần < 15 studs → tele ngay vào player
+			if distance < 25 then
+				newPos = hrp.Position
+
+			else
+				-- Tele swing chuẩn 15 studs phía sau lưng, theo hướng camera
+				local backward = -cam.CFrame.LookVector.Unit
+				newPos = hrp.Position + (backward * 25)
+			end
+
+			eyes:PivotTo(CFrame.new(newPos))
+		end
+	end
+end)
+
+-----------------------------
+-- CHỜ 4 LẦN NEXT ROOM
+-----------------------------
+RS.GameData.LatestRoom.Changed:Wait()
+
+-----------------------------
+-- DESTROY + GUI LẦN 2
+-----------------------------
+-----------------------------
+-- DESTROY + GUI LẦN 2
+-----------------------------
+if gui then gui:Destroy() end
+if DreadClock then DreadClock:Destroy() end
+
+local gui2 = createGui("so funny i will back..")
+
+task.delay(2, function()
+	if gui2 then
+		gui2:Destroy()
+	end
+end)
