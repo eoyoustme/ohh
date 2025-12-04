@@ -56,7 +56,7 @@ local function PlayJumpscare()
 
 		-- Random nhiễu static
 		static.ImageRectOffset = Vector2.new(math.random(0,600), math.random(0,600))
-		static.ImageTransparency = math.random(3,7) / 10
+		static.ImageTransparency = math.random(0,0) / 1
 
 		-- Run jump scare flash
 		img.Image = jumpscareImage1
