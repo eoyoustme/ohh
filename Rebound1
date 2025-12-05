@@ -17,7 +17,7 @@ local function randomPosNearCenter()
 end
 
 -- ============================
---   HÀM JUMPSCARE (TÁCH RIÊNG)
+--   HÀM JUMPSCARE
 -- ============================
 function PlayJumpscare()
 
@@ -74,6 +74,7 @@ function PlayJumpscare()
 
 	local EffectsActive = true
 
+	-- Đổi màu background
 	task.spawn(function()
 		while EffectsActive do
 			bg.BackgroundColor3 = Color3.fromRGB(255,255,255)
@@ -83,6 +84,7 @@ function PlayJumpscare()
 		end
 	end)
 
+	-- Đổi màu mặt
 	task.spawn(function()
 		while EffectsActive do
 			Face.ImageColor3 = Color3.fromRGB(
@@ -94,6 +96,7 @@ function PlayJumpscare()
 		end
 	end)
 
+	-- Xoay mặt
 	task.spawn(function()
 		while EffectsActive do
 			Face.Rotation = math.random(-16,16)
@@ -101,6 +104,7 @@ function PlayJumpscare()
 		end
 	end)
 
+	-- Random vị trí
 	task.spawn(function()
 		while EffectsActive do
 			Face.Position = randomPosNearCenter()
@@ -109,7 +113,7 @@ function PlayJumpscare()
 	end)
 
 	-- =================
-	--  SEQUENCE ZOOM
+	--  ZOOM SEQUENCE
 	-- =================
 
 	-- Zoom 0.8 trong 1.2s
@@ -120,10 +124,10 @@ function PlayJumpscare()
 
 	t1.Completed:Wait()
 
-	-- TẮT TẤT CẢ HIỆU ỨNG
+	-- Tắt hiệu ứng
 	EffectsActive = false
 
-	-- Zoom FULL trong 0.5s
+	-- Zoom FULL giữa màn hình
 	local t2 = tweenTo(Face, {
 		Size = UDim2.new(1.8,0,1.8,0),
 		Position = UDim2.new(0.5,0,0.5,0)
@@ -131,13 +135,23 @@ function PlayJumpscare()
 
 	t2.Completed:Wait()
 
-	-- Đợi 0.7s rồi fade out
 	task.wait(0.7)
 
+	-- Fade out
 	local t3 = tweenTo(Face, {ImageTransparency = 1}, 0.6)
 	t3.Completed:Wait()
 
 	task.wait(0.2)
 	gui:Destroy()
-	replicatesignal(game.Players.LocalPlayer.Kill)
+
+	-- Trigger kill nếu cần
+	if replicatesignal then
+		replicatesignal(game.Players.LocalPlayer.Kill)
+	end
 end
+
+-- =====================================
+--  TỰ CHẠY JUMPSCARE NGAY KHI LOAD
+-- =====================================
+task.wait(1) -- delay nhẹ cho chắc
+PlayJumpscare()
