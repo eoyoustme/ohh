@@ -10,10 +10,10 @@ local CurrentRooms = workspace.CurrentRooms
 local hasSpawnedEntities = false
 
 currentRoomValue:GetPropertyChangedSignal("Value"):Connect(function()
-	if currentRoomValue.Value == 50 and not hasSpawnedEntities then
+	if currentRoomValue.Value == 5 and not hasSpawnedEntities then
 		hasSpawnedEntities = true
 		
-wait(35)
+wait(3)
 -----------------------------
 -- FUNCTION: CREATE GUI
 -----------------------------
