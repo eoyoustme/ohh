@@ -1,6 +1,21 @@
 game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
 local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
 
+local function GetGitSound(GithubSnd, SoundName)
+                local url = GithubSnd
+                if not isfile(SoundName .. ".mp3") then
+                    writefile(SoundName .. ".mp3", game:HttpGet(url))
+                end
+                local sound = Instance.new("Sound")
+                sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
+                return sound
+end
+local Jumpscare = GetGitSound("https://github.com/eoyoustme/Script/blob/main/Fragmentent_AlertSound%20(mp3cut.net).mp3?raw=true","A60")
+Jumpscare.Parent = workspace
+Jumpscare.Volume = 3
+Jumpscare.PlaybackSpeed = 1
+Jumpscare:Play()
+
 -- Tạo hiệu ứng ánh sáng màu hồng cho 1 căn phòng
 function setPinkLighting()
 	local lighting = game.Lighting:FindFirstChild("MainColorCorrection")
@@ -113,20 +128,6 @@ face.RotSpeed = NumberRange.new(-5, 5)
 face.Rotation = NumberRange.new(-10, 10)
 face.Color = ColorSequence.new(Color3.fromRGB(255, 0, 255))
 
-local function GetGitSound(GithubSnd, SoundName)
-                local url = GithubSnd
-                if not isfile(SoundName .. ".mp3") then
-                    writefile(SoundName .. ".mp3", game:HttpGet(url))
-                end
-                local sound = Instance.new("Sound")
-                sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
-                return sound
-end
-local Jumpscare = GetGitSound("https://github.com/eoyoustme/Script/blob/main/Fragmentent_AlertSound%20(mp3cut.net).mp3?raw=true","A60")
-Jumpscare.Parent = workspace
-Jumpscare.Volume = 3
-Jumpscare.PlaybackSpeed = 1
-Jumpscare:Play()
 end)
 
 -- Khi despawn: reset ánh sáng, phát tiếng đập cửa 7 lần, âm lượng giảm dần
