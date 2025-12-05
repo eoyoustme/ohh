@@ -7,33 +7,38 @@ local Reboundcolor = Instance.new("ColorCorrectionEffect",game.Lighting) game.De
 local TweenService = game:GetService("TweenService")
 local TW = TweenService:Create(game.Lighting.MainColorCorrection, TweenInfo.new(5),{TintColor = Color3.fromRGB(255, 255, 255)})
 TW:Play()
-local cue1 = Instance.new("Sound")
-cue1.Parent = game.Workspace
-cue1.Name = "Scream"
-cue1.SoundId = "rbxassetid://9114397505"
-local distort = Instance.new("DistortionSoundEffect")
-distort.Parent = cue1
-distort.Level = 1
-local distort2 = Instance.new("DistortionSoundEffect")
-distort2.Parent = cue1
-distort2.Level = 1
-local pitch = Instance.new("PitchShiftSoundEffect")
-pitch.Parent = cue1
-pitch.Octave = 0.5
-local pitch2 = Instance.new("PitchShiftSoundEffect")
-pitch2.Parent = cue1
-pitch2.Octave = 0.5
-local pitch3 = Instance.new("PitchShiftSoundEffect")
-pitch3.Parent = cue1
-pitch3.Octave = 0.5
-cue1.Volume = 0.1
-cue1:Play()
-local cue2 = Instance.new("Sound")
-cue2.Parent = game.Workspace
-cue2.Name = "Spawn"
-cue2.SoundId = "rbxassetid://9114221327"
-cue2.Volume = 3
-cue2:Play()
+	local cue1 = Instance.new("Sound")
+	cue1.Parent = game.Workspace
+	cue1.Name = "Scream"
+	cue1.SoundId = "rbxassetid://9114397505"
+	local distort = Instance.new("DistortionSoundEffect")
+	distort.Parent = cue1
+	distort.Level = 1
+	local distort2 = Instance.new("DistortionSoundEffect")
+	distort2.Parent = cue1
+	distort2.Level = 1
+	local pitch = Instance.new("PitchShiftSoundEffect")
+	pitch.Parent = cue1
+	pitch.Octave = 0.5
+	local pitch2 = Instance.new("PitchShiftSoundEffect")
+	pitch2.Parent = cue1
+	pitch2.Octave = 0.5
+	local pitch3 = Instance.new("PitchShiftSoundEffect")
+	pitch3.Parent = cue1
+	pitch3.Octave = 0.5
+	cue1.Volume = 0.1
+	cue1:Play()
+	local cue2 = Instance.new("Sound")
+	cue2.Parent = game.Workspace
+	cue2.Name = "Spawn"
+	cue2.SoundId = "rbxassetid://9114038256"
+	cue2.Volume = 5
+	cue2.TimePosition = 0
+	cue2.PlaybackSpeed = 1
+	cue2:Play()
+	local pitch = Instance.new("PitchShiftSoundEffect")
+	pitch.Parent = cue2
+	pitch.Octave = 0.5
 local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
 local camara = game.Workspace.CurrentCamera
 local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
