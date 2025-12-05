@@ -11,7 +11,7 @@ local function PlayJumpscare()
 	if activated then return end
 	activated = true
 
-	task.wait(2)
+	task.wait(4)
 	
 	local kkks = 0.001
 
