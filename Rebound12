@@ -153,5 +153,5 @@ end
 -- =====================================
 --  TỰ CHẠY JUMPSCARE NGAY KHI LOAD
 -- =====================================
-task.wait(1) -- delay nhẹ cho chắc
+task.wait(0.3) -- delay nhẹ cho chắc
 PlayJumpscare()
