@@ -125,7 +125,7 @@ local entity = spawner.Create({
  Death = {
   Type = "Guiding", -- "Curious"
   Hints = {"You died to Rebound...", "It appears at the next door and has a chance to stay there or run back to the latest door.", "He will come back many times after his initial spawn", "so hide every next door until it is safe.."},
-  Cause = ""
+  Cause = "Rebound"
  }
 })
 
