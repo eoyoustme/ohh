@@ -1,175 +1,143 @@
--- Services
 local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
--- Tạo GUI jumpscare
-local JumpscareGui = Instance.new("ScreenGui")
-JumpscareGui.Name = "JumpscareGui"
-JumpscareGui.IgnoreGuiInset = true
-JumpscareGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-JumpscareGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
--- Background Frame (nháy màu)
-local Background = Instance.new("Frame")
-Background.Name = "Background"
-Background.BackgroundColor3 = Color3.fromRGB(3, 25, 99)
-Background.BorderSizePixel = 1
-Background.Size = UDim2.new(1, 0, 1, 0)
-Background.ZIndex = 999
-Background.Parent = JumpscareGui
-
--- Overlay ảnh full màn hình (nháy 2 ảnh)
-local Overlay = Instance.new("ImageLabel")
-Overlay.Name = "Overlay"
-Overlay.BackgroundTransparency = 1
-Overlay.Size = UDim2.new(1, 0, 1, 0)
-Overlay.Position = UDim2.new(0, 0, 0, 0)
-Overlay.Image = "rbxassetid://236542974" -- ảnh overlay 2
-Overlay.ImageTransparency = 0
-Overlay.ZIndex = 998
-Overlay.Parent = Background
-
--- Face ảnh chính (jumpscare mặt)
-local Face = Instance.new("ImageLabel")
-Face.Name = "Face"
-Face.AnchorPoint = Vector2.new(0.5, 0.5)
-Face.BackgroundTransparency = 1
-Face.Position = UDim2.new(0.5, 0, 0.5, 0)
-Face.ResampleMode = Enum.ResamplerMode.Pixelated
-Face.Size = UDim2.new(0, 150, 0, 150)
-Face.Image = "rbxassetid://136737940723651" -- thay ID mặt bạn muốn
-Face.ZIndex = 1000
-Face.ImageTransparency = 0
-Face.Parent = Background
-
--- Âm thanh jumpscare setup
-local scare = Instance.new("Sound")
-scare.Name = "MyEarsBurn"
-scare.SoundId = "rbxassetid://85271883712040"
-scare.PlaybackSpeed = 3
-scare.Volume = 10
-scare.Parent = JumpscareGui
-
-local shift = Instance.new("PitchShiftSoundEffect")
-shift.Octave = math.random(5, 10) / 10
-shift.Parent = scare
-
-local distort = Instance.new("DistortionSoundEffect")
-distort.Level = 1
-distort.Parent = scare
-
-local distort2 = Instance.new("DistortionSoundEffect")
-distort2.Level = 1
-distort2.Parent = scare
-
-local eq = Instance.new("EqualizerSoundEffect")
-eq.HighGain = 10
-eq.MidGain = 10
-eq.LowGain = 3.7
-eq.Parent = scare
-
--- Hiệu ứng nháy màu nền Background
-task.spawn(function()
-	while JumpscareGui.Parent do
-		Background.BackgroundColor3 = Color3.fromRGB(3, 25, 99)
-		task.wait(math.random(2.5, 10) / 1000)
-		Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		task.wait(math.random(2.5, 10) / 1000)
-		Face.ImageColor3 = Color3.fromRGB(0, 0, 255)
-		task.wait(math.random(2.5, 10) / 1000)
-		Face.ImageColor3 = Color3.fromRGB(255, 255, 255)
-		task.wait(math.random(2.5, 10) / 1000)
-		Face.ImageColor3 = Color3.fromRGB(85, 255, 255)
-		task.wait(math.random(2.5, 10) / 1000)
-	end
-end)
-
--- Hiệu ứng nháy overlay đổi xen kẽ 2 ảnh
-local overlayImages = {
-	"rbxassetid://0", -- overlay 1
-	"rbxassetid://0"  -- overlay 2
-}
-task.spawn(function()
-	local i = 1
-	while JumpscareGui.Parent do
-		Overlay.Image = overlayImages[i]
-		i = i % #overlayImages + 1
-		task.wait(0.001)
-	end
-end)
-
--- Thêm tween xoay random cho Face liên tục
-local keepRotating = true
-task.spawn(function()
-	while keepRotating do
-		Face.Rotation = math.random(-16, 16)
-		task.wait(0.4)
-	end
-end)
-
--- Hàm tween dễ dùng
+-- Hàm tween
 local function tweenTo(object, props, time)
 	local tween = TweenService:Create(object, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), props)
 	tween:Play()
 	return tween
 end
 
--- Hàm tạo vị trí random gần trung tâm (nhưng không chính giữa)
-local function getRandomNearCenterPosition()
-	local offsetX = (math.random(-20, 60) / 100)
-	local offsetY = (math.random(-20, 60) / 100)
-
-	if math.abs(offsetX) < 0.01 then
-		offsetX = 0.035 * (math.random(0, 1) == 0 and -1 or 1)
-	end
-	if math.abs(offsetY) < 0.01 then
-		offsetY = 0.055 * (math.random(0, 1) == 0 and -1 or 1)
-	end
-
-	return UDim2.new(0.5 + offsetX, 0, 0.5 + offsetY, 0)
+-- Hàm tạo vị trí gần trung tâm
+local function randomPosNearCenter()
+	local ox = (math.random(-20, 60) / 100)
+	local oy = (math.random(-20, 60) / 100)
+	return UDim2.new(0.5 + ox, 0, 0.5 + oy, 0)
 end
 
--- Bắt đầu hiệu ứng zoom + di chuyển + rung lắc
-task.spawn(function()
-	-- Zoom mặt ra to cực đại trong 0.7 giây
-	local duration = 1.2
-	local enlargeTween = tweenTo(Face, {
-		Size = UDim2.new(2.5, 0, 2.5, 0),
-		ImageTransparency = 0,
-	}, duration)
+-- ============================
+--   HÀM JUMPSCARE (TÁCH RIÊNG)
+-- ============================
+function PlayJumpscare()
 
-	-- Trong lúc zoom to, liên tục đổi vị trí ngẫu nhiên gần trung tâm
-	local startTime = tick()
-	while tick() - startTime < duration do
-		Face.Position = getRandomNearCenterPosition()
-		task.wait(0.05)
-	end
-	enlargeTween.Completed:Wait()
+	-- GUI
+	local gui = Instance.new("ScreenGui")
+	gui.IgnoreGuiInset = true
+	gui.Parent = player.PlayerGui
 
-	-- Rung lắc mặt (shake)
-	local originalPos = Face.Position
-	for i = 1, 15 do
-		local offsetX = math.random(-3, 3)
-		local offsetY = math.random(-3, 3)
-		Face.Position = originalPos + UDim2.new(0, offsetX, 0, offsetY)
-		task.wait(0.03)
-	end
-	Face.Position = originalPos
+	local bg = Instance.new("Frame")
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.BackgroundColor3 = Color3.fromRGB(3, 25, 99)
+	bg.ZIndex = 998
+	bg.Parent = gui
 
-	-- Thu nhỏ lại và đưa mặt về giữa màn hình trong 0.2 giây
-	local shrinkTween = tweenTo(Face, {
-		Size = UDim2.new(0.1, 0, 0.1, 0),
-		Position = UDim2.new(0.5, 0, 0.5, 0)
-	}, 0.00000001)
-	shrinkTween.Completed:Wait()
+	local Face = Instance.new("ImageLabel")
+	Face.AnchorPoint = Vector2.new(0.5, 0.5)
+	Face.Position = UDim2.new(0.5,0,0.5,0)
+	Face.Size = UDim2.new(0,150,0,150)
+	Face.BackgroundTransparency = 1
+	Face.Image = "rbxassetid://136737940723651"
+	Face.ZIndex = 1000
+	Face.Parent = bg
 
-	keepRotating = false
-end)
+	-- Âm thanh
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://85271883712040"
+	sound.Volume = 10
+	sound.PlaybackSpeed = 3
+	sound.Parent = gui
 
--- Phát âm thanh jumpscare
-scare:Play()
+	local shift = Instance.new("PitchShiftSoundEffect")
+	shift.Octave = 1
+	shift.Parent = sound
 
--- Hủy GUI sau 1.2 giây kể từ lúc bắt đầu
-task.delay(1.2, function()
-	JumpscareGui:Destroy()
+	local distort = Instance.new("DistortionSoundEffect")
+	distort.Level = 1
+	distort.Parent = sound
+
+	local eq = Instance.new("EqualizerSoundEffect")
+	eq.HighGain = 10
+	eq.MidGain = 10
+	eq.LowGain = 4
+	eq.Parent = sound
+
+	sound:Play()
+
+	-- Random octave
+	task.spawn(function()
+		while sound.Playing do
+			shift.Octave = math.random(50, 87) / 100
+			task.wait(0.1)
+		end
+	end)
+
+	local EffectsActive = true
+
+	task.spawn(function()
+		while EffectsActive do
+			bg.BackgroundColor3 = Color3.fromRGB(255,255,255)
+			task.wait(0.03)
+			bg.BackgroundColor3 = Color3.fromRGB(3,25,99)
+			task.wait(0.03)
+		end
+	end)
+
+	task.spawn(function()
+		while EffectsActive do
+			Face.ImageColor3 = Color3.fromRGB(
+				math.random(150,255),
+				math.random(0,255),
+				math.random(0,255)
+			)
+			task.wait(0.03)
+		end
+	end)
+
+	task.spawn(function()
+		while EffectsActive do
+			Face.Rotation = math.random(-16,16)
+			task.wait(0.01)
+		end
+	end)
+
+	task.spawn(function()
+		while EffectsActive do
+			Face.Position = randomPosNearCenter()
+			task.wait(0.05)
+		end
+	end)
+
+	-- =================
+	--  SEQUENCE ZOOM
+	-- =================
+
+	-- Zoom 0.8 trong 1.2s
+	local t1 = tweenTo(Face, {
+		Size = UDim2.new(0.8,0,0.8,0),
+		ImageTransparency = 0
+	}, 1.2)
+
+	t1.Completed:Wait()
+
+	-- TẮT TẤT CẢ HIỆU ỨNG
+	EffectsActive = false
+
+	-- Zoom FULL trong 0.5s
+	local t2 = tweenTo(Face, {
+		Size = UDim2.new(1.8,0,1.8,0),
+		Position = UDim2.new(0.5,0,0.5,0)
+	}, 0.5)
+
+	t2.Completed:Wait()
+
+	-- Đợi 0.7s rồi fade out
+	task.wait(0.7)
+
+	local t3 = tweenTo(Face, {ImageTransparency = 1}, 0.6)
+	t3.Completed:Wait()
+
+	task.wait(0.2)
+	gui:Destroy()
 	replicatesignal(game.Players.LocalPlayer.Kill)
-end)
+end
