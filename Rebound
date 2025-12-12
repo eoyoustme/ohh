@@ -82,7 +82,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 local entity = spawner.Create({
  Entity = {
   Name = "Rebound",
-  Asset = "rbxassetid://137516211032764",
+  Asset = "https://github.com/eoyoustme/ohh/blob/main/Rebound%20Fragmented%20Mode.rbxm?raw=true",
   HeightOffset = 0
  },
  Lights = {
@@ -103,7 +103,7 @@ local entity = spawner.Create({
  },
  Movement = {
   Speed = 200,
-  Delay = 2,
+  Delay = 6,
   Reversed = true
  },
  Rebounding = {
@@ -136,6 +136,22 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
 local bruh = workspace.Rebound.RushNew
+function GetGitSound(GithubSnd,SoundName)
+ local url=GithubSnd
+ if not isfile(SoundName..".mp3") then
+  writefile(SoundName..".mp3", game:HttpGet(url))
+ end
+ local sound=Instance.new("Sound")
+ sound.SoundId=(getcustomasset or getsynasset)(SoundName..".mp3")
+ return sound
+end
+
+   local move = GetGitSound("https://github.com/talales/Nhankg.-/blob/main/XRecorder_20251206_15.mp3?raw=true","Reboun")
+    move.Parent = bruh
+    move.Name = "ReboundMoving"
+    move.Volume = 4
+    move.Looped = true
+wait(3)
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -213,7 +229,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 local entity = spawner.Create({
  Entity = {
   Name = "Rebound1",
-  Asset = "rbxassetid://137516211032764",
+  Asset = "https://github.com/eoyoustme/ohh/blob/main/Rebound%20Fragmented%20Mode.rbxm?raw=true",
   HeightOffset = 0
  },
  Lights = {
@@ -258,7 +274,7 @@ local entity = spawner.Create({
  Death = {
   Type = "Guiding", -- "Curious"
   Hints = {"You died to Rebound...", "It appears at the next door and has a chance to stay there or run back to the latest door.", "He will come back many times after his initial spawn", "so hide every next door until it is safe.."},
-  Cause = ""
+  Cause = "Rebound"
  }
 })
 
@@ -266,7 +282,23 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local bruh = workspace.Rebound1.RushNew
+local bruh = workspace.Rebound.RushNew
+function GetGitSound(GithubSnd,SoundName)
+ local url=GithubSnd
+ if not isfile(SoundName..".mp3") then
+  writefile(SoundName..".mp3", game:HttpGet(url))
+ end
+ local sound=Instance.new("Sound")
+ sound.SoundId=(getcustomasset or getsynasset)(SoundName..".mp3")
+ return sound
+end
+
+   local move = GetGitSound("https://github.com/talales/Nhankg.-/blob/main/XRecorder_20251206_15.mp3?raw=true","Reboun")
+    move.Parent = bruh
+    move.Name = "ReboundMoving"
+    move.Volume = 4
+    move.Looped = true
+wait(3)
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
@@ -445,7 +477,7 @@ local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/Regul
 local entity = spawner.Create({
  Entity = {
   Name = "Rebound2",
-  Asset = "rbxassetid://137516211032764",
+  Asset = "https://github.com/eoyoustme/ohh/blob/main/Rebound%20Fragmented%20Mode.rbxm?raw=true",
   HeightOffset = 0
  },
  Lights = {
@@ -490,7 +522,7 @@ local entity = spawner.Create({
  Death = {
   Type = "Guiding", -- "Curious"
   Hints = {"You died to Rebound...", "It appears at the next door and has a chance to stay there or run back to the latest door.", "He will come back many times after his initial spawn", "so hide every next door until it is safe.."},
-  Cause = ""
+  Cause = "Rebound"
  }
 })
 
@@ -498,7 +530,23 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
     print("Entity has spawned")
-local bruh = workspace.Rebound2.RushNew
+local bruh = workspace.Rebound.RushNew
+function GetGitSound(GithubSnd,SoundName)
+ local url=GithubSnd
+ if not isfile(SoundName..".mp3") then
+  writefile(SoundName..".mp3", game:HttpGet(url))
+ end
+ local sound=Instance.new("Sound")
+ sound.SoundId=(getcustomasset or getsynasset)(SoundName..".mp3")
+ return sound
+end
+
+   local move = GetGitSound("https://github.com/talales/Nhankg.-/blob/main/XRecorder_20251206_15.mp3?raw=true","Reboun")
+    move.Parent = bruh
+    move.Name = "ReboundMoving"
+    move.Volume = 4
+    move.Looped = true
+wait(3)
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
 spawn.Parent = bruh
