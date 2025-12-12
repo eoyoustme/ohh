@@ -103,7 +103,7 @@ local entity = spawner.Create({
  },
  Movement = {
   Speed = 200,
-  Delay = 6,
+  Delay = 7,
   Reversed = true
  },
  Rebounding = {
@@ -151,7 +151,7 @@ Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
 Jumpscare:Play()
 
-wait(3)
+wait(3.6)
 local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
@@ -251,7 +251,7 @@ local entity = spawner.Create({
  },
  Movement = {
   Speed = 200,
-  Delay = 2,
+  Delay = 7,
   Reversed = true
  },
  Rebounding = {
@@ -297,7 +297,7 @@ Jumpscare.Parent = workspace
 Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
 Jumpscare:Play()
-wait(3)
+wait(3.6)
 local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
@@ -498,7 +498,7 @@ local entity = spawner.Create({
  },
  Movement = {
   Speed = 200,
-  Delay = 2,
+  Delay = 7,
   Reversed = true
  },
  Rebounding = {
@@ -544,7 +544,7 @@ Jumpscare.Parent = workspace
 Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
 Jumpscare:Play()
-wait(3)
+wait(3.6)
 local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
 local spawn = Instance.new("Sound")
