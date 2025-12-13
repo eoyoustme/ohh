@@ -297,6 +297,8 @@ Jumpscare.Parent = workspace
 Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
 Jumpscare:Play()
+
+
 wait(3.6)
 local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
@@ -311,7 +313,7 @@ spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
     move.Parent = bruh
     move.Name = "ReboundMoving"
-    move.Volume = 0
+    move.Volume = 2
     move.Looped = true
 local vroom = TweenService:Create(move, TweenInfo.new(2),{Volume = 0.2})
     local distort = Instance.new("DistortionSoundEffect")
@@ -544,6 +546,8 @@ Jumpscare.Parent = workspace
 Jumpscare.Volume = 3
 Jumpscare.PlaybackSpeed = 1
 Jumpscare:Play()
+
+
 wait(3.6)
 local bruh = workspace.Rebound.RushNew
 local TweenService = game:GetService("TweenService")
@@ -558,7 +562,7 @@ spawn:Play()
     local move = GetGitSound("https://github.com/check78/worldcuuuup/blob/main/DoomBegin.mp3?raw=true","Reboun")
     move.Parent = bruh
     move.Name = "ReboundMoving"
-    move.Volume = 0
+    move.Volume = 2
     move.Looped = true
 local vroom = TweenService:Create(move, TweenInfo.new(2),{Volume = 0.2})
     local distort = Instance.new("DistortionSoundEffect")
