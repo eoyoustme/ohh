@@ -2,38 +2,6 @@ require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("
 wait(2)
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("This mode is like Rooms and doors game in roblox this is mode and this mode makke by me HUNGERED or thanhphok and thank nhankg for test mode",true)
 
-local screenGui = Instance.new("ScreenGui")
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-screenGui.Name = "JumpscareOverlay"
-screenGui.IgnoreGuiInset = true
-screenGui.DisplayOrder = 999999
-screenGui.Parent = Player:WaitForChild("PlayerGui")
-
-local imageLabel = Instance.new("ImageLabel")
-imageLabel.BackgroundTransparency = 1
-imageLabel.BorderSizePixel = 0
-imageLabel.Position = UDim2.new(0, 0, 0, 0)
-imageLabel.Size = UDim2.new(1, 0, 1, 0)
-imageLabel.ScaleType = Enum.ScaleType.Stretch
-imageLabel.ImageTransparency = 0.9
-imageLabel.Visible = true
-imageLabel.Parent = screenGui
-
-local jumpscareImage1 = "rbxassetid://94547864377343"
-local jumpscareImage2 = "rbxassetid://236542974"
-
-local flashDuration = 10000000
-
-local start = tick()
-
-while tick() - start < flashDuration do
-    imageLabel.Image = jumpscareImage1
-    task.wait()
-    imageLabel.Image = jumpscareImage2
-    task.wait()
-end
-
 -- Door Changer Floor 2 And Sound
 coroutine.wrap(function()
     while true do
