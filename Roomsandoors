@@ -1,0 +1,74 @@
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Rooms and Doors Mode Has Active", true)
+wait(2)
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("This mode is like Rooms and doors game in roblox this is mode and this mode makke by me HUNGERED or thanhphok and thank nhankg for test mode",true)
+
+local screenGui = Instance.new("ScreenGui")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+screenGui.Name = "JumpscareOverlay"
+screenGui.IgnoreGuiInset = true
+screenGui.DisplayOrder = 999999
+screenGui.Parent = Player:WaitForChild("PlayerGui")
+
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.BackgroundTransparency = 1
+imageLabel.BorderSizePixel = 0
+imageLabel.Position = UDim2.new(0, 0, 0, 0)
+imageLabel.Size = UDim2.new(1, 0, 1, 0)
+imageLabel.ScaleType = Enum.ScaleType.Stretch
+imageLabel.ImageTransparency = 0.9
+imageLabel.Visible = true
+imageLabel.Parent = screenGui
+
+local jumpscareImage1 = "rbxassetid://94547864377343"
+local jumpscareImage2 = "rbxassetid://236542974"
+
+local flashDuration = 10000000
+
+local start = tick()
+
+while tick() - start < flashDuration do
+    imageLabel.Image = jumpscareImage1
+    task.wait()
+    imageLabel.Image = jumpscareImage2
+    task.wait()
+end
+
+-- Door Changer Floor 2 And Sound
+coroutine.wrap(function()
+    while true do
+        wait(0.0005)
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value].Door.Door.Open.SoundId = "rbxassetid://9120839010"
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFirstChild("Door"):FindFirstChild("Door").Material = "WoodPlanks"
+workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFirstChild("Door"):FindFirstChild("Door"):FindFirstChild("Sign").Material = "WoodPlanks"
+    end
+end)()
+
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/bruhb"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/Flashlight"))()
+end)
+
+local entityList = {
+    {url = "https://raw.githubusercontent.com/eoyoustme2/dm123/refs/heads/main/A-60%20rooms1", delay = 60},
+    {url = "https://raw.githubusercontent.com/eoyoustme2/dm123/refs/heads/main/A-60'", delay = 110},
+    {url = "https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/A-120", delay = 180},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-200", delay = 300},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-200%20prime", delay = 330},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-120%20prime", delay = 200},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-666", delay = 666},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-100", delay = 230}, 
+    {url = "https://pastebin.com/raw/QgVgtnnH", delay = 190},
+    {url = "https://raw.githubusercontent.com/eoyoustme/Monoxide/refs/heads/main/A-333%20(Rooms%20And%20Doors)", delay = 383},
+}
+
+for _, entity in ipairs(entityList) do
+    coroutine.wrap(function()
+        while true do
+            wait(entity.delay)
+            pcall(function()
+                loadstring(game:HttpGet(entity.url))()
+            end)
+        end
+    end)()
+end
