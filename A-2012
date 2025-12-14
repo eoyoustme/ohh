@@ -60,12 +60,32 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
-	local lighting = game:GetService("Lighting")
+	local TweenService = game:GetService("TweenService")
+	local lighting = game.Lighting
+	local cc = lighting:WaitForChild("MainColorCorrection")
+	local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
+	local cam = workspace.CurrentCamera
+
+	-- Tạo CameraShaker
+	local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
+		cam.CFrame = cam.CFrame * cf
+	end)
+	camShake:Start()
+
+	-- Lighting bắt đầu ngay
+	cc.TintColor = Color3.fromRGB(147, 147, 147)
+	cc.Contrast = 1
+	cc.Saturation = -0.7
+	TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+	TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
+	wait(1)
+	-- Tween fade trắng 8 giây
+	TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
 
 	lighting.FogEnd = 30
 	lighting.FogStart = 0
 	lighting.fogColor = Color3.fromRGB(234, 234, 234)
-	lighting.Ambient.Color = Color3.fromRGB(58, 58, 58)
+	lighting.Ambient.Color = Color3.fromRGB(255, 255, 255)
 end)
 
 entity:SetCallback("OnDespawned", function()
@@ -106,7 +126,7 @@ task.spawn(function()
 
 	primaryPart.Anchored = true
 	entityModel.PrimaryPart = primaryPart
-	
+
 	local ripeAttachment = primaryPart:FindFirstChild("Attachment", true)
 	if ripeAttachment then
 		local emitter = ripeAttachment:FindFirstChild("Face")
@@ -124,7 +144,7 @@ task.spawn(function()
 	cue2.Volume = 4.5
 	cue2.PlaybackSpeed = 2
 	cue2:Play()
-	
+
 	local reverd = Instance.new("ReverbSoundEffect")
 	reverd.DecayTime = 1.5
 	reverd.Density = 1
@@ -132,7 +152,7 @@ task.spawn(function()
 	reverd.DryLevel = -6
 	reverd.WetLevel = 0
 	reverd.Parent = cue2
-	
+
 	-- Tween lao tới người chơi
 	local targetPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 4
 	local moveTweenInfo = TweenInfo.new(1.4, Enum.EasingStyle.Linear)
