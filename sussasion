@@ -14,7 +14,7 @@ local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
 --==============================
--- BIẾN TRẠNG THÁI
+-- BIẾN TRẠNG THÁI & LƯU TRẠNG THÁI CŨ
 --==============================
 local s
 local basePart
@@ -25,9 +25,10 @@ local camShakeRunning = false
 local cc
 local damageLoopRunning = true
 
-local disabledParticles = {}
-local faceEmitters = {}
-local disabledLights = {}
+-- store tables (lưu trạng thái ban đầu để revert)
+local storedParticles = {}       -- { {obj=particle, prevEnabled=bool, prevColor=ColorSequence}, ... }
+local storedFaceEmitters = {}    -- subset của storedParticles but keep prevColor
+local storedPointLights = {}     -- { {obj=light, prevEnabled=bool, prevRange=number}, ... }
 
 --==============================
 -- HÀM LẤY ROOM
@@ -60,7 +61,7 @@ if room and room:FindFirstChild("RoomEntrance") then
 end
 
 --==============================
--- ÂM THANH
+-- ÂM THANH (giữ nguyên nếu có)
 --==============================
 if basePart:FindFirstChild("Playsound") then
 	basePart.Playsound.Volume = 2
@@ -68,40 +69,57 @@ if basePart:FindFirstChild("Playsound") then
 end
 
 --==============================
--- TẮT HIỆU ỨNG BAN ĐẦU
+-- TẮT TOÀN BỘ HIỆU ỨNG BAN ĐẦU (và LƯU TRẠNG THÁI)
 --==============================
-local attachments = {}
-
+-- Lấy mọi ParticleEmitter trong basePart (ưu tiên trong basePart nhưng cũng lấy descendants)
 for _, obj in ipairs(basePart:GetDescendants()) do
-	if obj:IsA("Attachment") then
-		table.insert(attachments, obj)
-	end
-end
+	if obj:IsA("ParticleEmitter") then
+		local entry = {
+			obj = obj,
+			prevEnabled = obj.Enabled,
+			prevColor = obj.Color
+		}
+		table.insert(storedParticles, entry)
 
-for _, att in ipairs(attachments) do
-	for _, d in ipairs(att:GetChildren()) do
-		if d:IsA("ParticleEmitter") then
-			if d.Name == "v" or d.Name == "Black" then
-				d.Enabled = false
-				table.insert(disabledParticles, d)
-			elseif d.Name == "Face" then
-				d.Enabled = false
-				d.Color = ColorSequence.new(Color3.fromRGB(0,0,0))
-				table.insert(faceEmitters, d)
-			end
+		-- Nếu là Face thì set color đen (lưu prevColor trong storedParticles)
+		if obj.Name:lower() == "face" then
+			table.insert(storedFaceEmitters, entry)
+			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
 		end
+
+		-- Tắt emitter ngay
+		pcall(function() obj.Enabled = false end)
 	end
 end
 
-for _, d in ipairs(basePart:GetDescendants()) do
-	if d:IsA("PointLight") then
-		d.Enabled = false
-		table.insert(disabledLights, d)
+-- Nếu có particle emitters nằm trong attachments khác (không dưới basePart) thì cũng thu thập
+for _, obj in ipairs(s:GetDescendants()) do
+	if obj:IsA("ParticleEmitter") and not table.find(storedParticles, obj) then
+		local entry = {
+			obj = obj,
+			prevEnabled = obj.Enabled,
+			prevColor = obj.Color
+		}
+		table.insert(storedParticles, entry)
+		if obj.Name:lower() == "face" then
+			table.insert(storedFaceEmitters, entry)
+			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
+		end
+		pcall(function() obj.Enabled = false end)
+	end
+end
+
+-- Lưu và tắt PointLights
+for _, obj in ipairs(basePart:GetDescendants()) do
+	if obj:IsA("PointLight") then
+		local entry = { obj = obj, prevEnabled = obj.Enabled, prevRange = obj.Range }
+		table.insert(storedPointLights, entry)
+		pcall(function() obj.Enabled = false end)
 	end
 end
 
 --==============================
--- COLOR CORRECTION
+-- COLOR CORRECTION (tạo nếu chưa có)
 --==============================
 cc = Lighting:FindFirstChild("ColorCorrection")
 if not cc then
@@ -111,65 +129,70 @@ if not cc then
 end
 
 --==============================
--- SAU 5 GIÂY: BẬT HIỆU ỨNG + DAMAGE
+-- SAU 5 GIÂY: PHỤC HỒI/TWEEN & BẬT HIỆU ỨNG
 --==============================
 task.delay(5, function()
 	if not s or not s.Parent then return end
 
-	-- Bật particle
-	for _, pe in ipairs(disabledParticles) do
-		if pe and pe.Parent then
-			pe.Enabled = true
+	-- Bật lại particle emitters theo trạng thái cũ (nếu prevEnabled==true thì bật)
+	for _, entry in ipairs(storedParticles) do
+		if entry.obj and entry.obj.Parent then
+			local shouldEnable = entry.prevEnabled or true -- nếu prevEnabled false vẫn cho phép bật theo yêu cầu? Mình bật tất cả đã tắt. Nếu muốn chỉ bật prevEnabled thì dùng entry.prevEnabled.
+			pcall(function() entry.obj.Enabled = shouldEnable end)
 		end
 	end
 
-	-- Tween Face particle sang đỏ
-	for _, face in ipairs(faceEmitters) do
-		if face and face.Parent then
-			TweenService:Create(
-				face,
-				TweenInfo.new(3),
-				{
-					Color = ColorSequence.new(
-						Color3.fromRGB(255,0,0)
-					)
-				}
-			):Play()
-			face.Enabled = true
+	-- Tween Face emitters: từ màu đen (hiện tại) -> đỏ trong 3s
+	for _, entry in ipairs(storedFaceEmitters) do
+		local emitter = entry.obj
+		if emitter and emitter.Parent then
+			pcall(function() emitter.Enabled = true end)
+			-- gradual color change (30 step)
+			local duration = 3
+			local steps = 30
+			for i = 1, steps do
+				if not (emitter and emitter.Parent) then break end
+				local t = i / steps
+				local r = 0 + (255 - 0) * t
+				local color = Color3.fromRGB(math.clamp(r,0,255), 0, 0)
+				pcall(function() emitter.Color = ColorSequence.new(color) end)
+				task.wait(duration / steps)
+			end
+			-- ensure final color = red
+			pcall(function() emitter.Color = ColorSequence.new(Color3.fromRGB(255,0,0)) end)
 		end
 	end
 
-	-- Tween PointLight
-	for _, pl in ipairs(disabledLights) do
+	-- Tween PointLights: bật và tween Range -> 30 trong 3s
+	for _, entry in ipairs(storedPointLights) do
+		local pl = entry.obj
 		if pl and pl.Parent then
-			pl.Enabled = true
-			TweenService:Create(
-				pl,
-				TweenInfo.new(3),
-				{ Range = 30 }
-			):Play()
+			pcall(function() pl.Enabled = true end)
+			pcall(function()
+				local tw = TweenService:Create(pl, TweenInfo.new(3, Enum.EasingStyle.Linear), {Range = 30})
+				tw:Play()
+			end)
 		end
 	end
 
-	-- Tween Lighting sang đỏ
-	TweenService:Create(
-		cc,
-		TweenInfo.new(3),
-		{ TintColor = Color3.fromRGB(255,0,0) }
-	):Play()
+	-- Tween Lighting sang đỏ (TintColor)
+	pcall(function()
+		local tw = TweenService:Create(cc, TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {TintColor = Color3.fromRGB(255,0,0)})
+		tw:Play()
+	end)
 
-	-- Camera Shake
-	local CameraShaker = require(ReplicatedStorage.CameraShaker)
-	camShake = CameraShaker.new(
-		Enum.RenderPriority.Camera.Value,
-		function(shakeCf)
+	-- Camera Shake (bắt đầu)
+	local success, CameraShaker = pcall(function() return require(ReplicatedStorage:WaitForChild("CameraShaker")) end)
+	if success and CameraShaker then
+		camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
 			camera.CFrame = camera.CFrame * shakeCf
-		end
-	)
-	camShake:Start()
-	camShake:ShakeOnce(30, 3, 0.1, 6, 2, 0.5)
-	camShakeRunning = true
+		end)
+		pcall(function() camShake:Start() end)
+		pcall(function() camShake:ShakeOnce(30, 3, 0.1, 6, 2, 0.5) end)
+		camShakeRunning = true
+	end
 
+	-- Bật flag gây dame (kể từ đây radius kiểm tra sẽ tác dụng)
 	activeDamage = true
 end)
 
@@ -187,44 +210,72 @@ task.spawn(function()
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
 		local hrp = char and char:FindFirstChild("HumanoidRootPart")
 
-		if hum and hrp then
+		if hum and hrp and basePart then
 			if (hrp.Position - basePart.Position).Magnitude <= 500 then
 				hum.Health = math.max(0, hum.Health - 1.5)
-				ReplicatedStorage.GameStats["Player_"..player.Name]
-					.Total.DeathCause.Value = "sussasion"
+				pcall(function()
+					ReplicatedStorage.GameStats["Player_"..player.Name].Total.DeathCause.Value = "sussasion"
+				end)
 			end
 		end
 	end
 end)
 
 --==============================
--- CLEANUP KHI SANG ROOM MỚI
+-- CLEANUP KHI SANG ROOM MỚI (revert state)
 --==============================
 workspace.CurrentRooms.ChildAdded:Connect(function()
+	-- stop damage loop & flag
 	damageLoopRunning = false
 	activeDamage = false
 
+	-- stop camera shake
 	if camShakeRunning and camShake then
-		pcall(function() camShake:Stop() end)
+		pcall(function() if type(camShake.Stop) == "function" then camShake:Stop() end end)
+		camShakeRunning = false
+		camShake = nil
 	end
 
+	-- revert ColorCorrection (nếu cần set về trắng trung tính)
 	if cc then
-		cc.TintColor = Color3.fromRGB(255,255,255)
+		pcall(function()
+			cc.TintColor = Color3.fromRGB(255,255,255)
+			cc.Contrast = 0
+			cc.Saturation = 0
+		end)
 	end
 
-	for _, pe in ipairs(disabledParticles) do
-		if pe and pe.Parent then pe.Enabled = false end
+	-- revert particle emitters -> restore prevEnabled and prevColor
+	for _, entry in ipairs(storedParticles) do
+		local obj = entry.obj
+		if obj and obj.Parent then
+			pcall(function()
+				obj.Enabled = entry.prevEnabled
+				if entry.prevColor then
+					obj.Color = entry.prevColor
+				end
+			end)
+		end
 	end
 
-	for _, face in ipairs(faceEmitters) do
-		if face and face.Parent then face.Enabled = false end
+	-- revert pointlights
+	for _, entry in ipairs(storedPointLights) do
+		local obj = entry.obj
+		if obj and obj.Parent then
+			pcall(function()
+				obj.Enabled = entry.prevEnabled
+				obj.Range = entry.prevRange
+			end)
+		end
 	end
 
-	for _, pl in ipairs(disabledLights) do
-		if pl and pl.Parent then pl.Enabled = false end
-	end
-
+	-- finally destroy model
 	if s and s.Parent then
-		s:Destroy()
+		pcall(function() s:Destroy() end)
 	end
+
+	-- clear tables
+	storedParticles = {}
+	storedFaceEmitters = {}
+	storedPointLights = {}
 end)
