@@ -82,7 +82,7 @@ for _, obj in ipairs(basePart:GetDescendants()) do
 		table.insert(storedParticles, entry)
 
 		-- Nếu là Face thì set color đen (lưu prevColor trong storedParticles)
-		if obj.Name:lower() == "face" then
+		if obj.Name:lower() == "Face" then
 			table.insert(storedFaceEmitters, entry)
 			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
 		end
