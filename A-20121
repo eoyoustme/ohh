@@ -127,16 +127,6 @@ task.spawn(function()
 	primaryPart.Anchored = true
 	entityModel.PrimaryPart = primaryPart
 
-	local ripeAttachment = primaryPart:FindFirstChild("Attachment", true)
-	if ripeAttachment then
-		local emitter = ripeAttachment:FindFirstChild("Face")
-		if emitter and emitter:IsA("ParticleEmitter") then
-			emitter.Texture = "rbxassetid://81227748996709" -- texture mới
-			emitter.Enabled = true
-			emitter.TimeScale = 0
-		end
-	end
-
 	local cue2 = Instance.new("Sound")
 	cue2.Parent = game.Workspace
 	cue2.Name = "Spawn"
