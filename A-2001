@@ -8,7 +8,7 @@ local entity = spawner.Create({
 	Entity = {
 		Name = "A-200",
 		Asset = "https://github.com/eoyoustme/ohh/blob/main/A-200.rbxm?raw=true",
-		HeightOffset = 0
+		HeightOffset = -1
 	},
 	Lights = {
 		Flicker = {
@@ -222,7 +222,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 				if humanoid and humanoid.Health > 0 then
 					humanoid.Health = math.max(0, humanoid.Health - 5)
 				end
-				task.wait(0.06)
+				task.wait(0.04)
 			end
 
 			----------------------------------------
