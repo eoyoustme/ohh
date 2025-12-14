@@ -1,0 +1,230 @@
+--==============================
+-- SERVICES
+--==============================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+
+--==============================
+-- PLAYER / CAMERA
+--==============================
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+--==============================
+-- BIẾN TRẠNG THÁI
+--==============================
+local s
+local basePart
+local activeDamage = false
+
+local camShake
+local camShakeRunning = false
+local cc
+local damageLoopRunning = true
+
+local disabledParticles = {}
+local faceEmitters = {}
+local disabledLights = {}
+
+--==============================
+-- HÀM LẤY ROOM
+--==============================
+local function GetRoom()
+	return workspace.CurrentRooms:FindFirstChild(
+		ReplicatedStorage.GameData.LatestRoom.Value
+	)
+end
+
+--==============================
+-- LOAD ENTITY MODEL
+--==============================
+s = game:GetObjects("rbxassetid://111891528214795")[1]
+s.Parent = workspace
+
+basePart = s:FindFirstChildWhichIsA("BasePart", true)
+if not basePart then
+	warn("Không tìm thấy BasePart trong entity")
+	return
+end
+
+basePart.Anchored = true
+s.PrimaryPart = basePart
+
+-- Spawn vị trí
+local room = GetRoom()
+if room and room:FindFirstChild("RoomEntrance") then
+	basePart.CFrame = room.RoomEntrance.CFrame * CFrame.new(0, 0, -15)
+end
+
+--==============================
+-- ÂM THANH
+--==============================
+if basePart:FindFirstChild("Playsound") then
+	basePart.Playsound.Volume = 2
+	basePart.Playsound:Play()
+end
+
+--==============================
+-- TẮT HIỆU ỨNG BAN ĐẦU
+--==============================
+local attachments = {}
+
+for _, obj in ipairs(basePart:GetDescendants()) do
+	if obj:IsA("Attachment") then
+		table.insert(attachments, obj)
+	end
+end
+
+for _, att in ipairs(attachments) do
+	for _, d in ipairs(att:GetChildren()) do
+		if d:IsA("ParticleEmitter") then
+			if d.Name == "v" or d.Name == "Black" then
+				d.Enabled = false
+				table.insert(disabledParticles, d)
+			elseif d.Name == "Face" then
+				d.Enabled = false
+				d.Color = ColorSequence.new(Color3.fromRGB(0,0,0))
+				table.insert(faceEmitters, d)
+			end
+		end
+	end
+end
+
+for _, d in ipairs(basePart:GetDescendants()) do
+	if d:IsA("PointLight") then
+		d.Enabled = false
+		table.insert(disabledLights, d)
+	end
+end
+
+--==============================
+-- COLOR CORRECTION
+--==============================
+cc = Lighting:FindFirstChild("ColorCorrection")
+if not cc then
+	cc = Instance.new("ColorCorrectionEffect")
+	cc.Name = "ColorCorrection"
+	cc.Parent = Lighting
+end
+
+--==============================
+-- SAU 5 GIÂY: BẬT HIỆU ỨNG + DAMAGE
+--==============================
+task.delay(5, function()
+	if not s or not s.Parent then return end
+
+	-- Bật particle
+	for _, pe in ipairs(disabledParticles) do
+		if pe and pe.Parent then
+			pe.Enabled = true
+		end
+	end
+
+	-- Tween Face particle sang đỏ
+	for _, face in ipairs(faceEmitters) do
+		if face and face.Parent then
+			TweenService:Create(
+				face,
+				TweenInfo.new(3),
+				{
+					Color = ColorSequence.new(
+						Color3.fromRGB(255,0,0)
+					)
+				}
+			):Play()
+			face.Enabled = true
+		end
+	end
+
+	-- Tween PointLight
+	for _, pl in ipairs(disabledLights) do
+		if pl and pl.Parent then
+			pl.Enabled = true
+			TweenService:Create(
+				pl,
+				TweenInfo.new(3),
+				{ Range = 30 }
+			):Play()
+		end
+	end
+
+	-- Tween Lighting sang đỏ
+	TweenService:Create(
+		cc,
+		TweenInfo.new(3),
+		{ TintColor = Color3.fromRGB(255,0,0) }
+	):Play()
+
+	-- Camera Shake
+	local CameraShaker = require(ReplicatedStorage.CameraShaker)
+	camShake = CameraShaker.new(
+		Enum.RenderPriority.Camera.Value,
+		function(shakeCf)
+			camera.CFrame = camera.CFrame * shakeCf
+		end
+	)
+	camShake:Start()
+	camShake:ShakeOnce(30, 3, 0.1, 6, 2, 0.5)
+	camShakeRunning = true
+
+	activeDamage = true
+end)
+
+--==============================
+-- DAMAGE LOOP (500 STUDS)
+--==============================
+task.spawn(function()
+	while damageLoopRunning do
+		task.wait(0.3)
+
+		if not activeDamage then continue end
+		if not s or not s.Parent then break end
+
+		local char = player.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
+		if hum and hrp then
+			if (hrp.Position - basePart.Position).Magnitude <= 500 then
+				hum.Health = math.max(0, hum.Health - 1.5)
+				ReplicatedStorage.GameStats["Player_"..player.Name]
+					.Total.DeathCause.Value = "sussasion"
+			end
+		end
+	end
+end)
+
+--==============================
+-- CLEANUP KHI SANG ROOM MỚI
+--==============================
+workspace.CurrentRooms.ChildAdded:Connect(function()
+	damageLoopRunning = false
+	activeDamage = false
+
+	if camShakeRunning and camShake then
+		pcall(function() camShake:Stop() end)
+	end
+
+	if cc then
+		cc.TintColor = Color3.fromRGB(255,255,255)
+	end
+
+	for _, pe in ipairs(disabledParticles) do
+		if pe and pe.Parent then pe.Enabled = false end
+	end
+
+	for _, face in ipairs(faceEmitters) do
+		if face and face.Parent then face.Enabled = false end
+	end
+
+	for _, pl in ipairs(disabledLights) do
+		if pl and pl.Parent then pl.Enabled = false end
+	end
+
+	if s and s.Parent then
+		s:Destroy()
+	end
+end)
