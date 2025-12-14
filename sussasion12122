@@ -80,12 +80,12 @@ for _, obj in ipairs(s:GetDescendants()) do
 		})
 
 		-- FACE PARTICLE (NHẬN DIỆN RIÊNG)
-		if obj.Name:lower():find("face") then
+		if obj.Name:lower():find("Face") then
 			table.insert(faceEmitters,obj)
 			obj.Color = ColorSequence.new(Color3.new(0,0,0))
 		end
 
-		obj.Enabled = false
+		obj.Enabled = true
 	end
 end
 
