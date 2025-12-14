@@ -95,7 +95,7 @@ entity:SetCallback("OnSpawned", function()
 	end
 
 	-- Lighting properties (dùng đúng tên property)
-	lighting.FogEnd = 30
+	lighting.FogEnd = 50
 	lighting.FogStart = 0
 	lighting.FogColor = Color3.fromRGB(234, 234, 234)
 	lighting.Ambient = Color3.fromRGB(255, 255, 255)
@@ -114,6 +114,10 @@ end)
 --====== JUMPSCARE KHI GIẾT NGƯỜI CHƠI ======--
 entity:SetCallback("OnDamagePlayer", function(newHealth)
 	if newHealth == 0 then
+				print("Entity has kill the player")
+
+			else
+				print("Entity has damaged the player")
 		task.spawn(function()
 			local TweenService = game:GetService("TweenService")
 			local Players = game:GetService("Players")
@@ -161,7 +165,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 
 			-- Tween lao tới người chơi
 			local targetPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 4
-			local moveTweenInfo = TweenInfo.new(1.4, Enum.EasingStyle.Linear)
+			local moveTweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear)
 			local moveTweenGoal = {CFrame = CFrame.new(targetPosition, camera.CFrame.Position)}
 			local moveTween = TweenService:Create(primaryPart, moveTweenInfo, moveTweenGoal)
 			moveTween:Play()
@@ -276,8 +280,6 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 
 			if entityModel and entityModel.Parent then
 				pcall(function() entityModel:Destroy() end)
-			else
-				print("Entity has damaged the player")
 			end
 		end)
 	end
