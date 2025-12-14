@@ -26,9 +26,9 @@ local cc
 local damageLoopRunning = true
 
 -- store tables (lưu trạng thái ban đầu để revert)
-local storedParticles = {}       -- { {obj=particle, prevEnabled=bool, prevColor=ColorSequence}, ... }
-local storedFaceEmitters = {}    -- subset của storedParticles but keep prevColor
-local storedPointLights = {}     -- { {obj=light, prevEnabled=bool, prevRange=number}, ... }
+local storedParticles = {}       -- array of { obj = ParticleEmitter, prevEnabled = bool, prevColor = ColorSequence or nil }
+local storedFaceEmitters = {}    -- subset (same structure as above)
+local storedPointLights = {}     -- array of { obj = PointLight, prevEnabled = bool, prevRange = number }
 
 --==============================
 -- HÀM LẤY ROOM
@@ -64,16 +64,22 @@ end
 -- ÂM THANH (giữ nguyên nếu có)
 --==============================
 if basePart:FindFirstChild("Playsound") then
-	basePart.Playsound.Volume = 2
-	basePart.Playsound:Play()
+	pcall(function()
+		basePart.Playsound.Volume = 2
+		basePart.Playsound:Play()
+	end)
 end
 
 --==============================
 -- TẮT TOÀN BỘ HIỆU ỨNG BAN ĐẦU (và LƯU TRẠNG THÁI)
 --==============================
--- Lấy mọi ParticleEmitter trong basePart (ưu tiên trong basePart nhưng cũng lấy descendants)
+-- Dùng map 'seen' để tránh thêm trùng emitters nhiều lần
+local seenEmitters = {}
+
+-- Thu mọi ParticleEmitter trong basePart (ưu tiên basePart descendants)
 for _, obj in ipairs(basePart:GetDescendants()) do
-	if obj:IsA("ParticleEmitter") then
+	if obj:IsA("ParticleEmitter") and not seenEmitters[obj] then
+		seenEmitters[obj] = true
 		local entry = {
 			obj = obj,
 			prevEnabled = obj.Enabled,
@@ -81,8 +87,8 @@ for _, obj in ipairs(basePart:GetDescendants()) do
 		}
 		table.insert(storedParticles, entry)
 
-		-- Nếu là Face thì set color đen (lưu prevColor trong storedParticles)
-		if obj.Name:lower() == "Face" then
+		-- Nếu tên là 'face' (so sánh không phân biệt hoa thường) thì set color đen và lưu vào subset
+		if string.lower(obj.Name) == "face" then
 			table.insert(storedFaceEmitters, entry)
 			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
 		end
@@ -92,24 +98,27 @@ for _, obj in ipairs(basePart:GetDescendants()) do
 	end
 end
 
--- Nếu có particle emitters nằm trong attachments khác (không dưới basePart) thì cũng thu thập
+-- Thu thêm ParticleEmitter nằm ngoài basePart nhưng trong model (tránh trùng bằng seenEmitters)
 for _, obj in ipairs(s:GetDescendants()) do
-	if obj:IsA("ParticleEmitter") and not table.find(storedParticles, obj) then
+	if obj:IsA("ParticleEmitter") and not seenEmitters[obj] then
+		seenEmitters[obj] = true
 		local entry = {
 			obj = obj,
 			prevEnabled = obj.Enabled,
 			prevColor = obj.Color
 		}
 		table.insert(storedParticles, entry)
-		if obj.Name:lower() == "face" then
+
+		if string.lower(obj.Name) == "face" then
 			table.insert(storedFaceEmitters, entry)
 			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
 		end
+
 		pcall(function() obj.Enabled = false end)
 	end
 end
 
--- Lưu và tắt PointLights
+-- Lưu và tắt PointLights (trong basePart)
 for _, obj in ipairs(basePart:GetDescendants()) do
 	if obj:IsA("PointLight") then
 		local entry = { obj = obj, prevEnabled = obj.Enabled, prevRange = obj.Range }
@@ -134,11 +143,10 @@ end
 task.delay(5, function()
 	if not s or not s.Parent then return end
 
-	-- Bật lại particle emitters theo trạng thái cũ (nếu prevEnabled==true thì bật)
+	-- Bật lại particle emitters: theo yêu cầu trước đây bạn muốn bật tất cả đã tắt -> mình bật tất cả
 	for _, entry in ipairs(storedParticles) do
 		if entry.obj and entry.obj.Parent then
-			local shouldEnable = entry.prevEnabled or true -- nếu prevEnabled false vẫn cho phép bật theo yêu cầu? Mình bật tất cả đã tắt. Nếu muốn chỉ bật prevEnabled thì dùng entry.prevEnabled.
-			pcall(function() entry.obj.Enabled = shouldEnable end)
+			pcall(function() entry.obj.Enabled = true end)
 		end
 	end
 
@@ -146,19 +154,20 @@ task.delay(5, function()
 	for _, entry in ipairs(storedFaceEmitters) do
 		local emitter = entry.obj
 		if emitter and emitter.Parent then
+			-- đảm bảo bật emitter
 			pcall(function() emitter.Enabled = true end)
-			-- gradual color change (30 step)
+
+			-- smooth color change vì TweenService không ổn định với ColorSequence
 			local duration = 3
 			local steps = 30
 			for i = 1, steps do
 				if not (emitter and emitter.Parent) then break end
 				local t = i / steps
-				local r = 0 + (255 - 0) * t
+				local r = math.floor(0 + (255 - 0) * t)
 				local color = Color3.fromRGB(math.clamp(r,0,255), 0, 0)
 				pcall(function() emitter.Color = ColorSequence.new(color) end)
 				task.wait(duration / steps)
 			end
-			-- ensure final color = red
 			pcall(function() emitter.Color = ColorSequence.new(Color3.fromRGB(255,0,0)) end)
 		end
 	end
@@ -185,7 +194,10 @@ task.delay(5, function()
 	local success, CameraShaker = pcall(function() return require(ReplicatedStorage:WaitForChild("CameraShaker")) end)
 	if success and CameraShaker then
 		camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCf)
-			camera.CFrame = camera.CFrame * shakeCf
+			-- bảo vệ camera nil
+			if workspace.CurrentCamera then
+				workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * shakeCf
+			end
 		end)
 		pcall(function() camShake:Start() end)
 		pcall(function() camShake:ShakeOnce(30, 3, 0.1, 6, 2, 0.5) end)
@@ -201,7 +213,7 @@ end)
 --==============================
 task.spawn(function()
 	while damageLoopRunning do
-		task.wait(0.3)
+		task.wait(1)
 
 		if not activeDamage then continue end
 		if not s or not s.Parent then break end
