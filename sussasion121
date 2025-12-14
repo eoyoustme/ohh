@@ -109,12 +109,12 @@ for _, obj in ipairs(s:GetDescendants()) do
 		}
 		table.insert(storedParticles, entry)
 
-		if string.lower(obj.Name) == "face" then
+		if string.lower(obj.Name) == "Face" then
 			table.insert(storedFaceEmitters, entry)
 			pcall(function() obj.Color = ColorSequence.new(Color3.fromRGB(0,0,0)) end)
 		end
 
-		pcall(function() obj.Enabled = false end)
+		pcall(function() obj.Enabled = true end)
 	end
 end
 
