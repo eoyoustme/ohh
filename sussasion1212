@@ -1,0 +1,236 @@
+--==============================
+-- SERVICES
+--==============================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+
+--==============================
+-- PLAYER / CAMERA
+--==============================
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+--==============================
+-- STATE
+--==============================
+local s
+local basePart
+local activeDamage = false
+local damageLoopRunning = true
+
+local camShake
+local camShakeRunning = false
+local cc
+
+--==============================
+-- STORE ORIGINAL STATES
+--==============================
+local storedParticles = {}
+local faceEmitters = {}
+local storedLights = {}
+
+--==============================
+-- GET ROOM
+--==============================
+local function GetRoom()
+	return workspace.CurrentRooms:FindFirstChild(
+		ReplicatedStorage.GameData.LatestRoom.Value
+	)
+end
+
+--==============================
+-- LOAD ENTITY
+--==============================
+s = game:GetObjects("rbxassetid://111891528214795")[1]
+s.Parent = workspace
+
+basePart = s:FindFirstChildWhichIsA("BasePart", true)
+if not basePart then
+	warn("NO BASEPART")
+	return
+end
+
+s.PrimaryPart = basePart
+basePart.Anchored = true
+
+local room = GetRoom()
+if room and room:FindFirstChild("RoomEntrance") then
+	basePart.CFrame = room.RoomEntrance.CFrame * CFrame.new(0,0,-15)
+end
+
+--==============================
+-- SOUND
+--==============================
+if basePart:FindFirstChild("Playsound") then
+	basePart.Playsound.Volume = 2
+	basePart.Playsound:Play()
+end
+
+--==============================
+-- COLLECT + DISABLE PARTICLES
+--==============================
+for _, obj in ipairs(s:GetDescendants()) do
+	if obj:IsA("ParticleEmitter") then
+		table.insert(storedParticles,{
+			obj = obj,
+			enabled = obj.Enabled,
+			color = obj.Color
+		})
+
+		-- FACE PARTICLE (NHẬN DIỆN RIÊNG)
+		if obj.Name:lower():find("face") then
+			table.insert(faceEmitters,obj)
+			obj.Color = ColorSequence.new(Color3.new(0,0,0))
+		end
+
+		obj.Enabled = false
+	end
+end
+
+--==============================
+-- LIGHTS
+--==============================
+for _, l in ipairs(s:GetDescendants()) do
+	if l:IsA("PointLight") then
+		table.insert(storedLights,{
+			obj = l,
+			enabled = l.Enabled,
+			range = l.Range
+		})
+		l.Enabled = false
+	end
+end
+
+--==============================
+-- COLOR CORRECTION
+--==============================
+cc = Lighting:FindFirstChild("ColorCorrection")
+if not cc then
+	cc = Instance.new("ColorCorrectionEffect")
+	cc.Name = "ColorCorrection"
+	cc.Parent = Lighting
+end
+
+--==============================
+-- ACTIVATE AFTER 5 SECONDS
+--==============================
+task.delay(5,function()
+	if not s or not s.Parent then return end
+
+	-- ENABLE ALL PARTICLES
+	for _, data in ipairs(storedParticles) do
+		if data.obj and data.obj.Parent then
+			data.obj.Enabled = true
+		end
+	end
+
+	-- FORCE ENABLE FACE + TWEEN COLOR
+	for _, face in ipairs(faceEmitters) do
+		if face and face.Parent then
+			face.Enabled = true
+
+			TweenService:Create(
+				face,
+				TweenInfo.new(3),
+				{
+					Color = ColorSequence.new(Color3.fromRGB(255,0,0))
+				}
+			):Play()
+		end
+	end
+
+	-- LIGHTS
+	for _, l in ipairs(storedLights) do
+		if l.obj and l.obj.Parent then
+			l.obj.Enabled = true
+			TweenService:Create(
+				l.obj,
+				TweenInfo.new(3),
+				{Range = 30}
+			):Play()
+		end
+	end
+
+	-- RED LIGHTING
+	TweenService:Create(
+		cc,
+		TweenInfo.new(3),
+		{TintColor = Color3.fromRGB(255,0,0)}
+	):Play()
+
+	-- CAMERA SHAKE
+	local CameraShaker = require(ReplicatedStorage:WaitForChild("CameraShaker"))
+	camShake = CameraShaker.new(
+		Enum.RenderPriority.Camera.Value,
+		function(cf)
+			camera.CFrame = camera.CFrame * cf
+		end
+	)
+	camShake:Start()
+	camShake:ShakeOnce(30,3,0.1,6,2,0.5)
+	camShakeRunning = true
+
+	activeDamage = true
+end)
+
+--==============================
+-- DAMAGE LOOP (500 STUDS)
+--==============================
+task.spawn(function()
+	while damageLoopRunning do
+		task.wait(0.3)
+		if not activeDamage then continue end
+
+		local char = player.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
+		if hum and hrp then
+			if (hrp.Position - basePart.Position).Magnitude <= 500 then
+				hum.Health = math.max(0, hum.Health - 1.5)
+				pcall(function()
+					ReplicatedStorage.GameStats["Player_"..player.Name]
+						.Total.DeathCause.Value = "sussasion"
+				end)
+			end
+		end
+	end
+end)
+
+--==============================
+-- CLEANUP WHEN NEW ROOM
+--==============================
+workspace.CurrentRooms.ChildAdded:Connect(function()
+	damageLoopRunning = false
+	activeDamage = false
+
+	if camShakeRunning and camShake then
+		pcall(function() camShake:Stop() end)
+	end
+
+	if cc then
+		cc.TintColor = Color3.new(1,1,1)
+	end
+
+	-- RESTORE PARTICLES
+	for _, data in ipairs(storedParticles) do
+		if data.obj and data.obj.Parent then
+			data.obj.Enabled = data.enabled
+			data.obj.Color = data.color
+		end
+	end
+
+	-- RESTORE LIGHTS
+	for _, l in ipairs(storedLights) do
+		if l.obj and l.obj.Parent then
+			l.obj.Enabled = l.enabled
+			l.obj.Range = l.range
+		end
+	end
+
+	if s and s.Parent then
+		s:Destroy()
+	end
+end)
