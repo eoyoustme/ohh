@@ -40,7 +40,7 @@ local entity = spawner.Create({
 	},
 	Damage = {
 		Enabled = true,
-		Range = 20,
+		Range = 40,
 		Amount = 0.0125
 	},
 	Crucifixion = {
@@ -61,31 +61,44 @@ local entity = spawner.Create({
 entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
 	local TweenService = game:GetService("TweenService")
-	local lighting = game.Lighting
-	local cc = lighting:WaitForChild("MainColorCorrection")
-	local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
+	local lighting = game:GetService("Lighting")
+	-- MainColorCorrection object (nếu không tồn tại thì bỏ qua)
+	local cc = lighting:FindFirstChild("MainColorCorrection")
+	local CameraShaker
+	pcall(function() CameraShaker = require(game:GetService("ReplicatedStorage"):WaitForChild("CameraShaker")) end)
 	local cam = workspace.CurrentCamera
 
-	-- Tạo CameraShaker
-	local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
-		cam.CFrame = cam.CFrame * cf
-	end)
-	camShake:Start()
+	-- Tạo CameraShaker (nếu module hợp lệ)
+	local camShake
+	if CameraShaker then
+		local ok, inst = pcall(function()
+			return CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
+				cam.CFrame = cam.CFrame * cf
+			end)
+		end)
+		if ok and inst then
+			camShake = inst
+			if camShake.Start then pcall(function() camShake:Start() end) end
+		end
+	end
 
-	-- Lighting bắt đầu ngay
-	cc.TintColor = Color3.fromRGB(147, 147, 147)
-	cc.Contrast = 1
-	cc.Saturation = -0.7
-	TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
-	TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
-	wait(1)
-	-- Tween fade trắng 8 giây
-	TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+	-- Lighting bắt đầu ngay (chỉ thực hiện nếu cc tồn tại)
+	if cc then
+		cc.TintColor = Color3.fromRGB(147, 147, 147)
+		cc.Contrast = 1
+		cc.Saturation = -0.7
+		TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+		TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
+		wait(1)
+		-- Tween fade trắng 15 giây
+		TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+	end
 
+	-- Lighting properties (dùng đúng tên property)
 	lighting.FogEnd = 30
 	lighting.FogStart = 0
-	lighting.fogColor = Color3.fromRGB(234, 234, 234)
-	lighting.Ambient.Color = Color3.fromRGB(255, 255, 255)
+	lighting.FogColor = Color3.fromRGB(234, 234, 234)
+	lighting.Ambient = Color3.fromRGB(255, 255, 255)
 end)
 
 entity:SetCallback("OnDespawned", function()
@@ -94,8 +107,8 @@ entity:SetCallback("OnDespawned", function()
 
 	lighting.FogEnd = 40000000
 	lighting.FogStart = 0
-	lighting.fogColor = Color3.fromRGB(192,192,192)
-	lighting.Ambient.Color = Color3.fromRGB(58, 58, 58)
+	lighting.FogColor = Color3.fromRGB(192, 192, 192)
+	lighting.Ambient = Color3.fromRGB(58, 58, 58)
 end)
 
 --====== JUMPSCARE KHI GIẾT NGƯỜI CHƠI ======--
@@ -109,7 +122,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 
 			local player = Players.LocalPlayer
 			local character = player.Character or player.CharacterAdded:Wait()
-			local humanoid = character:WaitForChild("Humanoid", 5)
+			local humanoid = character:FindFirstChild("Humanoid") or character:WaitForChild("Humanoid", 5)
 			local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 			local camera = Workspace.CurrentCamera
 
@@ -125,13 +138,15 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 				return
 			end
 
+			-- chuẩn bị model
 			primaryPart.Anchored = true
 			entityModel.PrimaryPart = primaryPart
 
+			-- Sound spawn (ID bạn đang dùng có vẻ lạ, kiểm tra ID nếu lỗi)
 			local cue2 = Instance.new("Sound")
 			cue2.Parent = Workspace
 			cue2.Name = "Spawn"
-			cue2.SoundId = "rbxassetid://85271883712040" -- Thay bằng ID thật nếu cần
+			cue2.SoundId = "rbxassetid://85271883712040" -- kiểm tra lại ID nếu cần
 			cue2.Volume = 4.5
 			cue2.PlaybackSpeed = 2
 			pcall(function() cue2:Play() end)
@@ -150,8 +165,9 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			local moveTweenGoal = {CFrame = CFrame.new(targetPosition, camera.CFrame.Position)}
 			local moveTween = TweenService:Create(primaryPart, moveTweenInfo, moveTweenGoal)
 			moveTween:Play()
-			moveTween.Completed:Wait()
+			pcall(function() moveTween.Completed:Wait() end)
 
+			-- Khóa player (an toàn)
 			if humanoid then
 				humanoid.WalkSpeed = 16
 				humanoid.JumpPower = 0
@@ -162,10 +178,9 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			-- Liên tục update camera + entity
 			local camConnection
 			camConnection = RunService.RenderStepped:Connect(function()
+				-- nếu primaryPart bị hủy thì dừng connection
 				if not primaryPart or not primaryPart.Parent then
-					if camConnection then
-						camConnection:Disconnect()
-					end
+					if camConnection then camConnection:Disconnect() end
 					camera.CameraType = Enum.CameraType.Custom
 					return
 				end
@@ -210,7 +225,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			--  JUMPSCARE GUI KHI NGƯỜI CHƠI CHẾT
 			----------------------------------------
 			if humanoid and humanoid.Health <= 0 then
-				local gui = Instance.new("ScreenGui", player.PlayerGui)
+				local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 				gui.IgnoreGuiInset = true
 				gui.ResetOnSpawn = false
 
@@ -221,7 +236,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 				img.ImageTransparency = 1
 				img.Rotation = 0
 
-				-- Danh sách ảnh random
+				-- Danh sách ảnh random (thay ID nếu cần)
 				local images = {
 					"rbxassetid://81227748996709",
 					"rbxassetid://81227748996709",
@@ -268,7 +283,6 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 	end
 end)
 
-
-		--====== Run entity ======--
+--====== Run entity ======--
 
 entity:Run()
