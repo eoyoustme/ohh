@@ -98,7 +98,7 @@ entity:SetCallback("OnSpawned", function()
 	lighting.FogEnd = 50
 	lighting.FogStart = 0
 	lighting.FogColor = Color3.fromRGB(234, 234, 234)
-	lighting.Ambient = Color3.fromRGB(255, 255, 255)
+	lighting.Ambient = Color3.fromRGB(58, 58, 58)
 end)
 
 entity:SetCallback("OnDespawned", function()
@@ -108,16 +108,16 @@ entity:SetCallback("OnDespawned", function()
 	lighting.FogEnd = 40000000
 	lighting.FogStart = 0
 	lighting.FogColor = Color3.fromRGB(192, 192, 192)
-	lighting.Ambient = Color3.fromRGB(58, 58, 58)
+	lighting.Ambient = Color3.fromRGB(567, 51, 56)
 end)
 
 --====== JUMPSCARE KHI GIẾT NGƯỜI CHƠI ======--
 entity:SetCallback("OnDamagePlayer", function(newHealth)
 	if newHealth == 0 then
-				print("Entity has kill the player")
+		print("Entity has kill the player")
 
-			else
-				print("Entity has damaged the player")
+	else
+		print("Entity has damaged the player")
 		task.spawn(function()
 			local TweenService = game:GetService("TweenService")
 			local Players = game:GetService("Players")
@@ -169,7 +169,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 			local moveTweenGoal = {CFrame = CFrame.new(targetPosition, camera.CFrame.Position)}
 			local moveTween = TweenService:Create(primaryPart, moveTweenInfo, moveTweenGoal)
 			moveTween:Play()
-			pcall(function() moveTween.Completed:Wait() end)
+			pcall(function() cue2:Play() end)	
 
 			-- Khóa player (an toàn)
 			if humanoid then
