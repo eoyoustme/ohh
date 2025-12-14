@@ -62,10 +62,10 @@ entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
 	local lighting = game:GetService("Lighting")
 
-	lighting.FogEnd = 40
+	lighting.FogEnd = 30
 	lighting.FogStart = 0
-	lighting.fogColor = Color3.fromRGB(192,192,192)
-	lighting.Ambient.Color = Color3.fromRGB(108, 108, 108)
+	lighting.fogColor = Color3.fromRGB(234, 234, 234)
+	lighting.Ambient.Color = Color3.fromRGB(58, 58, 58)
 end)
 
 entity:SetCallback("OnDespawned", function()
@@ -75,7 +75,7 @@ entity:SetCallback("OnDespawned", function()
 	lighting.FogEnd = 40000000
 	lighting.FogStart = 0
 	lighting.fogColor = Color3.fromRGB(192,192,192)
-	lighting.Ambient.Color = Color3.fromRGB(67, 51, 56)
+	lighting.Ambient.Color = Color3.fromRGB(58, 58, 58)
 end)
 
 --====== JUMPSCARE KHI GIẾT NGƯỜI CHƠI ======--
