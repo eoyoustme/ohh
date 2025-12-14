@@ -165,7 +165,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 
 			-- Tween lao tới người chơi
 			local targetPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 4
-			local moveTweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Linear)
+			local moveTweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Linear)
 			local moveTweenGoal = {CFrame = CFrame.new(targetPosition, camera.CFrame.Position)}
 			local moveTween = TweenService:Create(primaryPart, moveTweenInfo, moveTweenGoal)
 			moveTween:Play()
@@ -222,7 +222,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 				if humanoid and humanoid.Health > 0 then
 					humanoid.Health = math.max(0, humanoid.Health - 5)
 				end
-				task.wait(0.56)
+				task.wait(0.06)
 			end
 
 			----------------------------------------
