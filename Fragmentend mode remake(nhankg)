@@ -43,12 +43,12 @@ cue2.Looped = true
 cue2:Play()
 
 pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/black"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/stamina"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Intro"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Guiding"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Insanity"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Static21"))()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/black"))()
 end)
 
 local entityList = {
