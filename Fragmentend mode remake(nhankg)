@@ -11,8 +11,7 @@ workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFir
 end)()
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Info"))()
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/black"))()
+	game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
 
 local cue2 = Instance.new("Sound")
 cue2.Parent = game.Workspace
