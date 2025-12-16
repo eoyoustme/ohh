@@ -12,7 +12,7 @@ end)()
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/ohh/refs/heads/main/Info"))()
 
-game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/eoyoustme/back/refs/heads/main/black"))()
 
 local cue2 = Instance.new("Sound")
 cue2.Parent = game.Workspace
@@ -32,21 +32,6 @@ Lighting.Brightness = 0.1
 Lighting.FogEnd = 60
 Lighting.FogStart = 45
 Lighting.FogColor = Color3.new(0, 0, 0)
-
-while true do
-	game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
--- Define the material and color you want to use for the grass
-local material = Enum.Material.Rock
-local color = Color3.fromRGB(102, 102, 102)
-
--- Loop through all the parts in the workspace and change their material and color to the grass material and color
-for _, part in pairs(game.Workspace:GetDescendants()) do
-	if part:IsA("BasePart") then
-		part.Material = material
-		part.Color = color
-	end
-end
-end
 
 local cue2 = Instance.new("Sound")
 cue2.Parent = game.Workspace
