@@ -1,0 +1,5 @@
+
+while true do
+	game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+	firesignal(game.ReplicatedStorage.Bricks.UseEventModule.OnClientEvent, "breakLights", workspace.CurrentRooms[game.ReplicatedStorage.GameData.LatestRoom.Value], 0.416, 60) 
+end
