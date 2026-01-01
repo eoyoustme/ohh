@@ -8,18 +8,18 @@ local entity = spawner.Create({
 	Entity = {
 		Name = "draft",
 		Asset = "https://github.com/eoyoustme/ohh/blob/main/draft.rbxm?raw=true",
-		HeightOffset = 0
+		HeightOffset = 5
 	},
 	Lights = {
 		Flicker = {
-			Enabled = true,
+			Enabled = false,
 			Duration = 1
 		},
 		Shatter = true,
 		Repair = false
 	},
 	Earthquake = {
-		Enabled = true
+		Enabled = false
 	},
 	CameraShake = {
 		Enabled = true,
