@@ -125,6 +125,17 @@ entity:SetCallback("OnSpawned", function()
 		-- Tween fade trắng 8 giây
 		TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
 	end)
+	
+	for _, part in pairs(game.Workspace.CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value].Parts:GetDescendants()) do
+		if part:IsA("BasePart") then
+			local Smoke = Instance.new("Smoke")
+			Smoke.TimeScale = 1
+			Smoke.Color = Color3.new(0, 0, 0) -- White
+			Smoke.Size = math.max(15, 15) -- Pick the larger of the two dimensions
+			Smoke.Parent = part
+		end
+	end
+	
 	local player = game.Players.LocalPlayer
 	local cam = workspace.CurrentCamera
 
