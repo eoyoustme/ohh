@@ -102,32 +102,24 @@ entity:SetCallback("OnSpawned", function()
 	task.spawn(function()
 		-- 0.25
 		cc.TintColor = Color3.fromRGB(0, 0, 0)
-		cc.Contrast = 3
-		cc.Saturation = 3
 		camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
 		task.wait(0.75)
 
 		-- 0.5
 		cue.PlaybackSpeed = 0.5
 		cc.TintColor = Color3.fromRGB(10, 10, 10)
-		cc.Contrast = 1
-		cc.Saturation = 1
 		camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
 		task.wait(0.75)
 
 		-- 0.75
 		cue.PlaybackSpeed = 0.75
 		cc.TintColor = Color3.fromRGB(100, 100, 100)
-		cc.Contrast = 0.5
-		cc.Saturation = 0.5
 		camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
 		task.wait(0.75)
 
 		-- 1.0
 		cue.PlaybackSpeed = 1
 		cc.TintColor = Color3.fromRGB(200, 200, 200)
-		cc.Contrast = 0
-		cc.Saturation = 0
 		camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
 
 		-- Tween fade trắng 8 giây
