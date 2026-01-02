@@ -61,83 +61,281 @@ local entity = spawner.Create({
 ---====== Debug entity ======---
 
 entity:SetCallback("OnSpawned", function()
-    print("Entity has spawned")
+	print("Entity has spawned")
 
-local TweenService = game:GetService("TweenService")
-local Lighting = game.Lighting
-local cc = Lighting:WaitForChild("MainColorCorrection")
-local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
-local cam = workspace.CurrentCamera
+	local TweenService = game:GetService("TweenService")
+	local Lighting = game.Lighting
+	local cc = Lighting:WaitForChild("MainColorCorrection")
+	local CameraShaker = require(game.ReplicatedStorage.CameraShaker)
+	local cam = workspace.CurrentCamera
 
--- Tạo CameraShaker
-local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
-	cam.CFrame = cam.CFrame * cf
-end)
-camShake:Start()
+	-- Tạo CameraShaker
+	local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(cf)
+		cam.CFrame = cam.CFrame * cf
+	end)
+	camShake:Start()
 
--- Âm thanh
-local cue = Instance.new("Sound")
-cue.Parent = workspace
-cue.SoundId = "rbxassetid://9125712561"
-cue.Volume = 10
-cue.PlaybackSpeed = 0.25
+	-- Âm thanh
+	local cue = Instance.new("Sound")
+	cue.Parent = workspace
+	cue.SoundId = "rbxassetid://9125712561"
+	cue.Volume = 10
+	cue.PlaybackSpeed = 0.25
 
--- 🔥 Load âm thanh trước
-cue.Loaded:Wait()
+	-- 🔥 Load âm thanh trước
+	cue.Loaded:Wait()
 
--- ✅ Đặt TimePosition sau khi load xong
-cue.TimePosition = 1
+	-- ✅ Đặt TimePosition sau khi load xong
+	cue.TimePosition = 1
 
--- Phát cùng lúc lighting
-cue:Play()
+	-- Phát cùng lúc lighting
+	cue:Play()
 
--- Lighting bắt đầu ngay
-cc.TintColor = Color3.fromRGB(25, 0, 0)
-cc.Contrast = 0.2
-cc.Saturation = -0.7
-TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
-TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
+	-- Lighting bắt đầu ngay
+	cc.TintColor = Color3.fromRGB(0, 0, 0)
+	cc.Contrast = 0.2
+	cc.Saturation = -0.7
+	TweenService:Create(cc, TweenInfo.new(10), {Contrast = 0}):Play()
+	TweenService:Create(cc, TweenInfo.new(10), {Saturation = 0}):Play()
 
--- Tăng dần PlaybackSpeed + đổi màu + camera shake
-task.spawn(function()
-	-- 0.25
-	cc.TintColor = Color3.fromRGB(25, 0, 0)
-	camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
-	task.wait(0.75)
+	-- Tăng dần PlaybackSpeed + đổi màu + camera shake
+	task.spawn(function()
+		-- 0.25
+		cc.TintColor = Color3.fromRGB(0, 0, 0)
+		cc.Contrast = 3
+		cc.Saturation = 3
+		camShake:ShakeOnce(5, 2, 1, 2, 1, 6)
+		task.wait(0.75)
 
-	-- 0.5
-	cue.PlaybackSpeed = 0.5
-	cc.TintColor = Color3.fromRGB(150, 0, 0)
-	camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
-	task.wait(0.75)
+		-- 0.5
+		cue.PlaybackSpeed = 0.5
+		cc.TintColor = Color3.fromRGB(10, 10, 10)
+		cc.Contrast = 1
+		cc.Saturation = 1
+		camShake:ShakeOnce(6, 2, 4, 1, 4, 7)
+		task.wait(0.75)
 
-	-- 0.75
-	cue.PlaybackSpeed = 0.75
-	cc.TintColor = Color3.fromRGB(205, 0, 0)
-	camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
-	task.wait(0.75)
+		-- 0.75
+		cue.PlaybackSpeed = 0.75
+		cc.TintColor = Color3.fromRGB(100, 100, 100)
+		cc.Contrast = 0.5
+		cc.Saturation = 0.5
+		camShake:ShakeOnce(10, 5, 2, 8, 1, 12)
+		task.wait(0.75)
 
-	-- 1.0
-	cue.PlaybackSpeed = 1
-	cc.TintColor = Color3.fromRGB(255, 0, 0)
-	camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
+		-- 1.0
+		cue.PlaybackSpeed = 1
+		cc.TintColor = Color3.fromRGB(200, 200, 200)
+		cc.Contrast = 0
+		cc.Saturation = 0
+		camShake:ShakeOnce(12, 6, 3, 10, 2, 15)
 
-	-- Tween fade trắng 8 giây
-	TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
-end)
+		-- Tween fade trắng 8 giây
+		TweenService:Create(cc, TweenInfo.new(15), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+	end)
+	local player = game.Players.LocalPlayer
+	local cam = workspace.CurrentCamera
+
+	-- Tìm Model và Part
+	local model = workspace:WaitForChild("HUNGERED")
+	local smiler = model:WaitForChild("RushNew")
+
+	-- Xóa sound mặc định PlaySound nếu có
+	local SOund = smiler:FindFirstChild("ambience")
+	if SOund then
+		SOund:Destroy()
+	end
+
+	-- Thu thập âm thanh riêng của SmilerNew (ngoại lệ)
+	local smilerSounds = {}
+	for _, d in ipairs(smiler:GetDescendants()) do
+		if d:IsA("Sound") then
+			table.insert(smilerSounds, d)
+		end
+	end
+
+	-- Lưu lại speed ORIGINAL của mọi âm thanh trong map (chỉ lưu 1 lần)
+	local originalSpeed = {}
+
+	local function cacheOriginalSpeeds()
+		for _, obj in ipairs(workspace:GetDescendants()) do
+			if obj:IsA("Sound") then
+				if not originalSpeed[obj] then
+					originalSpeed[obj] = obj.PlaybackSpeed
+				end
+			end
+		end
+	end
+
+	cacheOriginalSpeeds()
+
+	-- Lighting Effects
+	local Lighting = game:GetService("Lighting")
+
+	local cc = Instance.new("ColorCorrectionEffect", Lighting)
+	cc.Enabled = false
+	cc.Contrast = 0
+	cc.Saturation = 0
+
+	local blur = Instance.new("BlurEffect", Lighting)
+	blur.Size = 0
+	blur.Enabled = false
+
+
+	-- GUI Nhiễu
+	local gui = Instance.new("ScreenGui", player.PlayerGui)
+	gui.IgnoreGuiInset = true
+
+	local noise = Instance.new("ImageLabel", gui)
+	noise.Size = UDim2.new(1, 0, 1, 0)
+	noise.Position = UDim2.new(0, 0, 0, 0)
+	noise.BackgroundTransparency = 1
+	noise.ImageTransparency = 1
+
+	local img1 = "rbxassetid://128327817020506"
+	local img2 = "rbxassetid://132173691110215"
+
+	-- Loop chuyển đổi ảnh 0.05s
+	task.spawn(function()
+		while true do
+			noise.Image = img1
+			task.wait(0.005)
+			noise.Image = img2
+			task.wait(0.005)
+		end
+	end)
+
+
+	-- Kiểm tra sound có thuộc Smiler không
+	local function isSmilerSound(sound)
+		for _, v in ipairs(smilerSounds) do
+			if v == sound then
+				return true
+			end
+		end
+		return false
+	end
+
+	-- Lấy tất cả sound của map (trừ Smiler)
+	local function getAllOtherSounds()
+		local list = {}
+
+		for _, obj in ipairs(workspace:GetDescendants()) do
+			if obj:IsA("Sound") and not isSmilerSound(obj) then
+				table.insert(list, obj)
+			end
+		end
+
+		return list
+	end
+
+
+	-- Áp dụng glitch cho âm thanh
+	local function applySoundGlitch(alpha)
+		for _, s in ipairs(getAllOtherSounds()) do
+			if s.Playing then
+				local base = originalSpeed[s] or 1
+				s.PlaybackSpeed = base - (alpha * 0.5)
+			end
+		end
+	end
+
+	-- Khôi phục speed gốc của âm thanh
+	local function resetAllOtherSounds()
+		for s, spd in pairs(originalSpeed) do
+			if s and s:IsA("Sound") then
+				s.PlaybackSpeed = spd
+			end
+		end
+	end
+
+	-- Giữ Smiler = 0.3 speed
+	local function enforceSmilerSoundSpeed()
+		for _, s in ipairs(smilerSounds) do
+			if s then
+				s.PlaybackSpeed = 0.3
+			end
+		end
+	end
+
+
+	-- Disable toàn bộ hiệu ứng
+	local function disableEffect()
+		cc.Enabled = false
+		cc.Contrast = 0
+
+		blur.Enabled = false
+		blur.Size = 0
+
+		noise.ImageTransparency = 1
+
+		resetAllOtherSounds()
+		enforceSmilerSoundSpeed()
+	end
+
+
+	-- Update hiệu ứng theo khoảng cách
+	local function updateEffect(distance)
+		if distance > 100 then
+			disableEffect()
+			return
+		end
+
+		cc.Enabled = true
+		blur.Enabled = true
+
+		local alpha = math.clamp(1 - (distance / 100), 0, 1)
+		noise.ImageTransparency = 1 - alpha
+
+		applySoundGlitch(alpha)
+		enforceSmilerSoundSpeed()
+
+		if distance <= 50 then
+			cc.Contrast = 1
+			blur.Size = 68
+		elseif distance <= 60 then
+			cc.Contrast = 0.7
+			blur.Size = 40
+		elseif distance <= 80 then
+			cc.Contrast = 0.5
+			blur.Size = 20
+		else
+			cc.Contrast = 0.3
+			blur.Size = 12
+		end
+	end
+
+
+	-- Loop kiểm tra khoảng cách
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local char = player.Character
+		if not char then return end
+
+		-- Nếu trốn → tắt hoàn toàn
+		if char:GetAttribute("Hiding") == true then
+			disableEffect()
+			return
+		end
+
+		local root = char:FindFirstChild("HumanoidRootPart")
+		if not root then return end
+
+		local distance = (root.Position - smiler.Position).Magnitude
+		updateEffect(distance)
+	end)
 
 end)
 
 entity:SetCallback("OnStartMoving", function()
-    print("Entity has started moving")
+	print("Entity has started moving")
 end)
 
 entity:SetCallback("OnEnterRoom", function(room, firstTime)
-    if firstTime == true then
-        print("Entity has entered room: ".. room.Name.. " for the first time")
-    else
-        print("Entity has entered room: ".. room.Name.. " again")
-    end
+	if firstTime == true then
+		print("Entity has entered room: ".. room.Name.. " for the first time")
+	else
+		print("Entity has entered room: ".. room.Name.. " again")
+	end
 end)
 
 entity:SetCallback("OnLookAt", function(lineOfSight)
@@ -149,46 +347,46 @@ entity:SetCallback("OnLookAt", function(lineOfSight)
 end)
 
 entity:SetCallback("OnRebounding", function(startOfRebound)
-    if startOfRebound == true then
-        print("Entity has started rebounding")
+	if startOfRebound == true then
+		print("Entity has started rebounding")
 	else
-        print("Entity has finished rebounding")
+		print("Entity has finished rebounding")
 	end
 end)
 
 entity:SetCallback("OnDespawning", function()
-    print("Entity is despawning")
+	print("Entity is despawning")
 end)
 
 entity:SetCallback("OnDespawned", function()
-    print("Entity has despawned")
-local TweenService = game:GetService("TweenService")
+	print("Entity has despawned")
+	local TweenService = game:GetService("TweenService")
 
--- Tạo âm thanh
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9125712561"
-sound.Volume = 10
-sound.PlaybackSpeed = 0.4
-sound.Looped = false
-sound.Parent = workspace
+	-- Tạo âm thanh
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://9125712561"
+	sound.Volume = 10
+	sound.PlaybackSpeed = 0.4
+	sound.Looped = false
+	sound.Parent = workspace
 
--- Load âm thanh trước
-sound.Loaded:Wait()
+	-- Load âm thanh trước
+	sound.Loaded:Wait()
 
--- Phát âm thanh ngay
-sound:Play()
+	-- Phát âm thanh ngay
+	sound:Play()
 
--- Chờ 2.5 giây trước khi bắt đầu fade
-task.delay(2.5, function()
-    -- Tween giảm volume từ 10 xuống 0 trong 2 giây
-    local tween = TweenService:Create(sound, TweenInfo.new(5), {Volume = 0})
-    tween:Play()
+	-- Chờ 2.5 giây trước khi bắt đầu fade
+	task.delay(2.5, function()
+		-- Tween giảm volume từ 10 xuống 0 trong 2 giây
+		local tween = TweenService:Create(sound, TweenInfo.new(5), {Volume = 0})
+		tween:Play()
 
-    -- Khi tween kết thúc → destroy âm thanh
-    tween.Completed:Connect(function()
-        sound:Destroy()
-    end)
-end)
+		-- Khi tween kết thúc → destroy âm thanh
+		tween.Completed:Connect(function()
+			sound:Destroy()
+		end)
+	end)
 
 end)
 
