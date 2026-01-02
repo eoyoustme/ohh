@@ -184,8 +184,8 @@ entity:SetCallback("OnSpawned", function()
 	noise.BackgroundTransparency = 1
 	noise.ImageTransparency = 1
 
-	local img1 = "rbxassetid://128327817020506"
-	local img2 = "rbxassetid://132173691110215"
+	local img1 = "rbxassetid://0"
+	local img2 = "rbxassetid://0"
 
 	-- Loop chuyển đổi ảnh 0.05s
 	task.spawn(function()
@@ -198,57 +198,7 @@ entity:SetCallback("OnSpawned", function()
 	end)
 
 
-	-- Kiểm tra sound có thuộc Smiler không
-	local function isSmilerSound(sound)
-		for _, v in ipairs(smilerSounds) do
-			if v == sound then
-				return true
-			end
-		end
-		return false
-	end
-
-	-- Lấy tất cả sound của map (trừ Smiler)
-	local function getAllOtherSounds()
-		local list = {}
-
-		for _, obj in ipairs(workspace:GetDescendants()) do
-			if obj:IsA("Sound") and not isSmilerSound(obj) then
-				table.insert(list, obj)
-			end
-		end
-
-		return list
-	end
-
-
-	-- Áp dụng glitch cho âm thanh
-	local function applySoundGlitch(alpha)
-		for _, s in ipairs(getAllOtherSounds()) do
-			if s.Playing then
-				local base = originalSpeed[s] or 1
-				s.PlaybackSpeed = base - (alpha * 0.5)
-			end
-		end
-	end
-
-	-- Khôi phục speed gốc của âm thanh
-	local function resetAllOtherSounds()
-		for s, spd in pairs(originalSpeed) do
-			if s and s:IsA("Sound") then
-				s.PlaybackSpeed = spd
-			end
-		end
-	end
-
-	-- Giữ Smiler = 0.3 speed
-	local function enforceSmilerSoundSpeed()
-		for _, s in ipairs(smilerSounds) do
-			if s then
-				s.PlaybackSpeed = 0.3
-			end
-		end
-	end
+	-- Kiểm tra sound có thuộc Smiler khôn
 
 
 	-- Disable toàn bộ hiệu ứng
@@ -261,8 +211,6 @@ entity:SetCallback("OnSpawned", function()
 
 		noise.ImageTransparency = 1
 
-		resetAllOtherSounds()
-		enforceSmilerSoundSpeed()
 	end
 
 
@@ -279,8 +227,6 @@ entity:SetCallback("OnSpawned", function()
 		local alpha = math.clamp(1 - (distance / 100), 0, 1)
 		noise.ImageTransparency = 1 - alpha
 
-		applySoundGlitch(alpha)
-		enforceSmilerSoundSpeed()
 
 		if distance <= 50 then
 			cc.Contrast = 1
