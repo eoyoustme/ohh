@@ -131,7 +131,7 @@ entity:SetCallback("OnSpawned", function()
 			local Smoke = Instance.new("Smoke")
 			Smoke.TimeScale = 1
 			Smoke.Color = Color3.new(0, 0, 0) -- White
-			Smoke.Size = math.max(15, 15) -- Pick the larger of the two dimensions
+			Smoke.Size = math.max(5, 5) -- Pick the larger of the two dimensions
 			Smoke.Parent = part
 		end
 	end
