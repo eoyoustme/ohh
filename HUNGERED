@@ -229,17 +229,17 @@ entity:SetCallback("OnSpawned", function()
 
 
 		if distance <= 50 then
-			cc.Contrast = 1
-			blur.Size = 68
+			cc.Contrast = 0
+			blur.Size = 0
 		elseif distance <= 60 then
-			cc.Contrast = 0.7
-			blur.Size = 40
+			cc.Contrast = 0
+			blur.Size = 0
 		elseif distance <= 80 then
-			cc.Contrast = 0.5
-			blur.Size = 20
+			cc.Contrast = 0
+			blur.Size = 0
 		else
-			cc.Contrast = 0.3
-			blur.Size = 12
+			cc.Contrast = 0
+			blur.Size = 0
 		end
 	end
 
