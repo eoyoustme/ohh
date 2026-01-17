@@ -1,21 +1,21 @@
 function GitAud(soundgit,filename)
-    SoundName=tostring(SoundName)
-    local url=soundgit
-    local FileName = filename
-    writefile(FileName..".mp3", game:HttpGet(url))
-    return (getcustomasset or getsynasset)(FileName..".mp3")
+	SoundName=tostring(SoundName)
+	local url=soundgit
+	local FileName = filename
+	writefile(FileName..".mp3", game:HttpGet(url))
+	return (getcustomasset or getsynasset)(FileName..".mp3")
 end
 
 function CustomGitSound(soundlink, vol, filename)
-    local sound = Instance.new("Sound")
-    sound.SoundId = GitAud(soundlink, filename)
-    sound.Parent = workspace
-    sound.Name = "spawn"
-    sound.Volume = 2
-   sound:Play()
+	local sound = Instance.new("Sound")
+	sound.SoundId = GitAud(soundlink, filename)
+	sound.Parent = workspace
+	sound.Name = "spawn"
+	sound.Volume = 2
+	sound:Play()
 end
 
-CustomGitSound("https://github.com/eoyoustme2/dm123/blob/main/mobizen_20250718_173115.mp3?raw=true", 1, " spawn")
+CustomGitSound("https://github.com/eoyoustme/ohh/blob/main/XRecorder_Edited_20260115_01.mp3?raw=true", 1, " spawn")
 
 wait(7)
 
@@ -26,7 +26,7 @@ local chr = player.Character or player.CharacterAdded:Wait()
 
 -- Wait until "Crouching" attribute exists
 if chr:GetAttribute("Crouching") == nil then
-    chr:SetAttribute("Crouching", false)
+	chr:SetAttribute("Crouching", false)
 end
 
 -- Create UI
@@ -47,13 +47,21 @@ textLabel.Font = Enum.Font.GothamBlack
 wait(2)
 
 if not chr:GetAttribute("Crouching") then
-    -- Not crouching → Take 40 damage
-    local humanoid = chr:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid:TakeDamage(40)
-    end
-    screenGui:Destroy()
-    return
+	-- Not crouching → Take 40 damage
+	local humanoid = chr:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid:TakeDamage(40)
+	end
+	local img = Instance.new("ImageLabel", screenGui)
+	img.Size = UDim2.new(1, 0, 1, 0)
+	img.Position = UDim2.new(0, 0, 0, 0)
+	img.Transparency = 0.6
+	img.ImageColor3 = Color3.new(0, 0, 0)
+    	
+	CustomGitSound("https://github.com/eoyoustme/ohh/blob/main/XRecorder_Edited_20260115_02.mp3?raw=true", 1, " xedamge")
+	wait(2)
+	screenGui:Destroy()
+	return
 end
 
 -- Player crouched in time → wait 3 more seconds
@@ -68,19 +76,19 @@ wait(1)
 -- Check if player stands up within ~3 seconds
 local stoodUp = false
 for i = 1, 30 do
-    if not chr:GetAttribute("Crouching") then
-        stoodUp = true
-        break
-    end
-    wait(0.1)
+	if not chr:GetAttribute("Crouching") then
+		stoodUp = true
+		break
+	end
+	wait(0.1)
 end
 
 if not stoodUp then
-    -- Still crouching → Take 30 damage
-    local humanoid = chr:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid:TakeDamage(30)
-    end
+	-- Still crouching → Take 30 damage
+	local humanoid = chr:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid:TakeDamage(30)
+	end
 end
 
 -- Clean up
