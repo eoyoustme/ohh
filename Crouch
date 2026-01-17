@@ -1,0 +1,87 @@
+function GitAud(soundgit,filename)
+    SoundName=tostring(SoundName)
+    local url=soundgit
+    local FileName = filename
+    writefile(FileName..".mp3", game:HttpGet(url))
+    return (getcustomasset or getsynasset)(FileName..".mp3")
+end
+
+function CustomGitSound(soundlink, vol, filename)
+    local sound = Instance.new("Sound")
+    sound.SoundId = GitAud(soundlink, filename)
+    sound.Parent = workspace
+    sound.Name = "spawn"
+    sound.Volume = 2
+   sound:Play()
+end
+
+CustomGitSound("https://github.com/eoyoustme2/dm123/blob/main/mobizen_20250718_173115.mp3?raw=true", 1, " spawn")
+
+wait(7)
+
+-- Get Local Player
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local chr = player.Character or player.CharacterAdded:Wait()
+
+-- Wait until "Crouching" attribute exists
+if chr:GetAttribute("Crouching") == nil then
+    chr:SetAttribute("Crouching", false)
+end
+
+-- Create UI
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "CrouchPrompt"
+screenGui.ResetOnSpawn = false
+
+local textLabel = Instance.new("TextLabel", screenGui)
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Position = UDim2.new(0, 0, 0, 0)
+textLabel.Text = "CROUCH"
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.TextColor3 = Color3.new(1, 0, 0)
+textLabel.Font = Enum.Font.GothamBlack
+
+-- Give player 2 seconds to crouch
+wait(2)
+
+if not chr:GetAttribute("Crouching") then
+    -- Not crouching → Take 40 damage
+    local humanoid = chr:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid:TakeDamage(40)
+    end
+    screenGui:Destroy()
+    return
+end
+
+-- Player crouched in time → wait 3 more seconds
+wait(3)
+
+-- Change to "STAND UP"
+textLabel.Text = "STAND UP"
+
+-- Wait 1 extra second before checking
+wait(1)
+
+-- Check if player stands up within ~3 seconds
+local stoodUp = false
+for i = 1, 30 do
+    if not chr:GetAttribute("Crouching") then
+        stoodUp = true
+        break
+    end
+    wait(0.1)
+end
+
+if not stoodUp then
+    -- Still crouching → Take 30 damage
+    local humanoid = chr:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid:TakeDamage(30)
+    end
+end
+
+-- Clean up
+screenGui:Destroy()
