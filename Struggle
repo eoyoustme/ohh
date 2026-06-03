@@ -1,102 +1,104 @@
 local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
 
 function setPinkLighting()
-    local lighting = game.Lighting.MainColorCorrection
-    lighting.TintColor = Color3.fromRGB(255, 255, 255)
-    lighting.Contrast = 0.4
-    game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
-    -- Đổi sang đỏ
-    game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 0, 0)}):Play()
+	local lighting = game.Lighting.MainColorCorrection
+	lighting.TintColor = Color3.fromRGB(255, 255, 255)
+	lighting.Contrast = 0.4
+	game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
+	-- Đổi sang đỏ
+	game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 0, 0)}):Play()
 end
 
 function resetLighting()
-    local lighting = game.Lighting.MainColorCorrection
-    lighting.TintColor = Color3.fromRGB(255, 0, 0)
-    lighting.Contrast = 10
-    game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
-    game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
+	local lighting = game.Lighting.MainColorCorrection
+	lighting.TintColor = Color3.fromRGB(255, 0, 0)
+	lighting.Contrast = 10
+	game:GetService("TweenService"):Create(lighting, TweenInfo.new(2.5), {Contrast = 0}):Play()
+	game:GetService("TweenService"):Create(lighting, TweenInfo.new(5), {TintColor = Color3.fromRGB(255, 255, 255)}):Play()
 end
 
 local entity = spawner.Create({
-    Entity = {
-        Name = "struggled",
-        Asset = "rbxassetid://85796753236725",
-        HeightOffset = 0
-    },
-    Lights = {
-        Flicker = {
-            Enabled = false,
-            Duration = 20
-        },
-        Shatter = true,
-        Repair = false
-    },
-    Earthquake = {
-        Enabled = false
-    },
-    CameraShake = {
-        Enabled = true,
-        Range = 500,
-        Values = {1.5, 20, 0.1, 1}
-    },
-    Movement = {
-        Speed = 150,
-        Delay = 12,
-        Reversed = false
-    },
-    Rebounding = {
-        Enabled = false
-    },
-    Damage = {
-        Enabled = true,
-        Range = 40,
-        Amount = 200
-    },
-    Crucifixion = {
-        Enabled = true,
-        Range = 50,
-        Resist = false,
-        Break = true
-    },
-    Death = {
-        Type = "Guiding",
-        Hints = {
-            "You die to struggled?",
-            "When it appears the room turns red",
-            "Hide now!",
-            "Because it's coming very soon!",
-            "At that time, if you don't see the cupboard, you will die",
-            "Good luck",
-        },
-        Cause = "Struggled"
-    }
+	Entity = {
+		Name = "struggled",
+		Asset = "rbxassetid://85796753236725",
+		HeightOffset = 0
+	},
+	Lights = {
+		Flicker = {
+			Enabled = false,
+			Duration = 20
+		},
+		Shatter = true,
+		Repair = false
+	},
+	Earthquake = {
+		Enabled = false
+	},
+	CameraShake = {
+		Enabled = true,
+		Range = 500,
+		Values = {1.5, 20, 0.1, 1}
+	},
+	Movement = {
+		Speed = 150,
+		Delay = 10,
+		Reversed = false
+	},
+	Rebounding = {
+		Enabled = false
+	},
+	Damage = {
+		Enabled = true,
+		Range = 40,
+		Amount = 200
+	},
+	Crucifixion = {
+		Enabled = true,
+		Range = 50,
+		Resist = false,
+		Break = true
+	},
+	Death = {
+		Type = "Guiding",
+		Hints = {
+			"You die to struggled?",
+			"When it appears the room turns red",
+			"Hide now!",
+			"Because it's coming very soon!",
+			"At that time, if you don't see the cupboard, you will die",
+			"Good luck",
+		},
+		Cause = "Struggled"
+	}
 })
 
 -- Spawn
 entity:SetCallback("OnSpawned", function()
-    setPinkLighting()
-local cue1 = Instance.new("Sound")
-cue1.Parent = workspace
-cue1.Name = "Scream"
-cue1.SoundId = "rbxassetid://80277453959427"
-cue1.Volume = 10
-cue1.TimePosition = 0
-cue1.PlaybackSpeed = 0.3
-cue1:Play()
+	setPinkLighting()
+	local cue1 = Instance.new("Sound")
+	cue1.Parent = workspace
+	cue1.Name = "Scream"
+	cue1.SoundId = "rbxassetid://1546975842"
+	cue1.Volume = 10
+	cue1.TimePosition = 0
+	cue1.PlaybackSpeed = 0.6
+	cue1:Play()
 
-local distort = Instance.new("DistortionSoundEffect")
-distort.Parent = cue1
-distort.Level = 0.01
+	local eq = Instance.new("EqualizerSoundEffect")
+	eq.Parent = cue1
+	eq.HighGain = 0
+	eq.LowGain = -20
+	eq.MidGain = -10
 end)
 
 -- Despawn
 entity:SetCallback("OnDespawned", function()
-    resetLighting()
-    local s = Instance.new("Sound", workspace)
-    s.SoundId = "rbxassetid://1837829565"
-    s.Volume = 9999
-    s.PlaybackSpeed = 0.5
-    s:Play()
+	resetLighting()
+	local s = Instance.new("Sound", workspace)
+	s.SoundId = "rbxassetid://1837829565"
+	s.Volume = 9999
+	s.PlaybackSpeed = 0.5
+	s:Play()
 end)
 
 -- Death / Jumpscare
@@ -247,7 +249,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		task.wait(0.4)
 		camera.CameraType = Enum.CameraType.Custom
 		camera.FieldOfView = startFov
-else
+	else
 		print("Entity has damaged the player")
 	end
 end)
