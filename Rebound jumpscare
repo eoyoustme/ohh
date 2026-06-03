@@ -43,7 +43,7 @@ function PlayJumpscare()
 
 	-- Âm thanh
 	local sound = Instance.new("Sound")
-	sound.SoundId = "rbxassetid://85271883712040"
+	sound.SoundId = "rbxassetid://140582989782464"
 	sound.Volume = 10
 	sound.PlaybackSpeed = 3
 	sound.Parent = gui
