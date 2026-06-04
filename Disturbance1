@@ -293,7 +293,7 @@ entity:SetCallback("OnDespawned", function()
 		camara.CFrame = camara.CFrame * shakeCf
 	end)
 	camShake:Start()
-	camShake:ShakeOnce(30,6,0.1,6,0.7,0.5)
+	camShake:ShakeOnce(30,6,0.1,0.7,0.1,0.1)
 	
 	-- Door knock x7 (no camera bug)  
 
